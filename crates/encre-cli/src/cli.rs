@@ -64,7 +64,7 @@ pub enum Command {
     Commonmark(FromArgs),
     /// Write the text of a document alone
     PlainText(FromArgs),
-    /// Check a document against schema v1
+    /// Check a document against schema v2
     Validate(FromArgs),
     /// Write encre JSON in its canonical stored form
     Compact,

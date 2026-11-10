@@ -3,7 +3,7 @@
 use crate::cli::{Cli, Command};
 use crate::error::CliError;
 use crate::io;
-use encre::{Node, ValidationError};
+use encre::Node;
 use serde_json::{Value, json};
 use std::io::IsTerminal;
 
@@ -15,8 +15,37 @@ pub enum Output {
     Json(Value),
     /// PDF bytes; under `--json`, written to `--output` with a summary on stdout.
     Pdf(Vec<u8>),
-    /// The `validate` verdict.
-    Validation(Option<ValidationError>),
+    /// The `validate` verdict: `None` when the document is valid.
+    Validation(Option<Verdict>),
+}
+
+/// Why `validate` refused its input, and where: a tree path, plus the source line and column for markdown.
+pub struct Verdict {
+    /// The tree path of the problem.
+    pub path: String,
+    /// What is wrong.
+    pub message: String,
+    /// The 1-based line and column of the markdown block that holds it.
+    pub at: Option<(usize, usize)>,
+}
+
+impl Verdict {
+    fn json(&self) -> Value {
+        let mut value = json!({"path": self.path, "message": self.message});
+        if let Some((line, column)) = self.at {
+            value["line"] = json!(line);
+            value["column"] = json!(column);
+        }
+        value
+    }
+
+    fn error(&self) -> CliError {
+        let message = match self.at {
+            Some((line, column)) => format!("line {line}, column {column}: {}", self.message),
+            None => self.message.clone(),
+        };
+        CliError::invalid(message).at(self.path.clone())
+    }
 }
 
 impl Output {
@@ -46,15 +75,15 @@ pub fn check_destination(cli: &Cli) -> Result<(), CliError> {
     Ok(())
 }
 
-fn validation(error: Option<ValidationError>, cli: &Cli) -> Result<(), CliError> {
+fn validation(verdict: Option<Verdict>, cli: &Cli) -> Result<(), CliError> {
     if !cli.json {
-        return error.map_or(Ok(()), |e| Err(e.into()));
+        return verdict.map_or(Ok(()), |v| Err(v.error()));
     }
-    let errors: Vec<Value> = error.iter().map(|e| json!({"path": e.path, "message": e.message})).collect();
+    let errors: Vec<Value> = verdict.iter().map(Verdict::json).collect();
     io::write(cli.output.as_deref(), &line(&json!({"valid": errors.is_empty(), "errors": errors})))?;
-    match error {
+    match verdict {
         None => Ok(()),
-        Some(e) => Err(CliError { reported: true, ..e.into() }),
+        Some(v) => Err(CliError { reported: true, ..v.error() }),
     }
 }
 

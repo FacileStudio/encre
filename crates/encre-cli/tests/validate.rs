@@ -47,3 +47,16 @@ fn input_that_only_looks_like_json_needs_from() {
     assert!(run.stderr.contains("--from"), "{}", run.stderr);
     assert_eq!(encre(&["validate", "--from", "markdown"], "{not json} but a paragraph").code, 0);
 }
+
+#[test]
+fn markdown_errors_carry_the_source_line_and_column() {
+    let run = encre(&["validate", "--json"], "# Title\n\n- ok\n- bell \u{7} here\n");
+    assert_eq!(run.code, 1);
+    let error = &run.json()["errors"][0];
+    assert_eq!((error["line"].clone(), error["column"].clone()), (json!(4), json!(3)));
+    assert_eq!(error["path"], "doc.content[1].content[1].content[0]");
+    let text = encre(&["validate", "--from", "markdown"], "x\n\na \u{1} b");
+    assert!(text.stderr.contains("line 3, column 1: "), "{}", text.stderr);
+    let json = encre(&["validate", "--json"], BAD_LEVEL).json();
+    assert!(json["errors"][0].get("line").is_none(), "{json}");
+}

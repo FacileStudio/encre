@@ -3,10 +3,10 @@
 use crate::cli::{Command, Format, FromArgs, IdArgs};
 use crate::error::{CliError, Kind};
 use crate::input::{detect, json_doc, load, markdown_doc};
-use crate::output::Output;
+use crate::output::{Output, Verdict};
 use crate::{edit, render};
 use encre::markdown::{plain_text, serialize, serialize_commonmark};
-use encre::{Node, ValidationError, assign_ids, compact};
+use encre::{Node, assign_ids, compact};
 
 fn with_ids(mut doc: Node, ids: bool) -> Result<Output, CliError> {
     if ids {
@@ -21,20 +21,21 @@ fn openui(source: &str, args: &IdArgs) -> Result<Output, CliError> {
 }
 
 fn validate(input: &str, args: &FromArgs) -> Result<Output, CliError> {
-    let result = match detect(input, args.from)? {
-        Format::Json => json_doc(input),
-        Format::Markdown => {
-            markdown_doc(input).and_then(|doc| encre::validate(&doc).map(|()| doc).map_err(CliError::from))
-        }
+    let verdict = match detect(input, args.from)? {
+        Format::Json => match json_doc(input) {
+            Ok(_) => None,
+            Err(e) if e.kind == Kind::Invalid => {
+                Some(Verdict { path: e.path.unwrap_or_else(|| "doc".to_owned()), message: e.message, at: None })
+            }
+            Err(e) => return Err(e),
+        },
+        Format::Markdown => encre::markdown::validate(input).err().map(|e| Verdict {
+            path: e.path,
+            message: e.message,
+            at: Some((e.line, e.column)),
+        }),
     };
-    match result {
-        Ok(_) => Ok(Output::Validation(None)),
-        Err(e) if e.kind == Kind::Invalid => {
-            let path = e.path.unwrap_or_else(|| "doc".to_owned());
-            Ok(Output::Validation(Some(ValidationError { path, message: e.message })))
-        }
-        Err(e) => Err(e),
-    }
+    Ok(Output::Validation(verdict))
 }
 
 /// Runs `command` on `input`; `max` caps every further file it reads.

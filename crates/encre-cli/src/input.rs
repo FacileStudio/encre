@@ -19,7 +19,7 @@ pub fn detect(text: &str, from: Option<Format>) -> Result<Format, CliError> {
     }
 }
 
-/// An encre JSON document, validated against schema v1.
+/// An encre JSON document, validated against schema v2.
 pub fn json_doc(text: &str) -> Result<Node, CliError> {
     let doc: Node = serde_json::from_str(text)
         .map_err(|e| CliError::invalid(format!("not an encre JSON document: {e}")).at("doc"))?;
