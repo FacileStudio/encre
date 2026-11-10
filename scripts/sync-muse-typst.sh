@@ -13,7 +13,7 @@ fi
 
 rm -rf "$out"
 mkdir -p "$out/assets"
-cp "$src/lib.typ" "$src/tokens.typ" "$src/components.typ" "$src/template.typ" "$out/"
+cp "$src/lib.typ" "$src/tokens.typ" "$src/components.typ" "$src/template.typ" "$src/LICENSE" "$out/"
 cp "$src"/assets/*.svg "$out/assets/"
 commit="$(git -C "$src" rev-parse HEAD)"
 date="$(git -C "$src" log -1 --format=%cs)"
