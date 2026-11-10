@@ -12,7 +12,11 @@ pulldown-cmark = { version = "0.13.6", default-features = false }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 thiserror = "2.0.21"
+yrs = { version = "0.28.1", optional = true }
 
 [dev-dependencies]
 comrak = { version = "0.59.0", default-features = false }
 proptest = "1.12.0"
+
+[features]
+yjs = ["dep:yrs"]
