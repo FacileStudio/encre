@@ -28,11 +28,33 @@ gives the arm64 one; the arm64 link itself uses the toolchain's `rust-lld`. A ta
 compiler is reported and skipped, and the script exits 1.
 `ENCRE_CLI_TARGETS` picks other targets and `ENCRE_CLI_OUT` another directory.
 
-In a Go service's Dockerfile:
+In a Go service's Dockerfile, with a binary built on this machine:
 
 ```dockerfile
 COPY encre-x86_64-unknown-linux-musl /usr/local/bin/encre
 ```
+
+## Release binaries
+
+Pushing a `v*` tag runs `.github/workflows/release.yml`. It checks that the tag equals the
+crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest` (with
+`musl-tools` and `gcc-aarch64-linux-gnu`), and creates the GitHub release with
+`encre_<version>_linux_amd64.tar.gz`, `encre_<version>_linux_arm64.tar.gz` and
+`checksums.txt`. The release notes are the version's `CHANGELOG.md` section.
+
+A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
+
+```dockerfile
+ARG ENCRE_VERSION=0.7.0
+ARG TARGETARCH
+RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
+    archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
+    curl -fsSLO "$base/$archive" && curl -fsSLO "$base/checksums.txt"; \
+    grep " $archive\$" checksums.txt | sha256sum -c -; \
+    tar -xzf "$archive" -C /usr/local/bin encre; rm "$archive" checksums.txt; encre --version
+```
+
+`TARGETARCH` is `amd64` or `arm64` under BuildKit, the same names as the archives.
 
 ## Commands
 
