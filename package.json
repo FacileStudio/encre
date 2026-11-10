@@ -1,0 +1,59 @@
+{
+  "name": "@facile/encre",
+  "version": "0.1.0",
+  "description": "The Facile document format: schema, Tiptap editor and markdown projection",
+  "type": "module",
+  "svelte": "./src/lib/index.ts",
+  "main": "./src/lib/index.ts",
+  "exports": {
+    ".": {
+      "svelte": "./src/lib/index.ts",
+      "types": "./src/lib/index.ts",
+      "default": "./src/lib/index.ts"
+    },
+    "./schema.json": "./spec/schema.json",
+    "./styles": "./src/lib/styles/encre.css"
+  },
+  "files": [
+    "src/lib",
+    "spec"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tiptap/core": "3.33.0",
+    "@tiptap/extension-bubble-menu": "3.33.0",
+    "@tiptap/extension-code": "3.33.0",
+    "@tiptap/extension-code-block": "3.33.0",
+    "@tiptap/extension-hard-break": "3.33.0",
+    "@tiptap/extension-image": "3.33.0",
+    "@tiptap/extension-link": "3.33.0",
+    "@tiptap/extension-list": "3.33.0",
+    "@tiptap/extension-unique-id": "3.33.0",
+    "@tiptap/extensions": "3.33.0",
+    "@tiptap/pm": "3.33.0",
+    "@tiptap/starter-kit": "3.33.0",
+    "@tiptap/suggestion": "3.33.0"
+  },
+  "devDependencies": {
+    "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@types/node": "24.19.2",
+    "jsdom": "31.0.0",
+    "svelte": "5.57.3",
+    "svelte-check": "4.7.8",
+    "tailwindcss": "4.3.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.7",
+    "vitest": "5.1.0"
+  },
+  "peerDependencies": {
+    "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+    "svelte": "^5.57.0"
+  }
+}

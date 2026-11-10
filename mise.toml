@@ -1,0 +1,14 @@
+[tools]
+node = "24.22.0"
+
+[tasks.check]
+description = "Formatting, lints, type checks and filet"
+run = "sh scripts/check.sh check"
+
+[tasks.test]
+description = "Rust and TypeScript test suites"
+run = "sh scripts/check.sh test"
+
+[tasks.wasm]
+description = "Rebuild the committed encre-wasm package"
+run = "sh scripts/build-wasm.sh"
