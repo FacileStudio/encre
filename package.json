@@ -1,6 +1,6 @@
 {
   "name": "@facile/encre",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "license": "Apache-2.0",
   "description": "The Facile document format: schema, Tiptap editor and markdown projection",
   "type": "module",
@@ -61,7 +61,7 @@
     "yjs": "13.6.33"
   },
   "peerDependencies": {
-    "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+    "@facile/muse": "github:FacileStudio/muse",
     "svelte": "^5.57.0",
     "yjs": "^13.6.33",
     "y-websocket": "^3.1.0",

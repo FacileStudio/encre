@@ -4,6 +4,78 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.8.0] - 2026-11-10
+
+### Schema 2
+
+Strictly additive: every valid schema 1 document is a valid schema 2 document, unchanged, and
+`migrate(doc, 1)` is the identity (a test checks it on every vector document). `SCHEMA_VERSION`
+is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
+
+- `highlight` mark, ranked between `strike` and `code`. Markdown `==text==`.
+- `badge` inline node: `tone` (neutral, accent, info, success, warning, danger), `dot`, and text
+  content without marks. Markdown `[badge:<tone> <text>]` (`primary` reads as `accent`) and
+  `[status:<state>]`, a dot badge whose states map to tones (active, done, ready, success:
+  success; error, failed, stopped, dead: danger; pending, wip, running, loading: warning).
+  `[status:<tone> <text>]` writes a dot badge whose text is not a state, so every badge
+  round-trips. An unknown tone or state stays text, and code never holds badges.
+- `diagram` block: `language` (mermaid, d2, dot) and the source as text. encre never runs it.
+- `columns` block of two to four `column` children, each with `title`, `tone` (neutral,
+  success, danger, warning, info) and block content. Markdown: a `columns` fence holding
+  `column title="..." tone="..."` fences.
+- `stat.sub`, a subtitle separate from `delta`. A writer leaves it out of the JSON body when
+  empty, so schema 1 stats serialize as before.
+
+### Added
+
+- GFM alerts parse natively: `> [!NOTE]` and `[!IMPORTANT]` become an `info` callout,
+  `[!TIP]`, `[!PROS]` and `[!ADVANTAGE]` `success`, `[!WARNING]` `warning`, `[!CAUTION]`,
+  `[!CONS]` and `[!DRAWBACK]` `danger`, any case, with an empty title for the app to localize.
+  Serialize keeps writing callout fences.
+- `compare`, `pros-cons` and `vs` fences read as `columns`: `### ` sections (or `---` separated
+  parts), titles matching advantage, pro, positive, plus or benefit are `success`, drawback, con,
+  negative, minus, risk or issue `danger`. Serialize writes `columns`.
+- `markdown::validate`: parse and validate, with a `SourceError` holding the tree path and the
+  1-based line and column of the offending block. `encre validate --json` on markdown adds
+  `line` and `column` to each error. `docs/cli.md` lists what markdown validation refuses.
+- `Document`: diagrams through an optional `renderDiagram(language, source)`, else their source
+  under a language label; columns that stack on narrow screens; badges and status dots; `<mark>`;
+  stat subtitles; per-line tones for `diff` code blocks; an optional `highlight(code, language)`
+  hook whose HTML the app must sanitize (encre escapes the code without it).
+- `Editor`: `locale` (`fr` default, `en`, `es`, `de`), `labels` overrides and `renderDiagram`.
+  Every string of the editor, toolbar, slash and bubble menus, node views and the upload
+  placeholder comes from the catalogue. New slash commands: diagram, columns, badge; a highlight
+  button (Mod-Shift-H); toolbar menus to add or remove a column and to retone a badge.
+- `blockCommands(labels)`, `labelsFor`, `CATALOGUES`, `Settings`, the `Diagram`, `Columns`,
+  `Column` and `Badge` Tiptap nodes, and the matching types.
+- Typst: `highlight`, muse-typst `badge` and `status-dot`, diagrams as a labelled raw block,
+  columns as a `grid`, `stat.sub` in the metric's subtitle.
+- CommonMark export: a diagram stays its fenced block, columns become a bold title and the
+  blocks of each column, a badge is its text in brackets, a highlight is plain text.
+- `go/`: the Go module `github.com/FacileStudio/encre/go` (package `encre`) with `Run`, a typed
+  `*Error`, `Validate`, `Parse`, `Serialize`, `CommonMark`, `PlainText` and `PDF`, tested against
+  the built binary. `mise run check` runs gofmt and `go vet`, `mise run test` the Go tests.
+- Vectors: markdown vectors for every new construct, ops vectors over columns and badges, the
+  Typst every-node vector with the new nodes, and a `schema2` yjs vector from Tiptap. The schema 1
+  `custom` update is kept as `v1-custom.bin`, which Rust and Tiptap still read.
+
+### Changed
+
+- Fences with the info string `mermaid`, `d2` or `dot` now parse as `diagram`, and `compare`,
+  `pros-cons` and `vs` fences as `columns`. A code block whose language starts with one of those
+  words, or with `columns`, is written with a tilde fence so it stays a code block.
+- A literal `==` in text is written escaped (`\=\=`), since `==` now delimits a highlight.
+- The `@facile/muse` peer is the untagged `github:FacileStudio/muse`, and the README states
+  v0.16.1 or later. A semver range such as `>=0.16.1` makes bun look muse up on npm, where it is
+  not published, so every consumer install failed with a 404.
+- `Document` renders `codeBlock` through a new `Code` component; output for other languages is
+  unchanged without a `highlight` hook.
+
+### Not accepted
+
+- List status markers (`[+]`, `[-]`, `[!]`, `[?]`, `✅`, `❌`, `[pro]`, `[con]`, ...) and the
+  `[+ Feature]` / `[- Missing]` forms stay literal text.
+
 ## [0.7.0] - 2026-11-10
 
 ### Added
@@ -103,6 +175,7 @@ the minor version.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.8.0]: https://github.com/FacileStudio/encre/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/FacileStudio/encre/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/FacileStudio/encre/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/FacileStudio/encre/compare/v0.4.0...v0.5.0

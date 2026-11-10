@@ -38,8 +38,9 @@
         "yjs": "13.6.33",
       },
       "peerDependencies": {
-        "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+        "@facile/muse": "github:FacileStudio/muse",
         "svelte": "^5.57.0",
+        "y-protocols": "^1.0.7",
         "y-websocket": "^3.1.0",
         "yjs": "^13.6.33",
       },
