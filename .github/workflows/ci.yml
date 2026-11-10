@@ -46,6 +46,8 @@ jobs:
           cache: false
 
       - uses: FacileStudio/filet@744b06fb5c4ad7d6a86014a0ebe7700a3553ca54 # v0.19.1
+        env:
+          GOTOOLCHAIN: auto
         with:
           version: v0.19.1
           fail-on: error
