@@ -44,9 +44,7 @@ fn child_ok(node: &Node, i: usize, in_code: bool) -> Result<(), String> {
 pub fn check(schema: &Schema, node: &Node, node_type: &NodeType) -> Result<(), String> {
     let in_code = node.kind == "codeBlock" || node.kind == "diagram";
     for (i, child) in node.content.iter().enumerate() {
-        marks_ok(schema, node_type, child)
-            .and_then(|()| child_ok(node, i, in_code))
-            .map_err(|e| format!("content[{i}]: {e}"))?;
+        marks_ok(schema, node_type, child).and_then(|()| child_ok(node, i, in_code))?;
     }
     Ok(())
 }

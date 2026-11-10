@@ -60,3 +60,14 @@ fn markdown_errors_carry_the_source_line_and_column() {
     let json = encre(&["validate", "--json"], BAD_LEVEL).json();
     assert!(json["errors"][0].get("line").is_none(), "{json}");
 }
+
+#[test]
+fn a_markdown_error_message_carries_no_path_of_its_own() {
+    let run = encre(&["validate", "--from", "markdown", "--json"], "# Hi\n\na\u{1}b\n");
+    assert_eq!(run.code, 1);
+    let error = &run.json()["errors"][0];
+    assert_eq!(error["path"], "doc.content[1]");
+    assert_eq!((error["line"].clone(), error["column"].clone()), (json!(3), json!(1)));
+    let message = error["message"].as_str().expect("message");
+    assert_eq!(message, "text is empty or holds a forbidden character");
+}
