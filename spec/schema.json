@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "id": {
+    "alphabet": "0123456789abcdefghjkmnpqrstvwxyz",
+    "length": 10
+  },
+  "nodes": [
+    {
+      "name": "doc",
+      "content": "block+",
+      "attrs": []
+    },
+    {
+      "name": "paragraph",
+      "group": "block",
+      "content": "inline*",
+      "marks": "_",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "heading",
+      "group": "block",
+      "content": "inline*",
+      "marks": "_",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "level", "type": "integer", "default": 1, "values": [1, 2, 3] }
+      ]
+    },
+    {
+      "name": "bulletList",
+      "group": "block list",
+      "content": "listItem+",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "orderedList",
+      "group": "block list",
+      "content": "listItem+",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "start", "type": "integer", "default": 1, "min": 0, "max": 999999999 }
+      ]
+    },
+    {
+      "name": "taskList",
+      "group": "block list",
+      "content": "taskItem+",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "listItem",
+      "content": "paragraph block*",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "taskItem",
+      "content": "paragraph block*",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "checked", "type": "boolean", "default": false }
+      ]
+    },
+    {
+      "name": "blockquote",
+      "group": "block",
+      "content": "block+",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "codeBlock",
+      "group": "block",
+      "content": "text*",
+      "marks": "",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "language", "type": "line", "default": "" }
+      ]
+    },
+    {
+      "name": "horizontalRule",
+      "group": "block",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "image",
+      "group": "block",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "src", "type": "line", "default": null, "required": true },
+        { "name": "alt", "type": "line", "default": "" },
+        { "name": "title", "type": "line", "default": "" }
+      ]
+    },
+    {
+      "name": "table",
+      "group": "block",
+      "content": "tableRow+",
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "tableRow",
+      "content": "(tableHeader | tableCell)+",
+      "attrs": []
+    },
+    {
+      "name": "tableHeader",
+      "content": "paragraph",
+      "attrs": [{ "name": "align", "type": "string", "default": "none", "values": ["none", "left", "center", "right"] }]
+    },
+    {
+      "name": "tableCell",
+      "content": "paragraph",
+      "attrs": [{ "name": "align", "type": "string", "default": "none", "values": ["none", "left", "center", "right"] }]
+    },
+    {
+      "name": "callout",
+      "group": "block",
+      "content": "block+",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        {
+          "name": "tone",
+          "type": "string",
+          "default": "neutral",
+          "values": ["neutral", "info", "success", "warning", "danger"]
+        },
+        { "name": "title", "type": "label", "default": "" }
+      ]
+    },
+    {
+      "name": "stat",
+      "group": "block",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "label", "type": "line", "default": "" },
+        { "name": "value", "type": "line", "default": "" },
+        { "name": "delta", "type": "line", "default": "" }
+      ]
+    },
+    {
+      "name": "chart",
+      "group": "block",
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "kind", "type": "string", "default": "bar", "values": ["bar", "line"] },
+        { "name": "title", "type": "line", "default": "" },
+        { "name": "labels", "type": "lines", "default": [] },
+        { "name": "series", "type": "series", "default": [] }
+      ]
+    },
+    {
+      "name": "text",
+      "group": "inline",
+      "attrs": []
+    },
+    {
+      "name": "hardBreak",
+      "group": "inline",
+      "takesMarks": false,
+      "attrs": []
+    }
+  ],
+  "marks": [
+    {
+      "name": "link",
+      "attrs": [
+        { "name": "href", "type": "line", "default": null, "required": true },
+        { "name": "title", "type": "line", "default": "" }
+      ]
+    },
+    { "name": "bold", "attrs": [] },
+    { "name": "italic", "attrs": [] },
+    { "name": "strike", "attrs": [] },
+    { "name": "code", "excludes": "", "attrs": [] }
+  ]
+}
