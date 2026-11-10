@@ -7,6 +7,15 @@ import { svelteNodeView } from './node-view.svelte.js';
 /** Tone of a callout, the muse status vocabulary. */
 export type CalloutTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
 
+/** Tone of a column: the callout tones. */
+export type ColumnTone = CalloutTone;
+
+/** Tone of a badge: the callout tones plus muse's accent. */
+export type BadgeTone = CalloutTone | 'accent';
+
+/** Language of a diagram; the app draws it. */
+export type DiagramLanguage = 'mermaid' | 'd2' | 'dot';
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     encreBlocks: {
@@ -25,7 +34,8 @@ function parseJson(raw: string, fallback: unknown): unknown {
   }
 }
 
-function dataAttr(name: string, fallback: unknown, json = false) {
+/** An attribute stored as `data-<name>` on the rendered element; `json` for arrays and objects. */
+export function dataAttr(name: string, fallback: unknown, json = false) {
   return {
     default: fallback,
     parseHTML: (element: HTMLElement) => {
@@ -57,7 +67,7 @@ export const Stat = Node.create({
   name: 'stat',
   group: 'block',
   atom: true,
-  addAttributes: () => ({ label: dataAttr('label', ''), value: dataAttr('value', ''), delta: dataAttr('delta', '') }),
+  addAttributes: () => ({ label: dataAttr('label', ''), value: dataAttr('value', ''), delta: dataAttr('delta', ''), sub: dataAttr('sub', '') }),
   parseHTML: () => [{ tag: 'div[data-type="stat"]' }],
   renderHTML: ({ HTMLAttributes }) => ['div', mergeAttributes(HTMLAttributes, { 'data-type': 'stat' })],
   addNodeView: () => svelteNodeView(StatView),

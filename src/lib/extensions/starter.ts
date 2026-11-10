@@ -3,7 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { UniqueID } from '@tiptap/extension-unique-id';
 import { BLOCK_ID_TYPES } from '../schema.js';
 import { newBlockId } from '../ids.js';
-import { EncreCode, EncreLink } from './marks.js';
+import { EncreCode, EncreHighlight, EncreLink } from './marks.js';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { EncreCodeBlock, EncreHardBreak, EncreImage, EncreOrderedList } from './nodes.js';
 
@@ -26,6 +26,7 @@ export function encreStarterKit(options: StarterOptions = {}): Extensions {
       undoRedo: options.undoRedo === false ? false : undefined
     }),
     EncreLink.configure({ openOnClick: false, autolink: true }),
+    EncreHighlight,
     EncreCode,
     EncreCodeBlock,
     EncreHardBreak,

@@ -3,9 +3,10 @@
   import type { Editor } from '@tiptap/core';
   import { NodeSelection } from '@tiptap/pm/state';
   import { onMount } from 'svelte';
+  import type { Labels } from './labels.js';
   import MarkButtons from './MarkButtons.svelte';
 
-  let { editor, version }: { editor: Editor; version: number } = $props();
+  let { editor, version, labels }: { editor: Editor; version: number; labels?: Labels } = $props();
 
   let element: HTMLDivElement;
   const key = `encreBubble${Math.random().toString(36).slice(2)}`;
@@ -24,5 +25,5 @@
 </script>
 
 <div bind:this={element} class="z-50 flex items-center gap-0.5 rounded-fc-md bg-fc-bg p-1 shadow-lg" style="visibility: hidden">
-  <MarkButtons {editor} {version} />
+  <MarkButtons {editor} {version} {labels} />
 </div>

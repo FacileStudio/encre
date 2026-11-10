@@ -3,6 +3,8 @@
   import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
   import type { EncreNode } from './schema.js';
   import type { UploadedImage } from './upload.js';
+  import type { RenderDiagram } from './extensions/settings.js';
+  import type { LabelOverrides, Locale } from './labels.js';
 
   /** Props of the encre editor. */
   export interface EditorProps {
@@ -26,6 +28,12 @@
     onerror?: (error: Error) => void;
     /** The largest image, in bytes, handed to `onimage`. */
     maxImageBytes?: number;
+    /** The language of the editor's copy: menus, node views and placeholders. */
+    locale?: Locale;
+    /** Replaces some of that copy. */
+    labels?: LabelOverrides;
+    /** Draws a diagram from its language and source; without it a diagram shows its source. */
+    renderDiagram?: RenderDiagram;
   }
 </script>
 
@@ -39,7 +47,8 @@
   import SlashMenu from './SlashMenu.svelte';
   import Toolbar from './Toolbar.svelte';
   import { pasteMarkdown } from './paste.js';
-  import { BLOCK_COMMANDS } from './blocks.js';
+  import { blockCommands } from './blocks.js';
+  import { labelsFor } from './labels.js';
   import { UploadPlaceholder } from './extensions/upload-placeholder.js';
   import { dropImages, imageCommand, pasteImages, type ImageUpload } from './upload.js';
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
@@ -57,7 +66,10 @@
     presence = 'inline',
     onimage,
     onerror,
-    maxImageBytes
+    maxImageBytes,
+    locale = 'fr',
+    labels: overrides,
+    renderDiagram
   }: EditorProps = $props();
 
   let element: HTMLDivElement;
@@ -65,13 +77,19 @@
   let version = $state(0);
   const slash = new SlashState();
   const upload = (): ImageUpload | undefined => (onimage ? { onimage, onerror, maxImageBytes } : undefined);
-  const commands = $derived(onimage ? [...BLOCK_COMMANDS, imageCommand(upload)] : BLOCK_COMMANDS);
+  const copy = $derived(labelsFor(locale, overrides));
+  const commands = $derived(onimage ? [...blockCommands(copy), imageCommand(upload, copy)] : blockCommands(copy));
 
   onMount(() => {
     const instance = new Editor({
       element,
       extensions: [
-        ...encreExtensions({ placeholder, collaboration: ydoc ? { document: ydoc, provider, user } : undefined }),
+        ...encreExtensions({
+          placeholder,
+          labels: copy,
+          renderDiagram,
+          collaboration: ydoc ? { document: ydoc, provider, user } : undefined
+        }),
         slashExtension(slash, () => commands),
         UploadPlaceholder
       ],
@@ -133,11 +151,11 @@
     <Presence {provider} />
   {/if}
   {#if editor && toolbar && editable}
-    <Toolbar {editor} {version} {commands} class="sticky top-0 z-10" />
+    <Toolbar {editor} {version} {commands} labels={copy} class="sticky top-0 z-10" />
   {/if}
   <div bind:this={element} class="text-fc-fg"></div>
   {#if editor && editable}
-    <BubbleMenu {editor} {version} />
-    <SlashMenu {slash} />
+    <BubbleMenu {editor} {version} labels={copy} />
+    <SlashMenu {slash} labels={copy} />
   {/if}
 </div>

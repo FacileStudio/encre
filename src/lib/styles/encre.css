@@ -54,6 +54,29 @@
 }
 
 .encre-prose a { text-decoration: underline; text-underline-offset: 0.2em; }
+.encre-prose mark { background: color-mix(in oklab, var(--color-fc-warning) 25%, transparent); color: inherit; border-radius: var(--radius-fc-xs); padding: 0 0.1em; }
+
+.encre-prose .encre-badge, .encre-prose .encre-status { vertical-align: baseline; }
+.encre-prose span.encre-badge { display: inline-flex; align-items: center; gap: 0.35em; }
+.encre-prose span.encre-badge[data-dot='true']::before {
+  content: '';
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: var(--radius-fc-pill);
+  background: currentColor;
+}
+
+.encre-columns { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 40rem) {
+  .encre-columns { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+}
+
+.encre-diagram svg { max-width: 100%; height: auto; }
+.encre-diagram-source { white-space: pre-wrap; outline: none; }
+
+.encre-diff-add { color: var(--color-fc-success); background: color-mix(in oklab, var(--color-fc-success) 10%, transparent); }
+.encre-diff-del { color: var(--color-fc-danger); background: color-mix(in oklab, var(--color-fc-danger) 10%, transparent); }
+.encre-diff-hunk { color: var(--color-fc-info); }
 .encre-prose img { max-width: 100%; border-radius: var(--radius-fc-md); }
 
 .encre-prose table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }

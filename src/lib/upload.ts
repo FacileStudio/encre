@@ -2,7 +2,8 @@ import type { Editor } from '@tiptap/core';
 import type { BlockCommand } from './blocks.js';
 import { addPlaceholder, placeholderPos, removePlaceholder } from './extensions/upload-placeholder.js';
 import { newBlockId } from './ids.js';
-import { labels } from './labels.js';
+import { settingsOf } from './extensions/settings.js';
+import { labels as french, type Labels } from './labels.js';
 
 /** Where an uploaded image lives, as the app's `onimage` hook answers. */
 export interface UploadedImage {
@@ -20,8 +21,8 @@ export interface ImageUpload {
 /** The image types the editor uploads; SVG is never one of them. */
 export const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
-/** Why `file` cannot be uploaded, or null when it can. */
-export function imageRefusal(file: File, maxBytes?: number): string | null {
+/** Why `file` cannot be uploaded, in `labels` (French by default), or null when it can. */
+export function imageRefusal(file: File, maxBytes?: number, labels: Labels = french): string | null {
   if (!IMAGE_TYPES.includes(file.type)) return labels.imageType;
   if (maxBytes !== undefined && file.size > maxBytes) return labels.imageSize(maxBytes);
   return null;
@@ -33,7 +34,8 @@ export function imageFiles(data: DataTransfer | null | undefined): File[] {
 }
 
 async function uploadOne(editor: Editor, file: File, pos: number, upload: ImageUpload): Promise<void> {
-  const refusal = imageRefusal(file, upload.maxImageBytes);
+  const labels = settingsOf(editor).labels;
+  const refusal = imageRefusal(file, upload.maxImageBytes, labels);
   if (refusal) return upload.onerror?.(new Error(refusal));
   const id = newBlockId();
   addPlaceholder(editor, id, pos);
@@ -80,8 +82,8 @@ export function dropImages(editor: Editor, event: DragEvent, upload: ImageUpload
   return true;
 }
 
-/** The "Image" block command: a file picker whose choice goes through the hook at the caret. */
-export function imageCommand(upload: () => ImageUpload | undefined): BlockCommand {
+/** The "Image" block command, named in `labels`: a file picker whose choice goes through the hook at the caret. */
+export function imageCommand(upload: () => ImageUpload | undefined, labels: Labels = french): BlockCommand {
   return {
     id: 'image',
     label: labels.image,

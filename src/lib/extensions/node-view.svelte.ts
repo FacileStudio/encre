@@ -1,6 +1,7 @@
 import type { Editor, NodeViewRenderer, NodeViewRendererProps } from '@tiptap/core';
 import type { Node as PMNode } from '@tiptap/pm/model';
 import { flushSync, mount, unmount, type Component } from 'svelte';
+import { settingsOf, type EncreSettings } from './settings.js';
 
 /** The live state a node view component reads. */
 export class NodeViewState {
@@ -19,6 +20,7 @@ export interface NodeViewProps {
   view: NodeViewState;
   update: (attrs: Record<string, unknown>) => void;
   content?: HTMLElement;
+  settings: EncreSettings;
 }
 
 function updater(editor: Editor, getPos: NodeViewRendererProps['getPos'], current: () => PMNode) {
@@ -42,7 +44,10 @@ export function svelteNodeView(component: Component<NodeViewProps>, withContent 
     dom.dataset.encreNode = node.type.name;
     const content = withContent ? document.createElement('div') : undefined;
     const view = new NodeViewState({ ...node.attrs }, editor.isEditable);
-    const instance = mount(component, { target: dom, props: { view, update: updater(editor, getPos, () => current), content } });
+    const instance = mount(component, {
+      target: dom,
+      props: { view, update: updater(editor, getPos, () => current), content, settings: settingsOf(editor) }
+    });
     flushSync();
     return {
       dom,

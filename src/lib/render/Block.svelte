@@ -5,6 +5,10 @@
   import { TONES } from '../labels.js';
   import type { EncreNode } from '../schema.js';
   import Block from './Block.svelte';
+  import Code from './Code.svelte';
+  import Columns from './Columns.svelte';
+  import { renderOptions } from './context.js';
+  import Diagram from './Diagram.svelte';
   import { imageSrc } from './href.js';
   import Inline from './Inline.svelte';
   import Table from './Table.svelte';
@@ -17,6 +21,9 @@
   const tone = $derived((TONES.includes(attrs.tone as CalloutTone) ? attrs.tone : 'neutral') as CalloutTone);
   const level = $derived(Math.min(3, Math.max(1, Number(attrs.level) || 1)));
   const id = $derived(typeof attrs.id === 'string' ? attrs.id : undefined);
+  const source = $derived(children.map((c) => c.text ?? '').join(''));
+  const read = renderOptions();
+  const options = $derived(read());
 </script>
 
 {#snippet blocks(list: EncreNode[])}
@@ -43,7 +50,11 @@
 {:else if node.type === 'blockquote'}
   <blockquote data-id={id}>{@render blocks(children)}</blockquote>
 {:else if node.type === 'codeBlock'}
-  <pre data-id={id} data-language={text('language') || undefined}><code>{children.map((c) => c.text ?? '').join('')}</code></pre>
+  <Code code={source} language={text('language')} {id} />
+{:else if node.type === 'diagram'}
+  <Diagram {source} language={text('language') || 'mermaid'} {id} />
+{:else if node.type === 'columns'}
+  <Columns {node} />
 {:else if node.type === 'horizontalRule'}
   <hr data-id={id} />
 {:else if node.type === 'image'}
@@ -55,14 +66,16 @@
     <div class="text-fc-fg">{@render blocks(children)}</div>
   </Alert>
 {:else if node.type === 'stat'}
-  <StatCard class="my-3" label={text('label')} value={text('value')} delta={text('delta') || undefined} data-id={id} />
+  <StatCard class="my-3" label={text('label')} value={text('value')} delta={text('delta') || undefined} data-id={id}>
+    {#if text('sub')}<span class="text-fc-xs text-fc-fg-muted">{text('sub')}</span>{/if}
+  </StatCard>
 {:else if node.type === 'chart'}
   <figure class="my-3 flex flex-col gap-3 rounded-fc-md bg-fc-component p-5" data-id={id}>
     {#if text('title')}<figcaption class="text-fc-sm font-medium">{text('title')}</figcaption>{/if}
     {#if attrs.kind === 'line'}
-      <LineChart series={toSeries(attrs.series)} labels={toLabels(attrs.labels)} />
+      <LineChart series={toSeries(attrs.series)} labels={toLabels(attrs.labels)} emptyLabel={options.labels.emptyChart} />
     {:else}
-      <BarChart series={toSeries(attrs.series)} labels={toLabels(attrs.labels)} />
+      <BarChart series={toSeries(attrs.series)} labels={toLabels(attrs.labels)} emptyLabel={options.labels.emptyChart} />
     {/if}
   </figure>
 {/if}

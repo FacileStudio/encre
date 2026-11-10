@@ -40,6 +40,13 @@ const SOURCES: Record<string, string> = {
     '```stat\n{"label": "Revenue", "value": "12 400 €", "delta": "+4%"}\n```',
     '```chart\n{"kind": "line", "title": "Signups", "labels": ["Mon", "Tue"], ' +
       '"series": [{"name": "web", "data": [3, 5.5]}, {"name": "app", "data": [-1, 0]}]}\n```'
+  ].join('\n\n'),
+  schema2: [
+    '> [!WARNING]\n> Read ==this== first.',
+    'Release [badge:success Shipped] and [status:pending], ==**bold** highlight==',
+    '```mermaid\nflowchart LR\n  A --> B\n```',
+    '````columns\n```column title="Pros" tone="success"\n- fast\n```\n\n```column\nplain [badge:accent x]\n```\n````',
+    '```stat\n{"label": "Active", "value": "16", "delta": "", "sub": "In production"}\n```'
   ].join('\n\n')
 };
 

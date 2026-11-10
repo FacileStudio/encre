@@ -2,9 +2,9 @@
   import { BarChart, Button, Field, Input, LineChart, Textarea } from '@facile/muse';
   import { seriesToText, textToLabels, textToSeries, toLabels, toSeries } from '../chart-data.js';
   import type { NodeViewProps } from '../extensions/node-view.svelte.js';
-  import { labels as copy } from '../labels.js';
 
-  let { view, update }: NodeViewProps = $props();
+  let { view, update, settings }: NodeViewProps = $props();
+  const copy = $derived(settings.labels);
 
   const kind = $derived(view.attrs.kind === 'line' ? 'line' : 'bar');
   const title = $derived(String(view.attrs.title ?? ''));

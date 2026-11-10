@@ -1,17 +1,18 @@
 <script lang="ts">
   import { IconButton, Tooltip } from '@facile/muse';
   import type { Editor } from '@tiptap/core';
-  import { labels } from './labels.js';
+  import { labels as french, type Labels } from './labels.js';
 
-  let { editor, version }: { editor: Editor; version: number } = $props();
+  let { editor, version, labels = french }: { editor: Editor; version: number; labels?: Labels } = $props();
 
-  type MarkName = 'bold' | 'italic' | 'strike' | 'code';
-  const marks: { name: MarkName; label: string; glyph: string; glyphClass: string }[] = [
+  type MarkName = 'bold' | 'italic' | 'strike' | 'highlight' | 'code';
+  const marks: { name: MarkName; label: string; glyph: string; glyphClass: string }[] = $derived([
     { name: 'bold', label: labels.bold, glyph: 'B', glyphClass: 'font-bold' },
     { name: 'italic', label: labels.italic, glyph: 'I', glyphClass: 'italic font-serif' },
     { name: 'strike', label: labels.strike, glyph: 'S', glyphClass: 'line-through' },
+    { name: 'highlight', label: labels.highlight, glyph: 'H', glyphClass: 'rounded-fc-xs bg-fc-warning/20 px-1' },
     { name: 'code', label: labels.code, glyph: '</>', glyphClass: 'font-mono text-fc-xs' }
-  ];
+  ]);
 
   let linking = $state(false);
   let href = $state('');

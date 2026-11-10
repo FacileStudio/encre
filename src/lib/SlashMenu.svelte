@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { labels } from './labels.js';
+  import { labels as french, type Labels } from './labels.js';
   import type { SlashState } from './slash.svelte.js';
 
-  let { slash }: { slash: SlashState } = $props();
+  let { slash, labels = french }: { slash: SlashState; labels?: Labels } = $props();
 
   const style = $derived(slash.rect ? `top: ${slash.rect.bottom + 6}px; left: ${slash.rect.left}px;` : '');
 </script>

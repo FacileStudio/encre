@@ -2,13 +2,14 @@
   import { Alert, Menu } from '@facile/muse';
   import type { CalloutTone } from '../extensions/custom.js';
   import type { NodeViewProps } from '../extensions/node-view.svelte.js';
-  import { TONES, labels } from '../labels.js';
+  import { TONES } from '../labels.js';
 
-  let { view, update, content }: NodeViewProps = $props();
+  let { view, update, content, settings }: NodeViewProps = $props();
+  const labels = $derived(settings.labels);
 
   const tone = $derived((TONES.includes(view.attrs.tone as CalloutTone) ? view.attrs.tone : 'neutral') as CalloutTone);
   const title = $derived(String(view.attrs.title ?? ''));
-  const items = TONES.map((t) => ({ label: labels.tones[t], onselect: () => update({ tone: t }) }));
+  const items = $derived(TONES.map((t) => ({ label: labels.tones[t], onselect: () => update({ tone: t }) })));
 
   function host(node: HTMLElement) {
     if (content) node.appendChild(content);
