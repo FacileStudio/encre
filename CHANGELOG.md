@@ -4,6 +4,26 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.6.0] - 2026-11-10
+
+### Added
+
+- `encre`, a command-line tool in the new `crates/encre-cli`, so Go services can run encre as a
+  subprocess: `parse`, `serialize`, `commonmark`, `plain-text`, `validate`, `compact`, `openui`,
+  `ops`, `typst` and `pdf`. Stable exit codes (0 ok, 1 invalid input, 2 usage, 3 internal),
+  `--json` output and errors, a `--max-bytes` input cap (8 MiB by default), and `--image-dir`,
+  which embeds only files inside that directory. See `docs/cli.md`.
+- `scripts/build-cli.sh` (`mise run cli`): static, stripped musl binaries for linux amd64 and
+  arm64, with release archives and `checksums.txt`.
+- `LICENSE` (Apache-2.0) and `NOTICE`.
+
+### Changed
+
+- encre is licensed under Apache-2.0 instead of MIT, in every `Cargo.toml` and `package.json`.
+- The vendored muse-typst moves to `e0bb711` on muse-typst's `main`, which carries the same
+  templates as `a98e881` plus its Apache-2.0 `LICENSE`, now copied by
+  `scripts/sync-muse-typst.sh`. The Typst golden vectors do not change.
+
 ## [0.5.0] - 2026-11-10
 
 ### Added
@@ -66,6 +86,7 @@ the minor version.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.6.0]: https://github.com/FacileStudio/encre/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/FacileStudio/encre/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/FacileStudio/encre/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/FacileStudio/encre/compare/v0.2.0...v0.3.0
