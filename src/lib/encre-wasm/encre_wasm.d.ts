@@ -26,6 +26,12 @@ export function serialize_commonmark(doc: string): string;
  */
 export function validate(doc: string): void;
 
+/**
+ * Reads and validates Facile Markdown, as `encre validate --from markdown --json`:
+ * `{"valid", "errors": [{"path", "message", "line", "column"}]}` as JSON.
+ */
+export function validateMarkdown(markdown: string): string;
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
@@ -35,6 +41,7 @@ export interface InitOutput {
     readonly serialize: (a: number, b: number) => [number, number, number, number];
     readonly serialize_commonmark: (a: number, b: number) => [number, number, number, number];
     readonly validate: (a: number, b: number) => [number, number];
+    readonly validateMarkdown: (a: number, b: number) => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

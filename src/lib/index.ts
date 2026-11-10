@@ -19,6 +19,19 @@ export { schema, SCHEMA_VERSION, BLOCK_ID_TYPES } from './schema.js';
 export type { AttrSpec, EncreNode, EncreSchema, MarkSpec, NodeSpec } from './schema.js';
 export { newBlockId, isBlockId } from './ids.js';
 export { linkHref, imageSrc } from './render/href.js';
-export { loadEncre, encreReady, parseMarkdown, serializeMarkdown, serializeCommonMark, validateDocument, openuiToDocument, type WasmSource } from './wasm.js';
+export {
+  loadEncre,
+  encreReady,
+  parseMarkdown,
+  validateMarkdown,
+  EncreMarkdownError,
+  serializeMarkdown,
+  serializeCommonMark,
+  validateDocument,
+  openuiToDocument,
+  type MarkdownProblem,
+  type MarkdownValidation,
+  type WasmSource
+} from './wasm.js';
 export { looksLikeMarkdown } from './paste.js';
 export { IMAGE_TYPES, imageRefusal, type ImageUpload, type UploadedImage } from './upload.js';

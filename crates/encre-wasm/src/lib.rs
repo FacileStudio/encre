@@ -2,6 +2,7 @@
 #![deny(unused, dead_code)]
 
 use encre::Node;
+use serde_json::json;
 use wasm_bindgen::prelude::*;
 
 fn read(doc: &str) -> Result<Node, JsError> {
@@ -15,6 +16,18 @@ fn read(doc: &str) -> Result<Node, JsError> {
 pub fn parse(markdown: &str) -> Result<String, JsError> {
     let doc = encre::markdown::parse(markdown).map_err(|e| JsError::new(&e.to_string()))?;
     serde_json::to_string(&doc).map_err(|e| JsError::new(&e.to_string()))
+}
+
+/// Reads and validates Facile Markdown, as `encre validate --from markdown --json`:
+/// `{"valid", "errors": [{"path", "message", "line", "column"}]}` as JSON.
+#[wasm_bindgen(js_name = validateMarkdown)]
+pub fn validate_markdown(markdown: &str) -> String {
+    let errors: Vec<_> = encre::markdown::validate(markdown)
+        .err()
+        .map(|e| json!({"path": e.path, "message": e.message, "line": e.line, "column": e.column}))
+        .into_iter()
+        .collect();
+    json!({"valid": errors.is_empty(), "errors": errors}).to_string()
 }
 
 /// Writes a valid document as canonical Facile Markdown.

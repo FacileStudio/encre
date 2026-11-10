@@ -6,6 +6,7 @@ export const parse: (a: number, b: number) => [number, number, number, number];
 export const serialize: (a: number, b: number) => [number, number, number, number];
 export const serialize_commonmark: (a: number, b: number) => [number, number, number, number];
 export const validate: (a: number, b: number) => [number, number];
+export const validateMarkdown: (a: number, b: number) => [number, number];
 export const __wbindgen_externrefs: WebAssembly.Table;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

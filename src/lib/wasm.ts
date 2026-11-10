@@ -24,10 +24,54 @@ function loaded(): void {
   if (!ready) throw new Error('encre-wasm is not loaded: await loadEncre() first');
 }
 
-/** Reads Facile Markdown into a document without ids. Throws when it nests past the limits of FORMAT.md 2.6. */
+/** One reason Facile Markdown is invalid: the tree path, and the 1-based line and column of the source. */
+export interface MarkdownProblem {
+  path: string;
+  message: string;
+  line: number;
+  column: number;
+}
+
+/** The verdict of `validateMarkdown`, the same as `encre validate --from markdown --json`. */
+export interface MarkdownValidation {
+  valid: boolean;
+  errors: MarkdownProblem[];
+}
+
+/** Why `parseMarkdown` refused its input; `line`, `column` and `path` are set when the source position is known. */
+export class EncreMarkdownError extends Error {
+  readonly line?: number;
+  readonly column?: number;
+  readonly path?: string;
+
+  /** Keeps the Rust message as is and adds the position of `at`, when given. */
+  constructor(message: string, at?: MarkdownProblem) {
+    super(message);
+    this.name = 'EncreMarkdownError';
+    this.line = at?.line;
+    this.column = at?.column;
+    this.path = at?.path;
+  }
+}
+
+/** Reads and validates Facile Markdown; each error names its tree path, line and column. */
+export function validateMarkdown(markdown: string): MarkdownValidation {
+  loaded();
+  return JSON.parse(encre.validateMarkdown(markdown)) as MarkdownValidation;
+}
+
+/**
+ * Reads Facile Markdown into a document without ids. Throws an `EncreMarkdownError` when it nests past the limits
+ * of FORMAT.md 2.6, with the line and column of the syntax that crosses the limit.
+ */
 export function parseMarkdown(markdown: string): EncreNode {
   loaded();
-  return JSON.parse(encre.parse(markdown)) as EncreNode;
+  try {
+    return JSON.parse(encre.parse(markdown)) as EncreNode;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new EncreMarkdownError(message, validateMarkdown(markdown).errors[0]);
+  }
 }
 
 /** Writes a valid document as canonical Facile Markdown. Throws when the document is invalid. */

@@ -1,6 +1,6 @@
 {
   "name": "@facile/encre",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "Apache-2.0",
   "description": "The Facile document format: schema, Tiptap editor and markdown projection",
   "type": "module",

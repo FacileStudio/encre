@@ -77,6 +77,7 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `parse(markdown)` | `markdown::parse` |
 | `serialize(doc)`, `serialize_commonmark(doc)` | validate, then `markdown::serialize` or `serialize_commonmark` |
 | `validate(doc)` | `validate` |
+| `validateMarkdown(markdown)` | `markdown::validate`, as the JSON `{ valid, errors: [{ path, message, line, column }] }` that `encre validate --from markdown --json` prints |
 | `openuiToDocument(source)` | `openui::to_document` |
 
 ## TypeScript: `@facile/encre`
@@ -99,6 +100,8 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `linkHref`, `imageSrc` | A link or image source when its scheme is safe to follow, else `undefined` |
 | `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded |
 | `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser |
+| `validateMarkdown(markdown) -> MarkdownValidation` | `{ valid, errors: MarkdownProblem[] }`, each problem `{ path, message, line, column }`; the same verdict as `encre validate --from markdown --json` |
+| `EncreMarkdownError` | What `parseMarkdown` throws: an `Error` with the Rust message unchanged, plus `line`, `column` and `path` when the source position is known |
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |
 | `looksLikeMarkdown` | The paste heuristic the editor uses |
 | `IMAGE_TYPES`, `imageRefusal(file, max?, labels?)`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |

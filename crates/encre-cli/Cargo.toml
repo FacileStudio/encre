@@ -16,3 +16,6 @@ path = "src/main.rs"
 clap = { version = "4.6.7", features = ["derive"] }
 encre = { path = "../encre", features = ["openui", "pdf"] }
 serde_json = "1.0.154"
+
+[dev-dependencies]
+encre-wasm = { path = "../encre-wasm" }
