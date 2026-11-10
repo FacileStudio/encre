@@ -17,12 +17,28 @@ arch_of() {
   esac
 }
 
+c_compiler() {
+  arch="${1%%-*}"
+  for cc in "$arch-linux-musl-gcc" "$arch-linux-gnu-gcc"; do
+    if command -v "$cc" >/dev/null 2>&1; then echo "$cc"; return; fi
+  done
+  case "$host" in
+    "$arch"-*) command -v gcc >/dev/null 2>&1 && echo gcc ;;
+  esac
+}
+
 rm -rf "$out"
 mkdir -p "$out"
 failed=""
 for target in $targets; do
   echo "▸ Building encre $version for $target"
-  if CARGO_PROFILE_RELEASE_STRIP=symbols \
+  cc="$(c_compiler "$target" || true)"
+  if [ -z "$cc" ]; then
+    echo "✗ no C compiler for $target; typst's psm crate needs one, install gcc-${target%%-*}-linux-gnu" >&2
+    failed="$failed $target"
+    continue
+  fi
+  if env "CC_$(echo "$target" | tr - _)=$cc" CARGO_PROFILE_RELEASE_STRIP=symbols \
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="$lld" \
     cargo build --release --locked -p encre-cli --target "$target"; then
     cp "target/$target/release/encre" "$out/encre-$target"

@@ -21,7 +21,11 @@ mise run cli                                # static linux binaries in target/cl
 | `target/cli/encre_<version>_linux_<arch>.tar.gz` | The binary at the archive root, suite release naming |
 | `target/cli/checksums.txt` | `sha256sum` of the archives |
 
-The aarch64 build links with the toolchain's `rust-lld`, so it needs no cross C compiler.
+typst depends on the `psm` crate, which compiles a little C and assembly, so each target needs
+a C compiler. The script takes `<arch>-linux-musl-gcc`, then `<arch>-linux-gnu-gcc`, then the
+host `gcc` when the target matches the host. On Debian, `apt install gcc-aarch64-linux-gnu`
+gives the arm64 one; the arm64 link itself uses the toolchain's `rust-lld`. A target with no
+compiler is reported and skipped, and the script exits 1.
 `ENCRE_CLI_TARGETS` picks other targets and `ENCRE_CLI_OUT` another directory.
 
 In a Go service's Dockerfile:
