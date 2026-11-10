@@ -71,7 +71,20 @@ A valid document also follows these rules. They keep the markdown projection los
 
 Every node whose attributes include `id` is a block. A block id is 10 characters from the lowercase Crockford base32 alphabet `0123456789abcdefghjkmnpqrstvwxyz`. Ids are unique within a document. An id MAY be `null` until assigned: the editor assigns one to each new block, and server-side writes call `assign_ids` before they store a document. Ids never appear in markdown.
 
-### 1.5 Changing the schema
+### 1.5 Compact form
+
+The compact form of a document leaves out every attribute that its type does not declare, that is null, or that equals its default, and orders marks by rank. Readers that rebuild a document from another representation (the Yjs reader, `compactDocument` in TypeScript) return it, so two implementations compare byte for byte. Validation treats the compact and the filled form alike.
+
+### 1.6 Collaborative layout
+
+The `default` fragment holds what y-prosemirror (`@tiptap/y-tiptap` 3.3.0, the binding Tiptap 3's Collaboration extension uses) writes:
+
+- Every node except `text` is an `XmlElement` named after its type. Its attributes are the node's attributes with defaults filled in; null values are left out.
+- A run of adjacent text nodes is one `XmlText`. Each mark is a formatting attribute whose value is the mark's attribute map (`{}` when it has none).
+- `code` is the one mark whose `excludes` is empty, so y-prosemirror names its attribute `code--LpaW+ak5`: the type, `--`, and the folded SHA-256 of `{"type":"code"}`. A reader strips any `--` plus eight base64 characters from a mark name. A writer MUST use that exact name, or Tiptap sees two `code` marks.
+- `spec/vectors/yjs/<name>.bin` is a v1 update written by a real Tiptap editor (`scripts/gen-yjs-vectors.ts`), `<name>.json` the compact document and its Facile Markdown, and `<name>.rust.bin` the update the Rust writer gives for the same document.
+
+### 1.7 Changing the schema
 
 A change bumps `version` in `schema.json` and adds a function to `crates/encre/src/migrate.rs` that upgrades a stored document from the previous version. No change reinterprets an existing document silently.
 
@@ -156,3 +169,17 @@ Agents read markdown and write through operations. Each operation is validated c
 | `replace_all` | `markdown`, `expect_version` | Replaces the whole document only when the document version still matches |
 
 Every failure is a typed error whose message lists what matched and how to narrow it. Example: `patch expected 1 match, found 2: block a1b2c3d4e5 "…", block f6g7h8j9k0 "…"; add more surrounding text to find`.
+
+### 4.1 Rules
+
+1. Operations address **top-level blocks**. An id that names a nested block is refused with the id of the top-level block that holds it.
+2. A refused operation changes nothing. The result of an accepted one MUST validate; otherwise it is refused.
+3. `replace_block` replaces one block with one or more blocks. The first new block keeps the old id when it has the same type. Empty markdown is refused: removing is `delete_block`'s job.
+4. `patch` matches `find` against each top-level block's own markdown, as `read_blocks` shows it. A match never spans two blocks. Each matching block is replaced as a whole, keeping its id when its type stays; a block whose markdown becomes blank is removed. `find` MUST NOT be empty and `expect` MUST be at least 1.
+5. An operation that would leave no block is refused.
+6. New blocks get fresh ids. A write answers the ids of the top-level blocks it inserted.
+7. On an open document every operation runs in the caller's Yjs transaction and inserts, removes or replaces single top-level elements, so other clients' relative positions stay valid. Only `replace_all` rewrites every element.
+
+### 4.2 Vectors
+
+`spec/vectors/ops/<name>.json` holds `markdown` (or a `doc` with ids), an optional `version` (default 1), the `op` in its JSON form (`{"op": "insert_after", "block_id": …, "markdown": …}`, unknown fields refused), and one of `want_markdown`, `want_blocks` or `want_error` (the exact message). `want_kept` lists ids that MUST survive. When the vector gives `markdown`, the runner gives top-level block *i* the id `b` followed by *i* in nine digits (`b000000000`) and leaves nested blocks without ids.

@@ -1,0 +1,34 @@
+{
+  "name": "read-blocks",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "read_blocks"
+  },
+  "want_blocks": [
+    {
+      "id": "b000000000",
+      "type": "heading",
+      "markdown": "# Plan"
+    },
+    {
+      "id": "b000000001",
+      "type": "paragraph",
+      "markdown": "Intro text with **bold**."
+    },
+    {
+      "id": "b000000002",
+      "type": "heading",
+      "markdown": "## Steps"
+    },
+    {
+      "id": "b000000003",
+      "type": "bulletList",
+      "markdown": "- one\n- two"
+    },
+    {
+      "id": "b000000004",
+      "type": "paragraph",
+      "markdown": "Closing text."
+    }
+  ]
+}

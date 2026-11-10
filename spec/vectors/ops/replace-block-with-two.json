@@ -1,0 +1,13 @@
+{
+  "name": "replace-block-with-two",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "replace_block",
+    "block_id": "b000000001",
+    "markdown": "First.\n\nSecond."
+  },
+  "want_markdown": "# Plan\n\nFirst.\n\nSecond.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "want_kept": [
+    "b000000001"
+  ]
+}

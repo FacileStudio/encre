@@ -1,0 +1,10 @@
+{
+  "name": "patch-removes-block",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "Closing text.",
+    "replace": ""
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two"
+}

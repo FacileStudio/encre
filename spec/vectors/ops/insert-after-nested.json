@@ -1,0 +1,42 @@
+{
+  "name": "insert-after-nested",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "id": "b000000000"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "id": "n000000000"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "n000000001"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "op": "insert_after",
+    "block_id": "n000000001",
+    "markdown": "x"
+  },
+  "want_error": "insert_after: block n000000001 is inside block b000000000; operations address top-level blocks, so target b000000000"
+}

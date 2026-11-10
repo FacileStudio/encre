@@ -1,0 +1,10 @@
+{
+  "name": "insert-after-custom-block",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "insert_after",
+    "block_id": "b000000004",
+    "markdown": "```callout tone=\"info\"\nSee **also**.\n```"
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.\n\n```callout tone=\"info\"\nSee **also**.\n```"
+}

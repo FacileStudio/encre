@@ -1,0 +1,11 @@
+{
+  "name": "patch-expect-two",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "text",
+    "replace": "prose",
+    "expect": 2
+  },
+  "want_markdown": "# Plan\n\nIntro prose with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing prose."
+}

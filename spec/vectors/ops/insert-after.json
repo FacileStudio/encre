@@ -1,0 +1,10 @@
+{
+  "name": "insert-after",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "insert_after",
+    "block_id": "b000000002",
+    "markdown": "Do these in order:"
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\nDo these in order:\n\n- one\n- two\n\nClosing text."
+}

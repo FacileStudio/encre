@@ -1,0 +1,13 @@
+{
+  "name": "replace-block-heading-only",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "replace_block",
+    "block_id": "b000000002",
+    "markdown": "## Next steps"
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Next steps\n\n- one\n- two\n\nClosing text.",
+  "want_kept": [
+    "b000000002"
+  ]
+}

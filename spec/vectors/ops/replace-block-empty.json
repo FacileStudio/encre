@@ -1,0 +1,10 @@
+{
+  "name": "replace-block-empty",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "replace_block",
+    "block_id": "b000000001",
+    "markdown": "  \n"
+  },
+  "want_error": "replace_block: the markdown holds no block; to remove a block use delete_block"
+}

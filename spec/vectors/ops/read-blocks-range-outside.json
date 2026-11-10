@@ -1,0 +1,12 @@
+{
+  "name": "read-blocks-range-outside",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "read_blocks",
+    "range": [
+      4,
+      9
+    ]
+  },
+  "want_error": "read_blocks: range 4..9 is outside the 5 blocks; use a range within 0..5"
+}

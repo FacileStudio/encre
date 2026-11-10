@@ -1,0 +1,10 @@
+{
+  "name": "insert-after-unknown",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "insert_after",
+    "block_id": "zzzzzzzzzz",
+    "markdown": "x"
+  },
+  "want_error": "insert_after: no top-level block has id zzzzzzzzzz; read_blocks lists the block ids"
+}

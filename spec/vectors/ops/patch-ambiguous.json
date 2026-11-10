@@ -1,0 +1,10 @@
+{
+  "name": "patch-ambiguous",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "text",
+    "replace": "prose"
+  },
+  "want_error": "patch expected 1 match, found 2: block b000000001 \"Intro text with **bold**.\", block b000000004 \"Closing text.\"; add more surrounding text to find"
+}

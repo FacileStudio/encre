@@ -1,0 +1,9 @@
+{
+  "name": "delete-block",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "delete_block",
+    "block_id": "b000000003"
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\nClosing text."
+}

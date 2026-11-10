@@ -1,0 +1,23 @@
+{
+  "name": "read-blocks-range",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "read_blocks",
+    "range": [
+      1,
+      3
+    ]
+  },
+  "want_blocks": [
+    {
+      "id": "b000000001",
+      "type": "paragraph",
+      "markdown": "Intro text with **bold**."
+    },
+    {
+      "id": "b000000002",
+      "type": "heading",
+      "markdown": "## Steps"
+    }
+  ]
+}

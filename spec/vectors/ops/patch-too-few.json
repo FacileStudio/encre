@@ -1,0 +1,11 @@
+{
+  "name": "patch-too-few",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "text",
+    "replace": "prose",
+    "expect": 3
+  },
+  "want_error": "patch expected 3 matches, found 2: block b000000001 \"Intro text with **bold**.\", block b000000004 \"Closing text.\"; lower expect or check find"
+}

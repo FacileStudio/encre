@@ -1,0 +1,10 @@
+{
+  "name": "patch-no-match",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "Intro text with bold",
+    "replace": "x"
+  },
+  "want_error": "patch expected 1 match, found 0; find must be exact text of one block's markdown, as read_blocks shows it"
+}

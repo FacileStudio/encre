@@ -1,0 +1,13 @@
+{
+  "name": "patch",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "- two",
+    "replace": "- three"
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- three\n\nClosing text.",
+  "want_kept": [
+    "b000000003"
+  ]
+}

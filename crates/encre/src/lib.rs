@@ -10,6 +10,7 @@ mod ids;
 pub mod markdown;
 mod migrate;
 mod model;
+pub mod ops;
 pub mod schema;
 mod validate;
 #[cfg(feature = "yjs")]

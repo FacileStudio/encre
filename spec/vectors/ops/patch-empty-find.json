@@ -1,0 +1,10 @@
+{
+  "name": "patch-empty-find",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "patch",
+    "find": "",
+    "replace": "x"
+  },
+  "want_error": "patch: find is empty; give the exact text to replace"
+}

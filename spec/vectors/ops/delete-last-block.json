@@ -1,0 +1,9 @@
+{
+  "name": "delete-last-block",
+  "markdown": "Only.",
+  "op": {
+    "op": "delete_block",
+    "block_id": "b000000000"
+  },
+  "want_error": "delete_block: the document would have no block left; use replace_block or replace_all instead"
+}

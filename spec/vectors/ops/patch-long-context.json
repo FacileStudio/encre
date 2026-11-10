@@ -1,0 +1,11 @@
+{
+  "name": "patch-long-context",
+  "markdown": "A rather long paragraph that mentions the needle somewhere in its middle part.",
+  "op": {
+    "op": "patch",
+    "find": "needle",
+    "replace": "pin",
+    "expect": 2
+  },
+  "want_error": "patch expected 2 matches, found 1: block b000000000 \"…at mentions the needle somewhere in it…\"; lower expect or check find"
+}

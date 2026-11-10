@@ -1,0 +1,11 @@
+{
+  "name": "replace-all-stale",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "version": 4,
+  "op": {
+    "op": "replace_all",
+    "markdown": "# Fresh",
+    "expect_version": 3
+  },
+  "want_error": "replace_all expected version 3, the document is at version 4; read it again and retry"
+}

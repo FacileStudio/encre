@@ -1,0 +1,9 @@
+{
+  "name": "append",
+  "markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.",
+  "op": {
+    "op": "append",
+    "markdown": "New end."
+  },
+  "want_markdown": "# Plan\n\nIntro text with **bold**.\n\n## Steps\n\n- one\n- two\n\nClosing text.\n\nNew end."
+}
