@@ -1,0 +1,23 @@
+{
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "Body text.",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "name": "cover",
+  "options": {
+    "cover": true,
+    "subtitle": "And a subtitle",
+    "title": "With a cover"
+  },
+  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"With a cover\", subtitle: \"And a subtitle\", doc-type: \"Document\", cover: true)\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#\"Body text.\"\n"
+}

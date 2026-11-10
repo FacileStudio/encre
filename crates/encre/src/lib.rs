@@ -6,12 +6,14 @@
 
 mod compact;
 mod content;
+mod escape;
 mod ids;
 pub mod markdown;
 mod migrate;
 mod model;
 pub mod ops;
 pub mod schema;
+pub mod typst;
 mod validate;
 #[cfg(feature = "yjs")]
 pub mod yjs;
