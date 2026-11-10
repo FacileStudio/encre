@@ -81,6 +81,16 @@ the `.gitignore` wasm-pack writes. It sets `CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_
 the target variable replaces those flags, and without it the wasm link fails. wasm-opt is off in
 `crates/encre-wasm/Cargo.toml`, so the build needs no binaryen.
 
+## The CLI build
+
+```sh
+mise run cli
+```
+
+`scripts/build-cli.sh` builds static, stripped `encre` binaries for `x86_64-unknown-linux-musl`
+and `aarch64-unknown-linux-musl` into `target/cli`, with release archives and `checksums.txt`.
+The aarch64 link uses the toolchain's `rust-lld`. See [cli.md](cli.md).
+
 ## muse-typst sync
 
 `crates/encre/typst/muse-typst` is a copy of muse-typst's `lib.typ`, `tokens.typ`,

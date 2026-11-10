@@ -40,6 +40,7 @@ which code owns each conversion.
 | `crates/encre/src/ops/` | Agent operations on a stored tree or an open Yjs fragment |
 | `crates/encre/src/typst/`, `escape.rs`, `pdf/` | Typst source, string escaping, the in-memory compiler (feature `pdf`) |
 | `crates/encre/src/openui/` | OpenUI Lang lexer, parser, reference resolver and block mapping (feature `openui`) |
+| `crates/encre-cli/` | The `encre` binary: every conversion over stdin and stdout, for subprocess callers |
 | `crates/encre/typst/` | Vendored muse-typst (`SOURCE` names the commit) and the embedded fonts (`FONTS.md`) |
 | `src/lib/extensions/` | One Tiptap extension per custom node, StarterKit set-up, collaboration |
 | `src/lib/nodes/`, `Document.svelte` | Node views and the read-only renderer |

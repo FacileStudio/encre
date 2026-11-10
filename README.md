@@ -14,6 +14,7 @@ one implementation, in Rust, and the browser runs the same code compiled to WebA
 - Gives agents guarded operations (`append`, `insert_after`, `patch`, ...) that refuse ambiguous edits
 - Renders documents as Typst through muse-typst and compiles them to PDF in memory
 - Converts OpenUI programs from Bulle's chat into documents, one way
+- Ships an `encre` command-line tool so Go services can run every conversion as a subprocess
 - Ships a Svelte 5 Tiptap editor with collaboration, a read-only renderer and its menus
 
 ## Stack
@@ -38,6 +39,21 @@ Svelte, from the same tag:
 ```sh
 bun add "github:FacileStudio/encre#v0.5.0"
 ```
+
+### CLI
+
+Build the binary with `cargo build --release -p encre-cli`, or the static linux binaries with
+`mise run cli` (`target/cli/encre-x86_64-unknown-linux-musl` and the aarch64 one).
+
+```sh
+encre parse --ids < note.md > note.json
+encre validate --json < note.json
+echo '[{"op":"append","markdown":"Done."}]' | encre ops --doc note.json
+encre pdf --title Plan --image-dir ./images --input note.json --output plan.pdf
+```
+
+Exit codes are 0 ok, 1 invalid input, 2 usage, 3 internal. [docs/cli.md](docs/cli.md) has every
+command and a Go caller.
 
 ### Rust quick start
 
@@ -78,6 +94,7 @@ with Tailwind classes, so the app's CSS needs `@source '../node_modules/@facile/
 spec/             schema.json, FORMAT.md (normative), vectors/ shared by both test suites
 crates/encre/     the Rust crate: model, markdown, yjs, ops, typst, pdf, openui
 crates/encre-wasm/  wasm-bindgen entry points for the browser
+crates/encre-cli/   the encre binary
 src/lib/          the Svelte package: editor, extensions, node views, wasm loader
 test/             vitest suites
 scripts/          gates, the wasm build, vector generation, muse-typst sync
@@ -93,6 +110,7 @@ docs/             architecture, configuration, development, API, agents
 | [Configuration](docs/configuration.md) | Cargo features, render options, editor props, script variables |
 | [Development](docs/development.md) | Setup, the gates, vectors, the wasm build, muse-typst sync |
 | [API](docs/api.md) | The public Rust and TypeScript surface |
+| [CLI](docs/cli.md) | The `encre` binary, its exit codes, and calling it from Go |
 | [Agents](docs/agents.md) | The short form of the format and operations for MCP tool descriptions |
 
 ## License

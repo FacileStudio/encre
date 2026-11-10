@@ -1,7 +1,8 @@
 # encre — Configuration
 
 Every switch encre reads: Cargo features, render options, editor props, and the variables the
-scripts and tests take. encre reads no environment variable at run time.
+scripts and tests take. encre reads no environment variable at run time; the `encre` binary
+reads only `NO_COLOR`.
 
 ## Cargo features
 
@@ -62,6 +63,8 @@ tests do with `readFileSync`.
 | `ENCRE_GEN` | `vite.config.ts` | Runs `scripts/gen-*.ts` instead of the test suites |
 | `PROPTEST_CASES` | `crates/encre/tests/laws.rs` | Cases per round-trip law, default `10000` |
 | `MUSE_TYPST` | `scripts/sync-muse-typst.sh` | The muse-typst checkout to copy, default `~/Code/Facile/muse-typst` |
+| `ENCRE_CLI_TARGETS` | `scripts/build-cli.sh` | Rust targets to build, default the two linux musl ones |
+| `ENCRE_CLI_OUT` | `scripts/build-cli.sh` | Output directory, default `target/cli` |
 | `CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS` | `scripts/build-wasm.sh` | Rust flags for the wasm build, default `-Ccodegen-units=1` |
 
 Back to the [documentation index](README.md).
