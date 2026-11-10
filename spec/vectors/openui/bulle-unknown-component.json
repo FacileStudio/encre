@@ -1,0 +1,5 @@
+{
+  "name": "bulle-unknown-component",
+  "source": "root = Card([x])\nx = Iframe(\"https://evil.example\")",
+  "want_error": "unknown component Iframe"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "too-many-arguments",
+  "source": "root = Card([d])\nd = Divider(1)",
+  "want_error": "Divider: takes at most 0 arguments, found 1"
+}

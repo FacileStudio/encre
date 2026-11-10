@@ -1,0 +1,5 @@
+{
+  "name": "root-not-component",
+  "source": "root = \"a string\"",
+  "want_error": "root: must be a component, found a string"
+}

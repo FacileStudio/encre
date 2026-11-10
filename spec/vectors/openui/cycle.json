@@ -1,0 +1,5 @@
+{
+  "name": "cycle",
+  "source": "root = Card([a])\na = Card([b])\nb = Card([a])",
+  "want_error": "reference cycle: a -> b -> a"
+}

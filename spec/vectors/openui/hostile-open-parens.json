@@ -1,0 +1,5 @@
+{
+  "name": "hostile-open-parens",
+  "source": "(((",
+  "want_error": "line 1: a statement starts with identifier ="
+}

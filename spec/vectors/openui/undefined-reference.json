@@ -1,0 +1,5 @@
+{
+  "name": "undefined-reference",
+  "source": "root = Card([nowhere])",
+  "want_error": "nowhere is used but never defined"
+}

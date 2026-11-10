@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const openuiToDocument: (a: number, b: number) => [number, number, number, number];
 export const parse: (a: number, b: number) => [number, number, number, number];
 export const serialize: (a: number, b: number) => [number, number, number, number];
 export const serialize_commonmark: (a: number, b: number) => [number, number, number, number];

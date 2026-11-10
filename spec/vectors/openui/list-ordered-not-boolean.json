@@ -1,0 +1,5 @@
+{
+  "name": "list-ordered-not-boolean",
+  "source": "root = Card([l])\nl = List([\"a\"], \"yes\")",
+  "want_error": "List: argument 2 (ordered) must be a boolean, found a string"
+}

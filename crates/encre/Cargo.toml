@@ -24,4 +24,5 @@ proptest = "1.12.0"
 
 [features]
 yjs = ["dep:yrs"]
+openui = []
 pdf = ["dep:typst", "dep:typst-pdf", "dep:include_dir"]

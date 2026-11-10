@@ -1,0 +1,30 @@
+{
+  "name": "unicode-and-escapes",
+  "source": "root = Card([t], \"Caf\\u00e9 \\\"quoted\\\"\")\nt = Text('it\\'s a \\\\ backslash')",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Café \"quoted\"",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "content": [
+          {
+            "text": "it's a \\ backslash",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "hostile-open-brackets",
+  "source": "root = Card([[[",
+  "want_error": "line 1: expected a value"
+}

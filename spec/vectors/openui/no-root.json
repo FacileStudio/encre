@@ -1,0 +1,5 @@
+{
+  "name": "no-root",
+  "source": "main = Card([Text(\"hi\")])",
+  "want_error": "the program has no root statement; write root = Card(...)"
+}

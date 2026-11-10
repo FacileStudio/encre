@@ -1,0 +1,5 @@
+{
+  "name": "hostile-empty-value",
+  "source": "root = ",
+  "want_error": "line 1: expected a value"
+}

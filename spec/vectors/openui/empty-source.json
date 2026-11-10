@@ -1,0 +1,5 @@
+{
+  "name": "empty-source",
+  "source": "",
+  "want_error": "the program has no root statement; write root = Card(...)"
+}

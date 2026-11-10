@@ -1,0 +1,5 @@
+{
+  "name": "exponential-expansion",
+  "source": "root = Card([Text(\"x\")], \"t\", a0)\na0 = [a1, a1]\na1 = [a2, a2]\na2 = [a3, a3]\na3 = [a4, a4]\na4 = [a5, a5]\na5 = [a6, a6]\na6 = [a7, a7]\na7 = [a8, a8]\na8 = [a9, a9]\na9 = [a10, a10]\na10 = [a11, a11]\na11 = [a12, a12]\na12 = [a13, a13]\na13 = [a14, a14]\na14 = [a15, a15]\na15 = [a16, a16]\na16 = [a17, a17]\na17 = [a18, a18]\na18 = [a19, a19]\na19 = [a20, a20]\na20 = \"leaf\"",
+  "want_error": "the program expands to more than 100000 values"
+}

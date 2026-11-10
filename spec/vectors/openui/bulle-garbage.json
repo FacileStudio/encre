@@ -1,0 +1,5 @@
+{
+  "name": "bulle-garbage",
+  "source": "this is not openui",
+  "want_error": "line 1: expected = after this"
+}

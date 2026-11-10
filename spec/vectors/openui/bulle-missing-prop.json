@@ -1,0 +1,5 @@
+{
+  "name": "bulle-missing-prop",
+  "source": "root = Card([s])\ns = Stat()",
+  "want_error": "Stat: argument 1 (label) must be a string, found nothing"
+}

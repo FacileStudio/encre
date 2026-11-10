@@ -1,6 +1,6 @@
 [package]
 name = "encre-wasm"
-description = "encre's markdown projection compiled to WebAssembly"
+description = "encre's markdown projection and OpenUI adapter compiled to WebAssembly"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,7 +12,7 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-encre = { path = "../encre" }
+encre = { path = "../encre", features = ["openui"] }
 serde_json = "1.0.154"
 wasm-bindgen = "0.2.130"
 

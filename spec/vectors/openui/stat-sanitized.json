@@ -1,0 +1,16 @@
+{
+  "name": "stat-sanitized",
+  "source": "root = Card([s])\ns = Stat(\"Two\\nlines\", 1200.5, \"\")",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "label": "Two lines",
+          "value": "1200.5"
+        },
+        "type": "stat"
+      }
+    ],
+    "type": "doc"
+  }
+}

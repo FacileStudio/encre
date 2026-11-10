@@ -1,4 +1,4 @@
-//! encre's markdown projection for the browser. Documents cross the boundary as JSON strings.
+//! encre's markdown projection and OpenUI adapter for the browser. Documents cross the boundary as JSON strings.
 #![deny(unused, dead_code)]
 
 use encre::Node;
@@ -33,4 +33,11 @@ pub fn serialize_commonmark(doc: &str) -> Result<String, JsError> {
 #[wasm_bindgen]
 pub fn validate(doc: &str) -> Result<(), JsError> {
     read(doc).map(drop)
+}
+
+/// Converts an OpenUI Lang program to a document without ids; the error says why it cannot.
+#[wasm_bindgen(js_name = openuiToDocument)]
+pub fn openui_to_document(source: &str) -> Result<String, JsError> {
+    let doc = encre::openui::to_document(source).map_err(|e| JsError::new(&e.to_string()))?;
+    serde_json::to_string(&doc).map_err(|e| JsError::new(&e.to_string()))
 }

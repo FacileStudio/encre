@@ -1,0 +1,5 @@
+{
+  "name": "bulle-buttons-only",
+  "source": "root = Card([yes, no])\nyes = Button(\"Yes\", \"yes\")\nno = Button(\"No\", \"no\")",
+  "want_error": "the program holds nothing a document can keep: only buttons and forms"
+}

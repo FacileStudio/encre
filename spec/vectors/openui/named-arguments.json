@@ -1,0 +1,5 @@
+{
+  "name": "named-arguments",
+  "source": "root = Card([t], title: \"x\")\nt = Text(\"a\")",
+  "want_error": "line 1: arguments are positional: write the value without name:"
+}

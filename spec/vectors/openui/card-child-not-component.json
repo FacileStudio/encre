@@ -1,0 +1,5 @@
+{
+  "name": "card-child-not-component",
+  "source": "root = Card([\"a string\"])",
+  "want_error": "Card: argument 1 (children) holds a string, not a component"
+}

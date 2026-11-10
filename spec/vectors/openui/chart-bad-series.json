@@ -1,0 +1,5 @@
+{
+  "name": "chart-bad-series",
+  "source": "root = Card([c])\nc = Chart(\"bar\", [\"a\"], [{name: \"x\", data: [\"one\"]}])",
+  "want_error": "Chart: argument 3 (series) must be an array of {name: string, data: [numbers]} objects, found an object that is not one"
+}

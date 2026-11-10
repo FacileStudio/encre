@@ -1,0 +1,5 @@
+{
+  "name": "two-statements-on-a-line",
+  "source": "root = Card([t]) t = Text(\"a\")",
+  "want_error": "line 1: unexpected text after the value of root: one statement per line"
+}

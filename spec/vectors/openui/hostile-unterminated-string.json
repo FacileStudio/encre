@@ -1,0 +1,5 @@
+{
+  "name": "hostile-unterminated-string",
+  "source": "root = Card([\"unterminated",
+  "want_error": "line 1: unterminated string"
+}

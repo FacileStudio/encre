@@ -1,0 +1,21 @@
+{
+  "name": "bulle-form-only",
+  "source": "root = Card([form], \"Meeting with Paul\")\nform = Form(\"meeting_paul\", \"Find a slot\", [day, length])\nday = Field(\"day\", \"Preferred day\", \"select\", [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"])\nlength = Field(\"length\", \"Length in minutes\", \"number\", null, \"30\")",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Meeting with Paul",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      }
+    ],
+    "type": "doc"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "name": "bulle-whitelist",
+  "source": "root = Card([s, t, txt, d, f], \"Report\", \"Monthly overview\")\ns = Stat(\"Users\", 12, \"+3\")\nt = Table([\"a\"], [[\"cell-value\"]])\ntxt = Text(\"Important notes here\", \"muted\")\nd = Divider()\nf = Form(\"signup\", \"Send\", [e])\ne = Field(\"email\", \"Email\")",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Report",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "content": [
+          {
+            "text": "Monthly overview",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "delta": "+3",
+          "label": "Users",
+          "value": "12"
+        },
+        "type": "stat"
+      },
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "a",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableHeader"
+              }
+            ],
+            "type": "tableRow"
+          },
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "cell-value",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              }
+            ],
+            "type": "tableRow"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "content": [
+          {
+            "text": "Important notes here",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "type": "horizontalRule"
+      }
+    ],
+    "type": "doc"
+  }
+}

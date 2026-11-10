@@ -1,0 +1,5 @@
+{
+  "name": "self-cycle",
+  "source": "root = Card([root])",
+  "want_error": "reference cycle: root -> root"
+}

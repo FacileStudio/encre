@@ -1,0 +1,5 @@
+{
+  "name": "bulle-unparseable",
+  "source": "<script>alert(1)</script>",
+  "want_error": "line 1: unexpected character '<'"
+}

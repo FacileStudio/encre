@@ -52,3 +52,12 @@ export function validateDocument(doc: EncreNode): string | null {
     return error instanceof Error ? error.message : String(error);
   }
 }
+
+/**
+ * Converts an OpenUI Lang program (Bulle's chat UI) to a document without ids, for "save as document".
+ * Throws with the reason when the program does not parse, has a reference cycle or an unknown component.
+ */
+export function openuiToDocument(source: string): EncreNode {
+  loaded();
+  return JSON.parse(encre.openuiToDocument(source)) as EncreNode;
+}

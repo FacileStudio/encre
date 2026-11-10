@@ -1,0 +1,36 @@
+{
+  "name": "chart-line",
+  "source": "root = Card([c])\nc = Chart('line', ['Q1', 'Q2'], [{name: 'Revenue', data: [1.5, -2]}, {\"name\": \"Cost\", data: [1e3, 0]}], 'Quarterly')",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "kind": "line",
+          "labels": [
+            "Q1",
+            "Q2"
+          ],
+          "series": [
+            {
+              "data": [
+                1.5,
+                -2
+              ],
+              "name": "Revenue"
+            },
+            {
+              "data": [
+                1000,
+                0
+              ],
+              "name": "Cost"
+            }
+          ],
+          "title": "Quarterly"
+        },
+        "type": "chart"
+      }
+    ],
+    "type": "doc"
+  }
+}

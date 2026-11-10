@@ -1,0 +1,41 @@
+{
+  "name": "callout-title-and-tones",
+  "source": "root = Card([a, b])\na = Callout(\"Plain note.\")\nb = Callout(\"Use `mise run check`.\", \"danger\", \"Before `you` ship\\nnow\")",
+  "want_doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Plain note.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "Before 'you' ship now",
+          "tone": "danger"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Use `mise run check`.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  }
+}

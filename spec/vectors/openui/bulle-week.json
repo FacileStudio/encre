@@ -1,0 +1,77 @@
+{
+  "name": "bulle-week",
+  "source": "root = Card([done, open, chart, note], \"This week\")\ndone = Stat(\"Tasks done\", 14, \"+4 vs last week\")\nopen = Stat(\"Still open\", 2)\nchart = Chart(\"bar\", [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\"], [{name: \"Done\", data: [3, 2, 4, 1, 4]}])\nnote = Callout(\"Both open tasks are due Monday.\", \"warning\")",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "This week",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "delta": "+4 vs last week",
+          "label": "Tasks done",
+          "value": "14"
+        },
+        "type": "stat"
+      },
+      {
+        "attrs": {
+          "label": "Still open",
+          "value": "2"
+        },
+        "type": "stat"
+      },
+      {
+        "attrs": {
+          "labels": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri"
+          ],
+          "series": [
+            {
+              "data": [
+                3,
+                2,
+                4,
+                1,
+                4
+              ],
+              "name": "Done"
+            }
+          ]
+        },
+        "type": "chart"
+      },
+      {
+        "attrs": {
+          "tone": "warning"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Both open tasks are due Monday.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  }
+}

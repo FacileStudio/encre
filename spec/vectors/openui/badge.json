@@ -1,0 +1,23 @@
+{
+  "name": "badge",
+  "source": "root = Card([b])\nb = Badge(\"Overdue\", \"danger\")",
+  "want_doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
+            "text": "Overdue",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  }
+}

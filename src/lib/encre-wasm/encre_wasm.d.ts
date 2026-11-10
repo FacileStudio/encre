@@ -2,6 +2,11 @@
 /* eslint-disable */
 
 /**
+ * Converts an OpenUI Lang program to a document without ids; the error says why it cannot.
+ */
+export function openuiToDocument(source: string): string;
+
+/**
  * Reads Facile Markdown and returns the document as ProseMirror JSON, without ids.
  */
 export function parse(markdown: string): string;
@@ -25,6 +30,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly openuiToDocument: (a: number, b: number) => [number, number, number, number];
     readonly parse: (a: number, b: number) => [number, number, number, number];
     readonly serialize: (a: number, b: number) => [number, number, number, number];
     readonly serialize_commonmark: (a: number, b: number) => [number, number, number, number];

@@ -1,0 +1,33 @@
+{
+  "name": "multiline-statement",
+  "source": "root = Card(\n  [\n    a,\n    b,\n  ],\n  \"Spread out\",\n)\na = Text(\"first\")\nb = Divider()",
+  "want_doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Spread out",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "content": [
+          {
+            "text": "first",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "type": "horizontalRule"
+      }
+    ],
+    "type": "doc"
+  }
+}
