@@ -89,12 +89,12 @@ cargo test --release -p encre --test hostile -- --ignored --test-threads=1 --noc
 HOSTILE_CASE="fence ladder" cargo test --release -p encre --test hostile -- --ignored --nocapture
 ```
 
-CPU time of `markdown::validate` (parse and validate) and of `serialize`, v0.8.0 against v0.8.1,
+CPU time of `markdown::validate` (parse and validate) and of `serialize`, v0.8.0 against v0.9.0,
 release build, measured on 2026-11-10 on the 12-core build machine at a load average of 50 to 120.
 pulldown-cmark alone costs 0.4 to 0.9 s on the event-dense 8 MiB inputs, which is a floor for
 every number here. `plain_text` stays under 0.35 s at 8 MiB in both versions.
 
-| Input | validate 1 MiB, v0.8.0 | v0.8.1 | validate 8 MiB, v0.8.0 | v0.8.1 | serialize 8 MiB, v0.8.0 | v0.8.1 |
+| Input | validate 1 MiB, v0.8.0 | v0.9.0 | validate 8 MiB, v0.8.0 | v0.9.0 | serialize 8 MiB, v0.8.0 | v0.9.0 |
 |---|---|---|---|---|---|---|
 | open brackets | 419.2ms | 180.6ms | 3.6s | 1.2s | 7.5s | 2.2s |
 | bracket text | 497.4ms | 112.9ms | 3.7s | 1.1s | 5.5s | 1.1s |
