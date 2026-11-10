@@ -1,0 +1,46 @@
+{
+  "name": "code-with-marks",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "bold"
+              },
+              {
+                "type": "code"
+              }
+            ],
+            "text": "bold code",
+            "type": "text"
+          },
+          {
+            "text": " and ",
+            "type": "text"
+          },
+          {
+            "marks": [
+              {
+                "attrs": {
+                  "href": "https://x.y",
+                  "title": ""
+                },
+                "type": "link"
+              },
+              {
+                "type": "code"
+              }
+            ],
+            "text": "linked code",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "**`bold code`** and [`linked code`](https://x.y)"
+}

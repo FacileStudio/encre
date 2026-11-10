@@ -1,0 +1,22 @@
+{
+  "name": "malformed-callout-tone",
+  "canonical": "~~~callout tone=\"loud\"\nx\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "callout tone=\"loud\""
+        },
+        "content": [
+          {
+            "text": "x",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```callout tone=\"loud\"\nx\n```"
+}

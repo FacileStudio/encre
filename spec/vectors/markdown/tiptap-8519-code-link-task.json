@@ -1,0 +1,69 @@
+{
+  "name": "tiptap-8519-code-link-task",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "see ",
+                    "type": "text"
+                  },
+                  {
+                    "marks": [
+                      {
+                        "attrs": {
+                          "href": "https://x.y",
+                          "title": ""
+                        },
+                        "type": "link"
+                      }
+                    ],
+                    "text": "docs",
+                    "type": "text"
+                  },
+                  {
+                    "text": " and ",
+                    "type": "text"
+                  },
+                  {
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "npm i",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "taskItem"
+          }
+        ],
+        "type": "taskList"
+      },
+      {
+        "attrs": {
+          "language": "js"
+        },
+        "content": [
+          {
+            "text": "const a = 1;",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "- [x] see [docs](https://x.y) and `npm i`\n\n```js\nconst a = 1;\n```"
+}

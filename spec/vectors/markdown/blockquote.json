@@ -1,0 +1,37 @@
+{
+  "name": "blockquote",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "quoted",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "nested",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "blockquote"
+          }
+        ],
+        "type": "blockquote"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "> quoted\n>\n> > nested"
+}

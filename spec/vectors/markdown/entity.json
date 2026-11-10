@@ -1,0 +1,19 @@
+{
+  "name": "entity",
+  "canonical": "& ©",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "& ©",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "&amp; &copy;"
+}

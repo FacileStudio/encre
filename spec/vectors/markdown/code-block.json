@@ -1,0 +1,21 @@
+{
+  "name": "code-block",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "rust"
+        },
+        "content": [
+          {
+            "text": "fn main() {}",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```rust\nfn main() {}\n```"
+}

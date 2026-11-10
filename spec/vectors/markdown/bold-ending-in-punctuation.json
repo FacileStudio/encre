@@ -1,0 +1,27 @@
+{
+  "name": "bold-ending-in-punctuation",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
+            "text": "a.",
+            "type": "text"
+          },
+          {
+            "text": "b",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "**a.**&#98;"
+}

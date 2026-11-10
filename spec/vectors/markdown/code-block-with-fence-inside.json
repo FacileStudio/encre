@@ -1,0 +1,21 @@
+{
+  "name": "code-block-with-fence-inside",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "md"
+        },
+        "content": [
+          {
+            "text": "```\ninner\n```",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "````md\n```\ninner\n```\n````"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "ordered-list",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "start": 3
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "three",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          },
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "four",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "listItem"
+          }
+        ],
+        "type": "orderedList"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "3. three\n4. four"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "bare-url-stays-text",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "see https://x.y and www.z.com",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "see https://x.y and www.z.com"
+}

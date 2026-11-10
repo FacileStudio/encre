@@ -1,0 +1,22 @@
+{
+  "name": "setext-heading",
+  "canonical": "# Title",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Title",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "Title\n====="
+}

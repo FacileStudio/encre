@@ -1,0 +1,45 @@
+{
+  "name": "line-start-escapes",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "# not a heading",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "content": [
+          {
+            "text": "1. not a list",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "content": [
+          {
+            "text": "- not a bullet",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "content": [
+          {
+            "text": "> not a quote",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "\\# not a heading\n\n1\\. not a list\n\n\\- not a bullet\n\n\\> not a quote"
+}

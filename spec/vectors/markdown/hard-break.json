@@ -1,0 +1,25 @@
+{
+  "name": "hard-break",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "one",
+            "type": "text"
+          },
+          {
+            "type": "hardBreak"
+          },
+          {
+            "text": "two",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "one\\\ntwo"
+}

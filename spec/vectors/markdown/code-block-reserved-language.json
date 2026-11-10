@@ -1,0 +1,21 @@
+{
+  "name": "code-block-reserved-language",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "stat"
+        },
+        "content": [
+          {
+            "text": "not data",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "~~~stat\nnot data\n~~~"
+}

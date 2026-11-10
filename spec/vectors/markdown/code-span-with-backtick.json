@@ -1,0 +1,24 @@
+{
+  "name": "code-span-with-backtick",
+  "canonical": "``a`b``",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "code"
+              }
+            ],
+            "text": "a`b",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "`` a`b ``"
+}

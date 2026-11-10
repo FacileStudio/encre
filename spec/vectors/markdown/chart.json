@@ -1,0 +1,29 @@
+{
+  "name": "chart",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "kind": "bar",
+          "labels": [
+            "Mon",
+            "Tue"
+          ],
+          "series": [
+            {
+              "data": [
+                3,
+                5
+              ],
+              "name": "web"
+            }
+          ],
+          "title": "Signups"
+        },
+        "type": "chart"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```chart\n{\"kind\": \"bar\", \"title\": \"Signups\", \"labels\": [\"Mon\", \"Tue\"], \"series\": [{\"name\": \"web\", \"data\": [3, 5]}]}\n```"
+}

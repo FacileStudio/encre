@@ -1,0 +1,27 @@
+{
+  "name": "callout-defaults",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "title": "",
+          "tone": "neutral"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Neutral.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```callout\nNeutral.\n```"
+}

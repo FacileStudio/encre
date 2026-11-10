@@ -1,0 +1,22 @@
+{
+  "name": "malformed-stat-json",
+  "canonical": "~~~stat\n{not json}\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "stat"
+        },
+        "content": [
+          {
+            "text": "{not json}",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```stat\n{not json}\n```"
+}

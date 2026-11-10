@@ -1,0 +1,17 @@
+{
+  "name": "stat",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "delta": "+4%",
+          "label": "Revenue",
+          "value": "12 400 €"
+        },
+        "type": "stat"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```stat\n{\"label\": \"Revenue\", \"value\": \"12 400 €\", \"delta\": \"+4%\"}\n```"
+}

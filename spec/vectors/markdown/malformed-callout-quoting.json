@@ -1,0 +1,22 @@
+{
+  "name": "malformed-callout-quoting",
+  "canonical": "~~~callout tone=warning\nx\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "callout tone=warning"
+        },
+        "content": [
+          {
+            "text": "x",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```callout tone=warning\nx\n```"
+}

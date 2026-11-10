@@ -1,0 +1,43 @@
+{
+  "name": "table-hard-break",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "none"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "a",
+                        "type": "text"
+                      },
+                      {
+                        "type": "hardBreak"
+                      },
+                      {
+                        "text": "b",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableHeader"
+              }
+            ],
+            "type": "tableRow"
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "| a<br>b |\n| --- |"
+}

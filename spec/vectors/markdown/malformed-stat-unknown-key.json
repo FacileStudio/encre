@@ -1,0 +1,22 @@
+{
+  "name": "malformed-stat-unknown-key",
+  "canonical": "~~~stat\n{\"label\": \"a\", \"colour\": \"red\"}\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "stat"
+        },
+        "content": [
+          {
+            "text": "{\"label\": \"a\", \"colour\": \"red\"}",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```stat\n{\"label\": \"a\", \"colour\": \"red\"}\n```"
+}

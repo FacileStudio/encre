@@ -1,0 +1,19 @@
+{
+  "name": "raw-html-is-text",
+  "canonical": "\\<div>raw\\</div>",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "<div>raw</div>",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "<div>raw</div>"
+}

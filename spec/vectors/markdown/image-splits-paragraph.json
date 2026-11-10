@@ -1,0 +1,36 @@
+{
+  "name": "image-splits-paragraph",
+  "canonical": "before\n\n![i](i.png)\n\nafter",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "before",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "alt": "i",
+          "src": "i.png",
+          "title": ""
+        },
+        "type": "image"
+      },
+      {
+        "content": [
+          {
+            "text": "after",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "before ![i](i.png) after"
+}

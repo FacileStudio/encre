@@ -1,0 +1,17 @@
+{
+  "name": "image",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "alt": "Logo",
+          "src": "https://facile.studio/logo.png",
+          "title": "Facile"
+        },
+        "type": "image"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "![Logo](https://facile.studio/logo.png \"Facile\")"
+}

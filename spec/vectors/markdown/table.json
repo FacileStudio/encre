@@ -1,0 +1,136 @@
+{
+  "name": "table",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "Name",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableHeader"
+              },
+              {
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "Count",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableHeader"
+              }
+            ],
+            "type": "tableRow"
+          },
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "a",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              },
+              {
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "1",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              }
+            ],
+            "type": "tableRow"
+          },
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "b | c",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              },
+              {
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "marks": [
+                          {
+                            "type": "code"
+                          }
+                        ],
+                        "text": "x|y",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              }
+            ],
+            "type": "tableRow"
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "| Name | Count |\n| :-- | --: |\n| a | 1 |\n| b \\| c | `x\\|y` |"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "autolink",
+  "canonical": "[https://facile.studio](https://facile.studio)",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "attrs": {
+                  "href": "https://facile.studio",
+                  "title": ""
+                },
+                "type": "link"
+              }
+            ],
+            "text": "https://facile.studio",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "<https://facile.studio>"
+}

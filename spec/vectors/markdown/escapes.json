@@ -1,0 +1,19 @@
+{
+  "name": "escapes",
+  "canonical": "\\*not emphasis\\* # \\[x\\](y) a\\\\b",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "*not emphasis* # [x](y) a\\b",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "\\*not emphasis\\* \\# \\[x\\](y) a\\\\b"
+}

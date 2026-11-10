@@ -1,0 +1,21 @@
+{
+  "name": "trailing-hard-break",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "one",
+            "type": "text"
+          },
+          {
+            "type": "hardBreak"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "one\\\n\\"
+}

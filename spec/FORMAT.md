@@ -48,6 +48,7 @@ Marks, in rank order: `link` (`href` required, `title`), `bold`, `italic`, `stri
 | `boolean` | `true` or `false` |
 | `string` | one of `values` |
 | `line` | a string without a line break or control character other than tab |
+| `info` | a `line` without tab, leading or trailing space, or two spaces in a row |
 | `label` | a `line` without a backtick |
 | `lines` | an array of `line` |
 | `series` | an array of `{"name": line, "data": [number, ...]}` |
@@ -63,6 +64,8 @@ A valid document also follows these rules. They keep the markdown projection los
 3. A text node's marks are in rank order, each type at most once.
 4. `hardBreak` carries no marks. The editor strips them.
 5. Every row of a table has the same number of cells. The first row holds only `tableHeader` cells and the other rows only `tableCell` cells. Every cell of a column has the same `align`.
+6. In a table cell, text carrying `code` never holds a backslash directly before a pipe (`\|`): a GFM cell cannot write it.
+7. Text carrying both `link` and `code` never holds `]:`: at the start of a paragraph it would read as a link reference definition.
 
 ### 1.4 Block ids
 
@@ -74,7 +77,7 @@ A change bumps `version` in `schema.json` and adds a function to `crates/encre/s
 
 ## 2. Facile Markdown v1
 
-Facile Markdown is CommonMark 0.31 with the GFM extensions for tables, task list items, strikethrough and literal autolinks, plus the rules below. A parser MUST accept any input and MUST NOT fail on malformed custom blocks: they become code blocks.
+Facile Markdown is CommonMark 0.31 with the GFM extensions for tables, task list items and strikethrough (`~~a~~`, and `~a~` on input), plus the rules below. Autolinks are the CommonMark ones (`<https://…>`); bare URLs stay text. The reference reader is pulldown-cmark. A parser MUST accept any input and MUST NOT fail on malformed custom blocks: they become code blocks.
 
 ### 2.1 Custom blocks
 
@@ -106,13 +109,13 @@ sh scripts/check.sh
 
 ### 2.2 Dialect rules
 
-1. **Raw HTML is text.** HTML blocks are not recognized: such lines are paragraphs. Inline HTML is kept as literal text, with one exception: `<br>`, `<br/>` and `<br />` are a hard break.
+1. **Raw HTML is text.** An HTML block becomes a paragraph holding its lines as text, one hard break between lines. Inline HTML is kept as literal text, with one exception: `<br>`, `<br/>` and `<br />` are a hard break.
 2. **Empty paragraph.** A lone backslash alone on the last line of a paragraph is removed. So a paragraph holding only `\` is an empty paragraph, and a paragraph ending in a hard break is written with a final `\` line. A literal backslash is always written `\\`.
 3. **Hard breaks** are written as a backslash at the end of the line in paragraphs, and as `<br>` in headings and table cells, where a line ending cannot appear.
 4. **Lists.** A GFM list whose items are all task items is a `taskList`. A list mixing task and plain items is split into runs. Adjacent lists are written with alternating markers (`-` then `*`, `1.` then `1)`) so they stay separate.
 5. **Images.** A paragraph that holds only images and whitespace becomes image blocks. An image inside other inline content splits the paragraph around it.
 6. **Mapped constructs.** Setext headings are headings. Headings of level 4 to 6 become level 3. Indented code is a code block. Reference links and images are resolved. A soft line break becomes a space. A task checkbox in an ordered list is dropped. An empty list item, blockquote or callout gets one empty paragraph. A list item that starts with another block gets an empty first paragraph.
-7. Footnotes, math, front matter and HTML blocks are not recognized.
+7. Footnotes, math, front matter, GFM alerts and literal autolinks are not recognized.
 
 ### 2.3 Canonical serialization
 

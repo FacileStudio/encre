@@ -1,0 +1,12 @@
+{
+  "name": "empty-paragraph",
+  "doc": {
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "\\"
+}

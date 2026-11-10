@@ -1,0 +1,45 @@
+{
+  "name": "headings",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "One",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "Two",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "text": "Three",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "# One\n\n## Two\n\n### Three"
+}

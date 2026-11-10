@@ -1,0 +1,22 @@
+{
+  "name": "heading-level-4-becomes-3",
+  "canonical": "### Four",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "text": "Four",
+            "type": "text"
+          }
+        ],
+        "type": "heading"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "#### Four"
+}

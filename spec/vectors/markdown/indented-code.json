@@ -1,0 +1,22 @@
+{
+  "name": "indented-code",
+  "canonical": "```\nindented\n```",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": ""
+        },
+        "content": [
+          {
+            "text": "indented",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "    indented"
+}

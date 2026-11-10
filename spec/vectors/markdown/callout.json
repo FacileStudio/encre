@@ -1,0 +1,52 @@
+{
+  "name": "callout",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "title": "Before you deploy",
+          "tone": "warning"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Run the gate ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ],
+                "text": "first",
+                "type": "text"
+              },
+              {
+                "text": ".",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "language": "sh"
+            },
+            "content": [
+              {
+                "text": "sh scripts/check.sh",
+                "type": "text"
+              }
+            ],
+            "type": "codeBlock"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "````callout tone=\"warning\" title=\"Before you deploy\"\nRun the gate **first**.\n\n```sh\nsh scripts/check.sh\n```\n````"
+}

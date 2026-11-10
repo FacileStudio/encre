@@ -1,0 +1,24 @@
+{
+  "name": "single-tilde-strike",
+  "canonical": "~~a~~",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "a",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "~a~"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "horizontal-rule",
+  "doc": {
+    "content": [
+      {
+        "type": "horizontalRule"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "---"
+}
