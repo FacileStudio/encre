@@ -1,0 +1,251 @@
+{
+  "name": "lists",
+  "markdown": "- one\n- two\n  - nested\n  - nested two\n\n3. three\n4. four\n   ```sh\n   echo item\n   ```\n\n- [ ] open\n- [x] done\n  - [x] nested done\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "id": "y000000002"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000003"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "id": "y000000004"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000005"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "two"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "attrs": {
+                  "id": "y000000006"
+                },
+                "content": [
+                  {
+                    "type": "listItem",
+                    "attrs": {
+                      "id": "y000000007"
+                    },
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "attrs": {
+                          "id": "y000000008"
+                        },
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "nested"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "attrs": {
+                      "id": "y000000009"
+                    },
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "attrs": {
+                          "id": "y000000010"
+                        },
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "nested two"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "orderedList",
+        "attrs": {
+          "id": "y000000011",
+          "start": 3
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "id": "y000000012"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000013"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "three"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "id": "y000000014"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000015"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "four"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "attrs": {
+                  "id": "y000000016",
+                  "language": "sh"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "echo item"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "taskList",
+        "attrs": {
+          "id": "y000000017"
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "id": "y000000018"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000019"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "open"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "id": "y000000020",
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000021"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "done"
+                  }
+                ]
+              },
+              {
+                "type": "taskList",
+                "attrs": {
+                  "id": "y000000022"
+                },
+                "content": [
+                  {
+                    "type": "taskItem",
+                    "attrs": {
+                      "id": "y000000023",
+                      "checked": true
+                    },
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "attrs": {
+                          "id": "y000000024"
+                        },
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "nested done"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000025"
+        }
+      }
+    ]
+  }
+}

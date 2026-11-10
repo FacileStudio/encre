@@ -1,0 +1,279 @@
+{
+  "name": "table",
+  "markdown": "| none | left | center | right |\n| --- | :-- | :-: | --: |\n| a | **b** | `c` | d |\n| e | f | g | h |\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000002"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000003"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "left"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "align": "center"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000004"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "center"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000005"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "right"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000006"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000007"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "b",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "center"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000008"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "c",
+                        "marks": [
+                          {
+                            "type": "code"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000009"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "d"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000010"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "e"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "left"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000011"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "f"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "center"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000012"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "g"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "align": "right"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000013"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "h"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000014"
+        }
+      }
+    ]
+  }
+}

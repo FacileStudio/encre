@@ -1,0 +1,61 @@
+{
+  "name": "edited",
+  "markdown": "**[*world*](https://facile.studio) and more**\n\n**Second line**",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000000"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "world",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://facile.studio"
+                }
+              },
+              {
+                "type": "bold"
+              },
+              {
+                "type": "italic"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " and more",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Second line",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [svelte()],
   resolve: process.env.VITEST ? { conditions: ['browser'] } : undefined,
   test: {
-    include: ['test/**/*.test.ts'],
+    include: process.env.ENCRE_GEN ? ['scripts/gen-*.ts'] : ['test/**/*.test.ts'],
     environment: 'jsdom'
   }
 });

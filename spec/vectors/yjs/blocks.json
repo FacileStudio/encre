@@ -1,0 +1,94 @@
+{
+  "name": "blocks",
+  "markdown": "> quoted\n>\n> second\n\n```rust\nfn main() {}\n```\n\n```\nplain\n```\n\n---\n\n![alt text](https://facile.studio/a.png \"A title\")\n\n![](https://facile.studio/b.png)\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "blockquote",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "attrs": {
+              "id": "y000000002"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "quoted"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "attrs": {
+              "id": "y000000003"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "id": "y000000004",
+          "language": "rust"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "fn main() {}"
+          }
+        ]
+      },
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "id": "y000000005"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "plain"
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule",
+        "attrs": {
+          "id": "y000000006"
+        }
+      },
+      {
+        "type": "image",
+        "attrs": {
+          "id": "y000000007",
+          "src": "https://facile.studio/a.png",
+          "alt": "alt text",
+          "title": "A title"
+        }
+      },
+      {
+        "type": "image",
+        "attrs": {
+          "id": "y000000008",
+          "src": "https://facile.studio/b.png"
+        }
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000009"
+        }
+      }
+    ]
+  }
+}

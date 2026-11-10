@@ -1,0 +1,198 @@
+{
+  "name": "inline",
+  "markdown": "# Title\n\n## Second\n\n### Third *with* `code`\n\nPlain **bold** *italic* ~~strike~~ `code` [link](https://facile.studio \"Facile\") **`bold code`** [**bold link**](https://facile.studio/a) é 漢字 😀\\\nafter a break\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "heading",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Title"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "id": "y000000002",
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Second"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "id": "y000000003",
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Third "
+          },
+          {
+            "type": "text",
+            "text": "with",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "code",
+            "marks": [
+              {
+                "type": "code"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000004"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Plain "
+          },
+          {
+            "type": "text",
+            "text": "bold",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "italic",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "strike",
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "code",
+            "marks": [
+              {
+                "type": "code"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "link",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://facile.studio",
+                  "title": "Facile"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "bold code",
+            "marks": [
+              {
+                "type": "bold"
+              },
+              {
+                "type": "code"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "text": "bold link",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://facile.studio/a"
+                }
+              },
+              {
+                "type": "bold"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " é 漢字 😀"
+          },
+          {
+            "type": "hardBreak"
+          },
+          {
+            "type": "text",
+            "text": "after a break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000005"
+        }
+      }
+    ]
+  }
+}
