@@ -1,7 +1,7 @@
 //! Typst output: the document as Typst source that imports muse-typst and wraps the body in its layout.
 //!
 //! Every string of the document reaches Typst as a string literal escaped by [`escape_string`], so no
-//! document can inject Typst code. Node mapping is in `spec/FORMAT.md` section 5.
+//! document can inject Typst code. Node mapping is in `docs/architecture.md`.
 
 mod blocks;
 mod data;

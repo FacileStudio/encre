@@ -1,6 +1,6 @@
 # encre format, version 1
 
-This document is normative. `schema.json` is the machine-readable half of section 1. When this file and an implementation disagree, the implementation is wrong. The words MUST, MUST NOT and MAY are used in their RFC 2119 sense.
+This document is normative. `schema.json` is the machine-readable half of section 1. When this file and an implementation disagree, the implementation is wrong. The words MUST, MUST NOT and MAY are used in their RFC 2119 sense. It covers the format only: renderings such as Typst and PDF, the OpenUI adapter and the test vector files are described in `docs/`.
 
 ## 1. Document model
 
@@ -82,7 +82,6 @@ The `default` fragment holds what y-prosemirror (`@tiptap/y-tiptap` 3.3.0, the b
 - Every node except `text` is an `XmlElement` named after its type. Its attributes are the node's attributes with defaults filled in; null values are left out.
 - A run of adjacent text nodes is one `XmlText`. Each mark is a formatting attribute whose value is the mark's attribute map (`{}` when it has none).
 - `code` is the one mark whose `excludes` is empty, so y-prosemirror names its attribute `code--LpaW+ak5`: the type, `--`, and the folded SHA-256 of `{"type":"code"}`. A reader strips any `--` plus eight base64 characters from a mark name. A writer MUST use that exact name, or Tiptap sees two `code` marks.
-- `spec/vectors/yjs/<name>.bin` is a v1 update written by a real Tiptap editor (`scripts/gen-yjs-vectors.ts`), `<name>.json` the compact document and its Facile Markdown, and `<name>.rust.bin` the update the Rust writer gives for the same document.
 
 ### 1.7 Changing the schema
 
@@ -179,34 +178,3 @@ Every failure is a typed error whose message lists what matched and how to narro
 5. An operation that would leave no block is refused.
 6. New blocks get fresh ids. A write answers the ids of the top-level blocks it inserted.
 7. On an open document every operation runs in the caller's Yjs transaction and inserts, removes or replaces single top-level elements, so other clients' relative positions stay valid. Only `replace_all` rewrites every element.
-
-### 4.2 Vectors
-
-`spec/vectors/ops/<name>.json` holds `markdown` (or a `doc` with ids), an optional `version` (default 1), the `op` in its JSON form (`{"op": "insert_after", "block_id": …, "markdown": …}`, unknown fields refused), and one of `want_markdown`, `want_blocks` or `want_error` (the exact message). `want_kept` lists ids that MUST survive. When the vector gives `markdown`, the runner gives top-level block *i* the id `b` followed by *i* in nine digits (`b000000000`) and leaves nested blocks without ids.
-
-## 5. Typst and PDF
-
-`typst::render` writes a complete Typst file that imports muse-typst (`/muse-typst/lib.typ`) and wraps the body in `muse-doc`. Every string of the document reaches Typst as a string literal escaped by `escape_string` (a port of Ardoise's `escapeTypstString`), so text is never read as Typst markup or code. `pdf::compile` (feature `pdf`) compiles it with the `typst` crate at the compiler version muse-typst pins (0.14.2), in memory: muse-typst and the fonts listed in `crates/encre/typst/FONTS.md` are embedded, and the only other readable files are the caller's `Assets`.
-
-| Node | Typst |
-|---|---|
-| `heading` | `heading(level: n)` |
-| `paragraph` | the inline content; an empty paragraph writes nothing |
-| `bulletList`, `orderedList` | `list`, `enum(start: n)` |
-| `taskList` | `list(marker: [])` with ☐ or ☑ before each item |
-| `blockquote` | `quote(block: true)` |
-| `codeBlock` | `raw(block: true, lang: …)` |
-| `horizontalRule` | muse-typst `divider()` |
-| `image` | `figure(image(path, alt: …), caption: title)` when the resolver answers a path; otherwise the alt text in emphasis |
-| `table` | `table` with `table.header` and the header row's alignments |
-| `callout` | muse-typst `alert(tone:, title:)` |
-| `stat` | muse-typst `metric(value, label, sub: delta)` |
-| `chart` | **a table fallback**: muse-typst has no chart component. A `figure` holding a table with one column per label and one row per series, captioned with the title. `kind` is not drawn |
-| marks | `strong`, `emph`, `strike`, `raw`, `link(href)`; a link title is not shown |
-| `hardBreak` | `linebreak()` |
-
-The body sets `font: ("Satoshi", "DejaVu Sans")` and raw text `("Menlo", "DejaVu Sans Mono")`, so a compiler with muse-typst's own fonts installed uses them and the embedded compiler falls back to DejaVu.
-
-`muse-doc` gets `footer: none` unless the caller gives a footer text, so a page footer holds only the page number by default.
-
-`spec/vectors/typst/<name>.json` holds `options` (`title`, `subtitle`, `doc_type`, `cover`, `footer`, and `images` mapping an image `src` to the path the resolver answers), the `doc`, and the exact `want_typst`.
