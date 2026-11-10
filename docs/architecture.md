@@ -6,7 +6,7 @@ which code owns each conversion.
 ## The model
 
 ```
-                        encre schema v1 (spec/schema.json)
+                        encre schema v2 (spec/schema.json)
                                      │
    ┌───────────────┬─────────────────┼─────────────────┬──────────────┬──────────────┐
  Tiptap          Yjs XmlFragment   Facile Markdown    Typst / PDF    Agent ops      OpenUI
@@ -114,9 +114,12 @@ filesystem. The same source and assets always give the same bytes.
 | `image` | `figure(image(path, alt: ...), caption: title)` when the resolver answers a path; otherwise the alt text in emphasis |
 | `table` | `table` with `table.header` and the header row's alignments |
 | `callout` | muse-typst `alert(tone:, title:)` |
-| `stat` | muse-typst `metric(value, label, sub: delta)` |
+| `stat` | muse-typst `metric(value, label, sub: ...)`, `sub` being `delta` and `sub` joined by ` · ` |
 | `chart` | a `figure` holding a table, one column per label and one row per series, captioned with the title; muse-typst has no chart component, so `kind` is not drawn |
-| marks | `strong`, `emph`, `strike`, `raw`, `link(href)`; a link title is not shown |
+| `diagram` | a block holding the language as a small label and the source as `raw(block: true)`; encre never draws it |
+| `columns` | `grid(columns: n)`; a toned column is an `alert(tone:, title:)`, a neutral one its title in `strong` then its blocks |
+| `badge` | muse-typst `badge(text, tone:)`; with `dot`, `status-dot(tone:)` then the text |
+| marks | `strong`, `emph`, `strike`, `highlight`, `raw`, `link(href)`; a link title is not shown |
 | `hardBreak` | `linebreak()` |
 
 The body sets `font: ("Satoshi", "DejaVu Sans")` and raw text `("Menlo", "DejaVu Sans Mono")`.

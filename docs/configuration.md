@@ -43,8 +43,11 @@ image resolver answers paths inside it.
 | `ydoc` | none | The shared `Y.Doc`; when set it is the source of truth |
 | `provider` | none | A y-websocket `WebsocketProvider`, or any object with `awareness`, `synced` and the `sync` event |
 | `user` | none | `{ name, color?, avatar? }`, how other people see this user |
+| `locale` | `fr` | `fr`, `en`, `es` or `de`: the language of every interface string |
+| `labels` | none | Overrides of some strings of that locale (`LabelOverrides`) |
+| `renderDiagram` | none | `(language, source) => Promise<string \| SVGElement>`; draws diagrams in the editor |
 
-`encreExtensions({ placeholder, collaboration })` builds the same Tiptap extension set for an app
+`encreExtensions({ placeholder, collaboration, labels, renderDiagram })` builds the same Tiptap extension set for an app
 that drives Tiptap itself. `collaboration` is `{ document, provider?, user? }`; with it the
 extension set drops undo and redo, which Yjs owns.
 
@@ -60,6 +63,7 @@ tests do with `readFileSync`.
 | Variable | Read by | What it does |
 |---|---|---|
 | `ENCRE_REGEN` | Rust tests `typst`, `openui`, `yjs` | Rewrites the golden outputs instead of comparing |
+| `ENCRE_BIN` | the Go module in `go/` and its tests | The `encre` binary to run, default `encre` on `PATH` (tests: `target/*/encre`) |
 | `ENCRE_GEN` | `vite.config.ts` | Runs `scripts/gen-*.ts` instead of the test suites |
 | `PROPTEST_CASES` | `crates/encre/tests/laws.rs` | Cases per round-trip law, default `10000` |
 | `MUSE_TYPST` | `scripts/sync-muse-typst.sh` | The muse-typst checkout to copy, default `~/Code/Facile/muse-typst` |

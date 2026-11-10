@@ -8,21 +8,25 @@ one implementation, in Rust, and the browser runs the same code compiled to WebA
 
 ## What it does
 
-- Defines schema v1 (`spec/schema.json`) and validates documents against it in Rust and TypeScript
+- Defines schema v2 (`spec/schema.json`) and validates documents against it in Rust and TypeScript;
+  every schema 1 document is a valid schema 2 document
 - Projects documents to Facile Markdown and back without loss, plus a lossy CommonMark export
 - Reads and writes the Yjs layout Tiptap's Collaboration extension uses, so Rust edits live documents
 - Gives agents guarded operations (`append`, `insert_after`, `patch`, ...) that refuse ambiguous edits
 - Renders documents as Typst through muse-typst and compiles them to PDF in memory
 - Converts OpenUI programs from Bulle's chat into documents, one way
-- Ships an `encre` command-line tool so Go services can run every conversion as a subprocess
-- Ships a Svelte 5 Tiptap editor with collaboration, a read-only renderer and its menus
+- Ships an `encre` command-line tool, and a Go module that wraps it, so Go services run every
+  conversion as a subprocess
+- Ships a Svelte 5 Tiptap editor with collaboration, a read-only renderer and its menus, in
+  French, English, Spanish or German
 
 ## Stack
 
 | Layer | Tech |
 |---|---|
 | Runtime | Rust 2024 (1.98), pulldown-cmark 0.13, yrs 0.28, typst 0.14.2, wasm-bindgen 0.2 |
-| Client | Svelte 5, Tiptap 3.33, `@tiptap/y-tiptap` 3.3.0, muse (`@facile/muse` v0.17.1) |
+| Client | Svelte 5, Tiptap 3.33, `@tiptap/y-tiptap` 3.3.0, muse (`@facile/muse` v0.16.1 or later) |
+| Go | Go 1.24+, standard library only (`go/`) |
 
 ## Install
 
@@ -31,13 +35,13 @@ Rust, from a git tag. Features: `yjs` (Yjs layout and live operations), `pdf` (T
 
 ```toml
 [dependencies]
-encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.7.0", features = ["yjs", "pdf"] }
+encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.8.0", features = ["yjs", "pdf"] }
 ```
 
 Svelte, from the same tag:
 
 ```sh
-bun add "github:FacileStudio/encre#v0.7.0"
+bun add "github:FacileStudio/encre#v0.8.0"
 ```
 
 ### CLI
@@ -53,7 +57,24 @@ encre pdf --title Plan --image-dir ./images --input note.json --output plan.pdf
 ```
 
 Exit codes are 0 ok, 1 invalid input, 2 usage, 3 internal. [docs/cli.md](docs/cli.md) has every
-command and a Go caller.
+command and what markdown validation refuses.
+
+### Go
+
+```sh
+go get github.com/FacileStudio/encre/go@v0.8.0
+```
+
+```go
+import "github.com/FacileStudio/encre/go"
+
+verdict, err := encre.Validate(ctx, body, encre.Markdown)
+markdown, err := encre.Serialize(ctx, doc)
+pdf, err := encre.PDF(ctx, doc, encre.JSON, encre.PDFOptions{Title: "Plan"})
+```
+
+The module runs `ENCRE_BIN`, else `encre` on `PATH`. A refusal is a `*encre.Error` with the exit
+code; `Invalid()` tells a bad input from a failure. The full API is in [docs/cli.md](docs/cli.md).
 
 ### Rust quick start
 
@@ -64,7 +85,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut doc = encre::markdown::parse("# Plan\n\nShip the **gate** first.")?;
     encre::assign_ids(&mut doc);
     encre::validate(&doc)?;
-    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.7.0".to_owned() })?;
+    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.8.0".to_owned() })?;
     println!("{}", encre::markdown::serialize(&doc));
     Ok(())
 }
@@ -84,6 +105,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 <button onclick={() => console.log(serializeMarkdown(doc))}>Copy as markdown</button>
 ```
 
+`Editor` and `Document` take `locale` (`fr` by default, `en`, `es`, `de`), `labels` overrides and
+an optional `renderDiagram(language, source)`; `Document` also takes `highlight(code, language)`,
+whose HTML the app must sanitize. muse is a peer dependency: v0.16.1 or later. The peer is the
+untagged git spec, because bun looks a semver range up on npm, where muse is not published.
+
 The editor loads encre-wasm on mount. Other code calls `await loadEncre()` before the first
 `parseMarkdown`, `serializeMarkdown` or `openuiToDocument`. Like muse, the components are styled
 with Tailwind classes, so the app's CSS needs `@source '../node_modules/@facile/encre/src/lib';`.
@@ -95,6 +121,7 @@ spec/             schema.json, FORMAT.md (normative), vectors/ shared by both te
 crates/encre/     the Rust crate: model, markdown, yjs, ops, typst, pdf, openui
 crates/encre-wasm/  wasm-bindgen entry points for the browser
 crates/encre-cli/   the encre binary
+go/               the Go module that wraps the binary
 src/lib/          the Svelte package: editor, extensions, node views, wasm loader
 test/             vitest suites
 scripts/          gates, the wasm build, vector generation, muse-typst sync

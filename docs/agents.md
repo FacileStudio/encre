@@ -27,19 +27,40 @@ Markdown inside, any blocks.
 ````
 
 ```stat
-{"label": "Revenue", "value": "12 400 €", "delta": "+4%"}
+{"label": "Revenue", "value": "12 400 €", "delta": "+4%", "sub": "This month"}
 ```
 
 ```chart
 {"kind": "bar", "title": "Signups", "labels": ["Mon", "Tue"], "series": [{"name": "web", "data": [3, 5]}]}
 ```
 
+```mermaid
+flowchart LR
+  A --> B
+```
+
+````columns
+```column title="Pros" tone="success"
+Fast to ship
+```
+
+```column title="Cons" tone="danger"
+More to read
+```
+````
+
 - callout: tone is neutral, info, success, warning or danger; title is optional. Its fence is
-  one backtick longer than the longest backtick run inside it.
+  one backtick longer than the longest backtick run inside it. A GFM alert (> [!NOTE], [!TIP],
+  [!IMPORTANT], [!WARNING], [!CAUTION], [!PROS], [!CONS]) is read as a callout.
+- mermaid, d2 and dot fences are diagrams the app draws. columns holds 2 to 4 column fences;
+  tone is neutral, success, danger, warning or info. A compare fence with ### sections is read
+  as columns.
 - stat and chart hold one JSON object. chart kind is bar or line; every series has one number
   per label.
 - Attribute values use double quotes; \" and \\ are the only escapes. A malformed custom block
   stays a code block.
+- Inline: ==highlight==, [badge:success Shipped] (tones neutral, accent, info, success, warning,
+  danger) and [status:done] (a dot badge; also active, ready, error, failed, pending, running).
 
 Read with read (whole document) or read_blocks (top-level blocks with their ids). Write with
 one operation per call:

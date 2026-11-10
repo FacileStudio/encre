@@ -9,12 +9,12 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 | Item | What it does |
 |---|---|
 | `Node`, `Mark` | A ProseMirror JSON node and mark; `Node::new`, `Node::text`, `attr_str`, `id`, `without_ids` |
-| `SCHEMA_VERSION` | `1` |
-| `validate(&Node) -> Result<(), ValidationError>` | Schema v1 and the rules of `spec/FORMAT.md` section 1; the error names a path |
+| `SCHEMA_VERSION` | `2` |
+| `validate(&Node) -> Result<(), ValidationError>` | Schema v2 and the rules of `spec/FORMAT.md` section 1; the error names a path |
 | `assign_ids(&mut Node)` | Gives every block without a valid, unique id a fresh one |
 | `is_block_id(&str) -> bool` | Ten characters of lowercase Crockford base32 |
 | `compact(&Node) -> Node` | The canonical stored form: no nulls, no defaults, marks in rank order |
-| `migrate(Node, from: u32) -> Result<Node, MigrationError>` | Upgrades a stored document to `SCHEMA_VERSION` |
+| `migrate(Node, from: u32) -> Result<Node, MigrationError>` | Upgrades a stored document to `SCHEMA_VERSION`; from 1 it is the identity |
 | `schema::schema() -> &Schema` | The parsed `spec/schema.json`, with `node`, `mark`, `mark_rank` |
 | `schema::NODE_KINDS`, `schema::MARK_KINDS` | Every node and mark name |
 
@@ -23,6 +23,7 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 | Item | What it does |
 |---|---|
 | `parse(&str) -> Result<Node, ParseError>` | Facile Markdown to a document without ids; accepts any input |
+| `validate(&str) -> Result<Node, SourceError>` | Parses, then validates; `SourceError` has `path`, `message` and the 1-based `line` and `column` of the block |
 | `serialize(&Node) -> String` | Canonical Facile Markdown |
 | `serialize_commonmark(&Node) -> String` | Portable CommonMark with GFM, lossy |
 | `plain_text(&Node) -> String` | The text alone, for search and previews |
@@ -83,11 +84,14 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | Export | What it does |
 |---|---|
 | `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark` |
-| `Document` | Read-only renderer: `doc`, `class` |
+| `Document` | Read-only renderer: `doc`, `class`, `locale`, `labels`, `renderDiagram`, `highlight` |
 | `Toolbar`, `BubbleMenu`, `SlashMenu`, `Presence` | The editor's parts, for apps that assemble their own |
-| `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `findBlocks` | The slash menu's state and the block commands |
+| `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `blockCommands(labels)`, `findBlocks` | The slash menu's state and the block commands, French or in the given labels |
 | `encreExtensions`, `EncreExtensionOptions` | Every Tiptap extension of the schema, optional collaboration |
-| `Callout`, `Chart`, `Stat`, `Table`, `TableRow`, `TableHeader`, `TableCell` | The custom Tiptap nodes |
+| `Callout`, `Chart`, `Stat`, `Diagram`, `Columns`, `Column`, `Badge`, `Table`, `TableRow`, `TableHeader`, `TableCell` | The custom Tiptap nodes |
+| `Settings`, `settingsOf`, `EncreSettings`, `RenderDiagram` | The extension that carries labels and the diagram renderer to node views |
+| `CATALOGUES`, `labelsFor`, `Labels`, `LabelOverrides`, `Locale` | The interface copy in `fr`, `en`, `es` and `de`, and overrides |
+| `Highlight` | The type of `Document`'s `highlight` hook |
 | `FRAGMENT`, `caretColor`, `peers`, `CollabUser`, `CollabOptions`, `AwarenessProvider`, `Peer` | Collaboration helpers and types |
 | `schema`, `SCHEMA_VERSION`, `BLOCK_ID_TYPES`, `EncreNode` and the spec types | `spec/schema.json` typed |
 | `compactDocument` | The compact form, as `compact` in Rust |
@@ -97,7 +101,7 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser |
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |
 | `looksLikeMarkdown` | The paste heuristic the editor uses |
-| `IMAGE_TYPES`, `imageRefusal`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |
+| `IMAGE_TYPES`, `imageRefusal(file, max?, labels?)`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |
 
 The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 
@@ -116,6 +120,9 @@ The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 | `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
 | `onerror` | `(error: Error) => void` | none | A refused image or a failed upload |
 | `maxImageBytes` | `number` | no limit | The largest file handed to `onimage` |
+| `locale` | `'fr' \| 'en' \| 'es' \| 'de'` | `'fr'` | The language of every string in the toolbar, menus, node views and placeholders |
+| `labels` | `LabelOverrides` | none | Replaces some of those strings; `tones` may name only some tones |
+| `renderDiagram` | `(language, source) => Promise<string \| SVGElement>` | none | Draws a diagram; without it the diagram shows its source |
 
 ### Image upload
 
@@ -167,5 +174,29 @@ Without `onimage` the editor uploads nothing and behaves as before. With it:
 
 For a custom display, `peers(provider)` returns the announced users, this client first; read
 it again on the awareness `change` event, as `Presence` does.
+
+### `Document` props
+
+| Prop | Type | Default | What it does |
+|---|---|---|---|
+| `doc` | `EncreNode` | required | The document |
+| `class` | `string` | `''` | Classes on the `article` |
+| `locale`, `labels` | as `Editor` | `'fr'` | The copy the renderer shows (the empty chart label) |
+| `renderDiagram` | `(language, source) => Promise<string \| SVGElement>` | none | Draws a `diagram`. Without it, or when it rejects, the diagram is a code block under its language |
+| `highlight` | `(code, language) => string` | none | Returns HTML for a code block. **The app must sanitize it**: encre inserts it as is. Without it, encre writes the code as escaped text |
+
+A `codeBlock` with language `diff` always gets line tones: `+` lines (not `+++`) are `encre-diff-add`,
+`-` lines (not `---`) `encre-diff-del`, `@@` lines `encre-diff-hunk`, the rest `encre-diff-ctx`. It
+does not go through `highlight`. An SVG string from `renderDiagram` is inserted as is too, so the
+renderer must be safe; mermaid's `securityLevel: 'strict'` is.
+
+```svelte
+<Document
+  {doc}
+  locale="en"
+  renderDiagram={async (language, source) => (await mermaid.render(newId(), source)).svg}
+  highlight={(code, language) => DOMPurify.sanitize(hljs.highlight(code, { language, ignoreIllegals: true }).value)}
+/>
+```
 
 Back to the [documentation index](README.md).

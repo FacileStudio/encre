@@ -6,7 +6,9 @@ Setup, the two gates, the shared test vectors, the WebAssembly build and the mus
 
 - Rust 1.98 with the `wasm32-unknown-unknown` target, and wasm-pack 0.15
 - bun 1.4 and Node 24.22.0 (pinned in `mise.toml`)
-- filet, for the code standard in `filet.yml`
+- Go 1.24 or later, for the module in `go/`
+- filet, for the code standard in `filet.yml`. It does not scan `go/`: filet 0.19.1 panics on Go
+  1.27 export data; `gofmt`, `go vet` and the Go tests gate that module
 - `typst` is not needed: the `pdf` feature compiles in memory
 
 ```sh
@@ -25,11 +27,12 @@ mise run test
 
 `mise run check` runs `scripts/check.sh check`: `cargo fmt --check`, clippy on every target and
 feature with `-D warnings`, `svelte-check --fail-on-warnings`, a fresh wasm build followed by
-`git diff --exit-code -- src/lib/encre-wasm`, and `filet check`. The wasm step fails when the
+`git diff --exit-code -- src/lib/encre-wasm`, `gofmt -l` and `go vet` on `go/`, and `filet check`. The wasm step fails when the
 committed package does not match the Rust source, so commit `src/lib/encre-wasm` with the change
 that moved it.
 
-`mise run test` runs `cargo test --all-features --locked` and `vitest run`. The round-trip laws
+`mise run test` runs `cargo test --all-features --locked`, `vitest run`, then builds the debug
+`encre` binary and runs the Go module's tests against it (Go 1.24 or later). The round-trip laws
 in `crates/encre/tests/laws.rs` run 10 000 cases each; set `PROPTEST_CASES=200` for a quick loop.
 
 ## Vectors
@@ -40,7 +43,7 @@ in `crates/encre/tests/laws.rs` run 10 000 cases each; set `PROPTEST_CASES=200` 
 |---|---|---|
 | `markdown/` | `{markdown, doc, canonical?}` | Hand; `canonical` when the writer normalizes the input |
 | `ops/` | `{markdown or doc, version?, op, want_markdown or want_blocks or want_error, want_kept?}` | Hand |
-| `yjs/` | `<name>.bin`, `<name>.json`, `<name>.rust.bin` | `scripts/gen-yjs-vectors.ts`, then the Rust test |
+| `yjs/` | `<name>.bin`, `<name>.json`, `<name>.rust.bin` | `scripts/gen-yjs-vectors.ts`, then the Rust test; `v1-custom.bin` is kept as Tiptap wrote it under schema 1 |
 | `typst/` | `{options, doc, want_typst}` | Hand, `want_typst` regenerated |
 | `openui/` | `{name, source, want_doc or want_error}` | Hand, the outputs regenerated |
 

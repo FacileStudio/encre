@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.7.0
+ARG ENCRE_VERSION=0.8.0
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -75,7 +75,7 @@ Every command reads stdin, or `--input <file>`, and writes stdout, or `--output 
 
 Text output is written exactly as encre produces it, with no trailing newline added, so
 `encre parse | encre serialize` gives back the canonical markdown byte for byte. JSON output is
-one line ending in a newline. JSON input is validated against schema v1 before any command uses
+one line ending in a newline. JSON input is validated against schema v2 before any command uses
 it.
 
 ### Global flags
@@ -107,7 +107,7 @@ it.
 | `serialize`, `commonmark` | `{"markdown": "..."}` |
 | `plain-text` | `{"text": "..."}` |
 | `typst` | `{"typst": "..."}` |
-| `validate` | `{"valid": true, "errors": []}` or `{"valid": false, "errors": [{"path", "message"}]}` |
+| `validate` | `{"valid": true, "errors": []}` or `{"valid": false, "errors": [{"path", "message", "line", "column"}]}`; `line` and `column` only for markdown input |
 | `pdf` | `{"output": "<file>", "bytes": n}`; needs `--output`, which gets the PDF |
 | `parse`, `compact`, `openui`, `ops` | unchanged, already JSON |
 
@@ -126,7 +126,7 @@ nothing to stderr.
 | Code | Meaning | Examples |
 |---|---|---|
 | 0 | Done | |
-| 1 | Invalid input or document | Not schema v1, malformed JSON, too large, a refused operation, OpenUI syntax, a Typst compile failure |
+| 1 | Invalid input or document | Not schema v2, malformed JSON, too large, a refused operation, OpenUI syntax, a Typst compile failure |
 | 2 | Usage | Unknown flag or command, unreadable `--input`, `--doc` or `--image-dir`, ambiguous input, `pdf --json` without `--output` |
 | 3 | Internal | Output not writable, PDF export failure, a panic |
 
@@ -153,82 +153,68 @@ when all of these hold, and renders as alt text otherwise:
 
 The Typst source names an embedded image `/images/<src>`. `pdf` reads only those files.
 
+### What `validate` refuses in markdown
+
+Markdown input is parsed, and parsing never fails, so `validate --from markdown` refuses only what
+the parsed tree cannot hold (`spec/FORMAT.md` section 2.6) plus what the CLI itself checks. Each
+error names the tree `path` and the 1-based `line` and `column` where the block holding the problem
+starts. Without `--json`, the message starts with `line L, column C:`.
+
+- Bytes that are not UTF-8, and input larger than `--max-bytes`. These are errors on stderr
+  (exit 1), not a verdict on stdout, and carry no position.
+- A control character other than tab and line feed, NUL and escape included, in text or code
+  (rule 1).
+- A code span holding a backslash, a backslash and a pipe inside a table cell: GFM unescapes the
+  last pair, so the code text keeps a backslash before a pipe, which a cell cannot write back
+  (rule 6).
+- Linked code holding `]:`, as in ``see [`a]:b`](u)``: at a paragraph start it would read as a
+  link reference definition (rule 7).
+
+Everything else is valid. `\|` in code in a cell is a pipe. ``[`a]:b`](u)`` at the very start of a
+paragraph is a link reference definition and leaves nothing. Malformed custom blocks become code
+blocks, unknown badges and alerts stay text, and HTML is text.
+
 ## Calling it from Go
 
+The Go module `github.com/FacileStudio/encre/go` (package `encre`, in this repository's `go/`)
+wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always with `--json`.
+
+```sh
+go get github.com/FacileStudio/encre/go@v0.8.0
+```
+
+| Function | What it does |
+|---|---|
+| `Run(ctx, stdin, args...) ([]byte, error)` | Any command; stdout on success, a `*Error` on a refusal |
+| `Validate(ctx, input, format) (Verdict, error)` | `Verdict{Valid, Errors []Problem{Path, Message, Line, Column}}`; an invalid document is not an error |
+| `Parse(ctx, markdown, ids) (json.RawMessage, error)` | Facile Markdown to encre JSON |
+| `Serialize(ctx, doc) (string, error)` | encre JSON to canonical Facile Markdown |
+| `CommonMark(ctx, input, format) (string, error)` | Portable CommonMark |
+| `PlainText(ctx, input, format) (string, error)` | The text alone |
+| `PDF(ctx, input, format, PDFOptions{Title, Footer, ImageDir}) ([]byte, error)` | PDF bytes, through a temporary file |
+
+`format` is `encre.Markdown` or `encre.JSON`. `*Error` carries `Exit`, `Code`, `Message` and `Path`;
+`Invalid()` is true for exit 1, so the caller answers 4xx, not 5xx. A call whose context has no
+deadline gets `DefaultTimeout` (30 s); give a long PDF its own deadline and limit how many run at
+once.
+
 ```go
-package encre
-
-import (
-	"bytes"
-	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"os/exec"
-	"time"
-)
-
-// Error is an error encre reported, with its exit code.
-type Error struct {
-	Exit    int
-	Code    string `json:"code"`
-	Message string `json:"message"`
-	Path    string `json:"path"`
+verdict, err := encre.Validate(ctx, body, encre.Markdown)
+if err != nil {
+	return err
 }
-
-func (e *Error) Error() string { return fmt.Sprintf("encre: %s (exit %d)", e.Message, e.Exit) }
-
-// Invalid reports whether the input was at fault, so the caller answers 4xx, not 5xx.
-func (e *Error) Invalid() bool { return e.Exit == 1 }
-
-// Run runs encre with args, feeds it stdin, and returns stdout.
-func Run(ctx context.Context, stdin []byte, args ...string) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-	defer cancel()
-	cmd := exec.CommandContext(ctx, "encre", append(args, "--json")...)
-	cmd.Stdin = bytes.NewReader(stdin)
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout, cmd.Stderr = &stdout, &stderr
-	err := cmd.Run()
-	if ctx.Err() != nil {
-		return nil, fmt.Errorf("encre %s: %w", args[0], ctx.Err())
-	}
-	var exit *exec.ExitError
-	if errors.As(err, &exit) {
-		var body struct {
-			Error Error `json:"error"`
-		}
-		if json.Unmarshal(stderr.Bytes(), &body) != nil {
-			return nil, fmt.Errorf("encre %s: exit %d: %s", args[0], exit.ExitCode(), stderr.String())
-		}
-		body.Error.Exit = exit.ExitCode()
-		return nil, &body.Error
-	}
-	if err != nil {
-		return nil, fmt.Errorf("encre %s: %w", args[0], err)
-	}
-	return stdout.Bytes(), nil
+if !verdict.Valid {
+	p := verdict.Errors[0]
+	return fmt.Errorf("line %d, column %d: %s", p.Line, p.Column, p.Message)
 }
-
-// Markdown turns an encre JSON document into Facile Markdown.
-func Markdown(ctx context.Context, doc []byte) (string, error) {
-	out, err := Run(ctx, doc, "serialize")
-	if err != nil {
-		return "", err
-	}
-	var body struct {
-		Markdown string `json:"markdown"`
-	}
-	return body.Markdown, json.Unmarshal(out, &body)
+markdown, err := encre.Serialize(ctx, doc)
+var refused *encre.Error
+if errors.As(err, &refused) && refused.Invalid() {
+	return badRequest(refused.Message)
 }
 ```
 
-- Pass `--json` on every call, so stderr is one JSON line you can decode.
-- `validate --json` exits 1 with its verdict on stdout, not stderr: read `stdout` before
-  treating exit 1 as an error, or call it outside `Run`.
-- `exec.CommandContext` kills the process when the context ends. A PDF of a long document takes
-  seconds, so give `pdf` its own timeout and limit how many run at once.
-- For `pdf`, pass `--output` with a temporary file and read it back, or drop `--json` and take
-  the PDF bytes from stdout.
+The module's tests run against `ENCRE_BIN`, else `target/release/encre` or `target/debug/encre`,
+and skip with a message when no binary is built.
 
 Back to the [documentation index](README.md).
