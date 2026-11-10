@@ -18,6 +18,8 @@
     provider?: AwarenessProvider;
     /** This user, as other people see them. */
     user?: CollabUser;
+    /** Where the editor shows who is here: `inline` above the toolbar, or `none` for an app that renders `Presence` itself. */
+    presence?: 'inline' | 'none';
     /** Uploads a pasted, dropped or picked image and answers its address; without it images are not uploaded. */
     onimage?: (file: File) => Promise<UploadedImage>;
     /** Reports a refused image or a failed upload. */
@@ -52,6 +54,7 @@
     ydoc,
     provider,
     user,
+    presence = 'inline',
     onimage,
     onerror,
     maxImageBytes
@@ -126,7 +129,7 @@
 </script>
 
 <div class="flex flex-col gap-3 {className}">
-  {#if provider}
+  {#if provider && presence === 'inline'}
     <Presence {provider} />
   {/if}
   {#if editor && toolbar && editable}

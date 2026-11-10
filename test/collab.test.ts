@@ -88,3 +88,29 @@ describe('a provider that syncs after the editor opens', () => {
     void unmount(editor);
   });
 });
+
+describe('presence placement', () => {
+  const mountWith = (presence?: 'inline' | 'none') => {
+    const ydoc = new Y.Doc();
+    const awareness = new Awareness(ydoc);
+    awareness.setLocalStateField('user', { name: 'Ana' });
+    const target = document.createElement('div');
+    const props = { ydoc, provider: provider(awareness), user: { name: 'Ana' }, toolbar: false, presence };
+    const editor = mount(Editor, { target, props });
+    flushSync();
+    return { editor, target };
+  };
+
+  it('renders avatars above the editor by default', () => {
+    const { editor, target } = mountWith();
+    expect(target.querySelectorAll('li[title]')).toHaveLength(1);
+    void unmount(editor);
+  });
+
+  it('renders no avatars with presence none', () => {
+    const { editor, target } = mountWith('none');
+    expect(target.querySelector('[aria-label="Editing now"]')).toBeNull();
+    expect(target.querySelectorAll('li[title]')).toHaveLength(0);
+    void unmount(editor);
+  });
+});
