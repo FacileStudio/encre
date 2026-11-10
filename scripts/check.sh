@@ -12,12 +12,24 @@ check() {
   bun run check
   sh scripts/build-wasm.sh
   git diff --exit-code -- src/lib/encre-wasm
+  go_check
   filet check
+}
+
+go_check() {
+  unformatted="$(cd go && gofmt -l .)"
+  if [ -n "$unformatted" ]; then
+    echo "gofmt: $unformatted" >&2
+    return 1
+  fi
+  (cd go && go vet ./...)
 }
 
 test_suites() {
   cargo test --all-features --locked
   bun run test
+  cargo build --locked -p encre-cli
+  (cd go && ENCRE_BIN="$(pwd)/../target/debug/encre" go test -count=1 ./...)
 }
 
 case "$mode" in
