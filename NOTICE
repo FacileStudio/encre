@@ -1,0 +1,7 @@
+encre
+Copyright 2026 Facile Studio
+
+This product includes software developed at Facile Studio (https://facile.studio).
+
+The bundled DejaVu fonts in crates/encre/typst/fonts are distributed under their own licence,
+in crates/encre/typst/fonts/LICENSE.

@@ -5,7 +5,7 @@ members = ["crates/encre", "crates/encre-wasm"]
 [workspace.package]
 version = "0.5.0"
 edition = "2024"
-license = "MIT"
+license = "Apache-2.0"
 repository = "https://github.com/FacileStudio/encre"
 rust-version = "1.98"
 

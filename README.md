@@ -95,6 +95,11 @@ docs/             architecture, configuration, development, API, agents
 | [API](docs/api.md) | The public Rust and TypeScript surface |
 | [Agents](docs/agents.md) | The short form of the format and operations for MCP tool descriptions |
 
+## License
+
+Apache-2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE). The bundled DejaVu fonts keep their own
+licence, in `crates/encre/typst/fonts/LICENSE`.
+
 ---
 
 Part of the [Facile Suite](https://facile.studio) — self-hosted tools for creative studios
