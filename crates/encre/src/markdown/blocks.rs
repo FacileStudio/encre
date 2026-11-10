@@ -3,8 +3,12 @@ use crate::model::Node;
 use crate::schema::{AttrSpec, schema};
 use serde_json::{Map, Value};
 
-/// Names of the custom blocks.
-pub const CUSTOM: &[&str] = &["callout", "stat", "chart"];
+/// The fence names that open a custom block: a code block whose language starts with one is written with tildes.
+pub const CUSTOM: &[&str] =
+    &["callout", "stat", "chart", "columns", "compare", "pros-cons", "vs", "mermaid", "d2", "dot"];
+
+/// The diagram languages, each its own fence name.
+pub const DIAGRAMS: &[&str] = &["mermaid", "d2", "dot"];
 
 fn data_attrs(kind: &str) -> impl Iterator<Item = &'static AttrSpec> {
     schema().node(kind).into_iter().flat_map(|t| t.attrs.iter()).filter(|a| a.kind != "id")
@@ -39,9 +43,11 @@ fn series(value: &Value) -> String {
     format!("[{}]", items.join(", "))
 }
 
-/// The JSON body of a data-only custom block, keys in schema order.
+/// The JSON body of a data-only custom block, keys in schema order; an attribute added after version 1
+/// is left out when it holds its default.
 pub fn body(node: &Node) -> String {
     let pairs: Vec<(&str, String)> = data_attrs(&node.kind)
+        .filter(|spec| spec.since.is_none() || node.attrs.get(&spec.name).is_some_and(|v| *v != spec.default))
         .map(|spec| {
             let value = node.attrs.get(&spec.name).unwrap_or(&spec.default);
             (spec.name.as_str(), if spec.kind == "series" { series(value) } else { json::write(value) })
@@ -85,12 +91,14 @@ pub fn read_info(mut rest: &str) -> Option<Vec<(String, String)>> {
     }
 }
 
-/// Builds the attributes of `kind` from read pairs, defaults first; None when a key is unknown or repeated.
+/// Builds the attributes of `kind` from read pairs, defaults first (but for attributes added after version 1);
+/// None when a key is unknown or repeated.
 pub fn attrs_from(kind: &str, pairs: Vec<(String, Value)>) -> Option<Map<String, Value>> {
-    let mut attrs: Map<String, Value> = data_attrs(kind).map(|s| (s.name.clone(), s.default.clone())).collect();
+    let mut attrs: Map<String, Value> =
+        data_attrs(kind).filter(|s| s.since.is_none()).map(|s| (s.name.clone(), s.default.clone())).collect();
     let mut seen = Vec::new();
     for (key, value) in pairs {
-        if !attrs.contains_key(&key) || seen.contains(&key) {
+        if !data_attrs(kind).any(|s| s.name == key) || seen.contains(&key) {
             return None;
         }
         seen.push(key.clone());

@@ -1,0 +1,19 @@
+{
+  "name": "highlight-literal",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "a == b and x==y and == spaced ==",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "a == b and x==y and == spaced ==",
+  "canonical": "a \\=\\= b and x\\=\\=y and \\=\\= spaced \\=\\="
+}

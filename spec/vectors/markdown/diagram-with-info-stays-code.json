@@ -1,0 +1,22 @@
+{
+  "name": "diagram-with-info-stays-code",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "mermaid title=\"x\""
+        },
+        "content": [
+          {
+            "text": "graph TD",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```mermaid title=\"x\"\ngraph TD\n```",
+  "canonical": "~~~mermaid title=\"x\"\ngraph TD\n~~~"
+}

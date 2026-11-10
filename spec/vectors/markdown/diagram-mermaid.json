@@ -1,0 +1,21 @@
+{
+  "name": "diagram-mermaid",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "mermaid"
+        },
+        "content": [
+          {
+            "text": "flowchart LR\n  A[CLI] --> B[Server]\n  B --> C[(Volume)]",
+            "type": "text"
+          }
+        ],
+        "type": "diagram"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```mermaid\nflowchart LR\n  A[CLI] --> B[Server]\n  B --> C[(Volume)]\n```"
+}

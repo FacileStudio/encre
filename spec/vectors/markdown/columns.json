@@ -1,0 +1,74 @@
+{
+  "name": "columns",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "Advantages",
+              "tone": "success"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Fast to ship",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Drawbacks",
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "content": [
+                          {
+                            "text": "Two copies",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "type": "listItem"
+                  },
+                  {
+                    "content": [
+                      {
+                        "content": [
+                          {
+                            "text": "More to read",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "type": "listItem"
+                  }
+                ],
+                "type": "bulletList"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "````columns\n```column title=\"Advantages\" tone=\"success\"\nFast to ship\n```\n\n```column title=\"Drawbacks\" tone=\"danger\"\n- Two copies\n- More to read\n```\n````"
+}

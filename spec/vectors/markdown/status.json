@@ -1,0 +1,112 @@
+{
+  "name": "status",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "success",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "text": "error",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "warning"
+            },
+            "content": [
+              {
+                "text": "pending",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "done",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "warning"
+            },
+            "content": [
+              {
+                "text": "running",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "text": "dead",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "[status:success] [status:error] [status:pending] [status:done] [status:running] [status:dead]"
+}

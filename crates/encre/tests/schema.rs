@@ -25,10 +25,10 @@ fn every_attribute_has_a_known_type_and_a_valid_default() {
 }
 
 #[test]
-fn every_block_but_rows_and_cells_carries_an_id() {
+fn every_block_but_rows_cells_and_inline_nodes_carries_an_id() {
     for node in &schema().nodes {
         let structural =
-            ["doc", "text", "hardBreak", "tableRow", "tableHeader", "tableCell"].contains(&node.name.as_str());
+            ["doc", "text", "hardBreak", "badge", "tableRow", "tableHeader", "tableCell"].contains(&node.name.as_str());
         assert_eq!(node.has_id(), !structural, "{}", node.name);
     }
 }

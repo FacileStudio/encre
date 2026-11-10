@@ -1,0 +1,56 @@
+{
+  "name": "highlight",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "Ship ",
+            "type": "text"
+          },
+          {
+            "marks": [
+              {
+                "type": "highlight"
+              }
+            ],
+            "text": "the gate",
+            "type": "text"
+          },
+          {
+            "text": " first, then ",
+            "type": "text"
+          },
+          {
+            "marks": [
+              {
+                "type": "bold"
+              },
+              {
+                "type": "highlight"
+              }
+            ],
+            "text": "bold",
+            "type": "text"
+          },
+          {
+            "marks": [
+              {
+                "type": "highlight"
+              }
+            ],
+            "text": " too",
+            "type": "text"
+          },
+          {
+            "text": ".",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "Ship ==the gate== first, then ==**bold** too==."
+}

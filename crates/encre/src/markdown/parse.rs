@@ -1,7 +1,8 @@
 use super::md_tree::{Md, tree};
-use super::parse_inline::{self, Item};
+use super::parse_inline::Scan;
+use super::track::Track;
 use crate::model::Node;
-use pulldown_cmark::{Event, HeadingLevel, Tag};
+use pulldown_cmark::{Event, Tag};
 use serde_json::{Map, Value};
 
 /// Why markdown could not be read. Facile Markdown accepts any text, so this is an internal failure.
@@ -23,40 +24,33 @@ pub fn attr(name: &str, value: impl Into<Value>) -> Map<String, Value> {
 
 /// Reads Facile Markdown into a document without ids.
 pub fn parse_doc(markdown: &str) -> Result<Node, ParseError> {
-    let nodes = tree(markdown);
-    let mut blocks = Reader { source: markdown }.blocks(&nodes);
-    if blocks.is_empty() {
-        blocks.push(empty_paragraph());
-    }
-    Ok(Node::new("doc", Map::new(), blocks))
-}
-
-fn level(level: &HeadingLevel) -> i64 {
-    match level {
-        HeadingLevel::H1 => 1,
-        HeadingLevel::H2 => 2,
-        _ => 3,
-    }
+    Ok(Reader { source: markdown, track: None }.doc())
 }
 
 pub(super) struct Reader<'a> {
     pub source: &'a str,
+    pub track: Option<Track>,
 }
 
 impl Reader<'_> {
+    /// The whole source as a document, never empty.
+    pub fn doc(&self) -> Node {
+        Node::new("doc", Map::new(), self.filled(&tree(self.source)))
+    }
+
     /// Converts sibling nodes; a run of inline nodes (a tight list item) is one paragraph.
     pub fn blocks(&self, nodes: &[Md]) -> Vec<Node> {
         let mut out = Vec::new();
         let mut start = 0;
         while start < nodes.len() {
-            let run = nodes[start..].iter().take_while(|n| n.is_inline()).count();
-            if run > 0 {
-                out.extend(self.paragraph(&nodes[start..start + run]));
-                start += run;
+            let run = nodes[start..].iter().take_while(|n| n.is_inline()).count().max(1);
+            let built = if nodes[start].is_inline() {
+                self.paragraph(&nodes[start..start + run])
             } else {
-                out.extend(self.block(&nodes[start]));
-                start += 1;
-            }
+                self.block(&nodes[start])
+            };
+            out.extend(self.stamped(built, &nodes[start].range()));
+            start += run;
         }
         out
     }
@@ -76,8 +70,10 @@ impl Reader<'_> {
         };
         match tag {
             Tag::Paragraph => self.paragraph(children),
-            Tag::Heading { level: l, .. } => vec![Node::new("heading", attr("level", level(l)), self.inline(children))],
-            Tag::BlockQuote(_) => vec![Node::new("blockquote", Map::new(), self.filled(children))],
+            Tag::Heading { level: l, .. } => {
+                vec![Node::new("heading", attr("level", (*l as i64).min(3)), self.inline(children))]
+            }
+            Tag::BlockQuote(_) => vec![self.quote(children)],
             Tag::CodeBlock(kind) => vec![self.code(kind, range.clone(), children)],
             Tag::List(start) => self.list(*start, children),
             Tag::Table(aligns) => vec![super::parse_table::table(self, aligns, children)],
@@ -88,9 +84,6 @@ impl Reader<'_> {
 
     /// Converts inline nodes where no image block can appear.
     pub fn inline(&self, nodes: &[Md]) -> Vec<Node> {
-        let mut items = Vec::new();
-        parse_inline::convert(nodes, &[], false, &mut items);
-        let nodes = items.into_iter().filter_map(|item| if let Item::Inline(n) = item { Some(n) } else { None });
-        parse_inline::normalize(nodes.collect())
+        Scan { source: self.source, images: false }.inline(nodes)
     }
 }

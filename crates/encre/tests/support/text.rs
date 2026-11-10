@@ -42,6 +42,18 @@ const ATOMS: &[&str] = &[
     "é",
     "[r]: /u",
     "[r]",
+    "==",
+    "=",
+    "[badge:info x]",
+    "[status:done]",
+    "[status:",
+    "[badge:",
+    "]",
+    "> [!NOTE]\n> ",
+    "> [!pros]\n",
+    "```mermaid\nA --> B\n```",
+    "````columns\n```column title=\"a\"\nx\n```\n```column\ny\n```\n````",
+    "```compare\n### Pros\na\n### Cons\nb\n```",
 ];
 
 /// Markdown-like text built from fragments that stress the reader, for the fixed-point law.

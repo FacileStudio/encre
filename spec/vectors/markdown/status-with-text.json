@@ -1,0 +1,38 @@
+{
+  "name": "status-with-text",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "Deployed",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " and ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "danger"
+            },
+            "type": "badge"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "[status:success Deployed] and [status:danger ]"
+}

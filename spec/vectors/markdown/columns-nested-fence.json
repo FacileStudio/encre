@@ -1,0 +1,53 @@
+{
+  "name": "columns-nested-fence",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "",
+              "tone": "neutral"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "language": "sh"
+                },
+                "content": [
+                  {
+                    "text": "echo hi",
+                    "type": "text"
+                  }
+                ],
+                "type": "codeBlock"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "",
+              "tone": "info"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Plain.",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "`````columns\n````column\n```sh\necho hi\n```\n````\n\n```column tone=\"info\"\nPlain.\n```\n`````"
+}

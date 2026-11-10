@@ -44,6 +44,13 @@ impl Md<'_> {
         }
     }
 
+    /// The source range of this node.
+    pub fn range(&self) -> Range<usize> {
+        match self {
+            Md::Block { range, .. } | Md::Leaf { range, .. } => range.clone(),
+        }
+    }
+
     /// Whether this node belongs in inline content.
     pub fn is_inline(&self) -> bool {
         match self {

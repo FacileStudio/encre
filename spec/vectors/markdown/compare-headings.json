@@ -1,0 +1,60 @@
+{
+  "name": "compare-headings",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "Advantages",
+              "tone": "success"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Fast to ship",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              },
+              {
+                "content": [
+                  {
+                    "text": "No new dependency",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Drawbacks",
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Two copies of the Go wrapper",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```compare\n### Advantages\nFast to ship\nNo new dependency\n### Drawbacks\nTwo copies of the Go wrapper\n```",
+  "canonical": "````columns\n```column title=\"Advantages\" tone=\"success\"\nFast to ship\n\nNo new dependency\n```\n\n```column title=\"Drawbacks\" tone=\"danger\"\nTwo copies of the Go wrapper\n```\n````"
+}

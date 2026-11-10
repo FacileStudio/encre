@@ -1,0 +1,22 @@
+{
+  "name": "columns-stray-text-is-code",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "columns"
+        },
+        "content": [
+          {
+            "text": "stray\n\n```column\na\n```\n\n```column\nb\n```",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "````columns\nstray\n\n```column\na\n```\n\n```column\nb\n```\n````",
+  "canonical": "~~~columns\nstray\n\n```column\na\n```\n\n```column\nb\n```\n~~~"
+}

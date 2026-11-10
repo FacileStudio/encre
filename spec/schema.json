@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "id": {
     "alphabet": "0123456789abcdefghjkmnpqrstvwxyz",
     "length": 10
@@ -135,7 +135,8 @@
         { "name": "id", "type": "id", "default": null },
         { "name": "label", "type": "line", "default": "" },
         { "name": "value", "type": "line", "default": "" },
-        { "name": "delta", "type": "line", "default": "" }
+        { "name": "delta", "type": "line", "default": "" },
+        { "name": "sub", "type": "line", "default": "", "since": 2 }
       ]
     },
     {
@@ -150,6 +151,39 @@
       ]
     },
     {
+      "name": "diagram",
+      "group": "block",
+      "content": "text*",
+      "marks": "",
+      "since": 2,
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "language", "type": "string", "default": "mermaid", "values": ["mermaid", "d2", "dot"] }
+      ]
+    },
+    {
+      "name": "columns",
+      "group": "block",
+      "content": "column{2,4}",
+      "since": 2,
+      "attrs": [{ "name": "id", "type": "id", "default": null }]
+    },
+    {
+      "name": "column",
+      "content": "block+",
+      "since": 2,
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "title", "type": "label", "default": "" },
+        {
+          "name": "tone",
+          "type": "string",
+          "default": "neutral",
+          "values": ["neutral", "success", "danger", "warning", "info"]
+        }
+      ]
+    },
+    {
       "name": "text",
       "group": "inline",
       "attrs": []
@@ -159,6 +193,23 @@
       "group": "inline",
       "takesMarks": false,
       "attrs": []
+    },
+    {
+      "name": "badge",
+      "group": "inline",
+      "content": "text*",
+      "marks": "",
+      "takesMarks": false,
+      "since": 2,
+      "attrs": [
+        {
+          "name": "tone",
+          "type": "string",
+          "default": "neutral",
+          "values": ["neutral", "accent", "info", "success", "warning", "danger"]
+        },
+        { "name": "dot", "type": "boolean", "default": false }
+      ]
     }
   ],
   "marks": [
@@ -172,6 +223,7 @@
     { "name": "bold", "attrs": [] },
     { "name": "italic", "attrs": [] },
     { "name": "strike", "attrs": [] },
+    { "name": "highlight", "since": 2, "attrs": [] },
     { "name": "code", "excludes": "", "attrs": [] }
   ]
 }

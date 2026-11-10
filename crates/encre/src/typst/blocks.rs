@@ -40,6 +40,8 @@ impl Writer<'_, '_> {
             "callout" => self.callout(node),
             "stat" => stat(node),
             "chart" => chart(node),
+            "diagram" => diagram(node),
+            "columns" => self.columns(node),
             _ => String::new(),
         }
     }
@@ -56,6 +58,22 @@ impl Writer<'_, '_> {
             tone => tone,
         };
         format!("#alert([{}], tone: {}{title})", self.blocks(&node.content), quoted(tone))
+    }
+
+    fn columns(&self, node: &Node) -> String {
+        let cells = node.content.iter().map(|column| {
+            let (title, tone) = (column.attr_str("title"), column.attr_str("tone"));
+            let body = self.blocks(&column.content);
+            match (tone, title.is_empty()) {
+                ("" | "neutral", true) => format!("[{body}]"),
+                ("" | "neutral", false) => format!("[#strong[#{}]\n\n{body}]", quoted(title)),
+                _ => {
+                    let title = if title.is_empty() { String::new() } else { format!(", title: {}", quoted(title)) };
+                    format!("[#alert([{body}], tone: {}{title})]", quoted(tone))
+                }
+            }
+        });
+        format!("#grid(columns: {}, gutter: 1em, {})", node.content.len(), args(cells))
     }
 
     fn image(&self, node: &Node) -> String {
@@ -78,4 +96,18 @@ fn task_box(item: &Node) -> &'static str {
     } else {
         "#\"☐\"#h(0.4em)"
     }
+}
+
+/// A diagram as a raw block under a label naming its language; encre never draws it.
+fn diagram(node: &Node) -> String {
+    let language = match node.attr_str("language") {
+        "" => "mermaid",
+        language => language,
+    };
+    let source: String = node.content.iter().filter_map(|n| n.text.as_deref()).collect();
+    format!(
+        "#block(width: 100%)[#text(size: 0.8em, weight: \"medium\")[#{}]\n#raw(block: true, {})]",
+        quoted(language),
+        quoted(&source)
+    )
 }

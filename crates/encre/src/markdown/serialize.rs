@@ -2,7 +2,8 @@ use super::compare::same_inline;
 use super::escape::{Ctx, destination, escape};
 use super::inline::{self, Style};
 use super::parse::parse_doc;
-use crate::model::Node;
+use crate::model::{Mark, Node};
+use serde_json::Map;
 
 /// Writes blocks; `full` forces the full escaping form, `commonmark` the portable export.
 #[derive(Debug, Clone, Copy)]
@@ -80,8 +81,25 @@ impl Writer {
                 format!("![{alt}]{}", destination(node.attr_str("src"), node.attr_str("title"), self.full))
             }
             "table" => super::write_table::table(self, node),
-            "callout" | "stat" | "chart" => self.custom(node),
+            "columns" if self.commonmark => self.flat_columns(node),
+            "callout" | "stat" | "chart" | "diagram" | "columns" => self.custom(node),
             _ => super::write_list::list(self, node, false),
         }
+    }
+
+    /// Columns for CommonMark readers: each column's title as a bold paragraph, then its blocks.
+    fn flat_columns(&self, node: &Node) -> String {
+        let blocks: Vec<Node> = node
+            .content
+            .iter()
+            .flat_map(|column| {
+                let title = column.attr_str("title");
+                let bold = vec![Mark::new("bold", Map::new())];
+                let heading =
+                    (!title.is_empty()).then(|| Node::new("paragraph", Map::new(), vec![Node::text(title, bold)]));
+                heading.into_iter().chain(column.content.iter().cloned())
+            })
+            .collect();
+        self.blocks(&blocks)
     }
 }

@@ -13,7 +13,7 @@ fn family(kind: &str) -> Option<&'static str> {
 fn interrupts(node: &Node) -> bool {
     let start = node.attrs.get("start").and_then(Value::as_u64).unwrap_or(1);
     match node.kind.as_str() {
-        "bulletList" | "taskList" | "codeBlock" | "heading" | "callout" | "stat" | "chart" => true,
+        "bulletList" | "taskList" | "codeBlock" | "heading" | "callout" | "stat" | "chart" | "diagram" => true,
         "orderedList" => start == 1,
         _ => false,
     }

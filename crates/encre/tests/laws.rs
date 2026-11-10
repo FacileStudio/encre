@@ -34,8 +34,9 @@ proptest! {
     fn commonmark_export_parses(doc in document()) {
         let written = serialize_commonmark(&doc);
         let fenced = commonmark_fences(&written);
-        for block in doc.content.iter().filter(|b| ["callout", "stat", "chart"].contains(&b.kind.as_str())) {
-            prop_assert!(fenced.iter().any(|info| info.starts_with(block.kind.as_str())), "{} is not fenced in:\n{}", block.kind, written);
+        for block in doc.content.iter().filter(|b| ["callout", "stat", "chart", "diagram"].contains(&b.kind.as_str())) {
+            let name = if block.kind == "diagram" { block.attr_str("language") } else { block.kind.as_str() };
+            prop_assert!(fenced.iter().any(|info| info.starts_with(name)), "{} is not fenced in:\n{}", block.kind, written);
         }
     }
 }

@@ -1,4 +1,6 @@
+use super::badge;
 use super::inline::{Style, render};
+use crate::model::{Mark, Node};
 
 /// One piece of written inline markdown.
 #[derive(Debug, Clone, PartialEq)]
@@ -9,6 +11,7 @@ pub enum Tok {
     LinkClose(String),
     Code(String),
     Break,
+    Badge { head: String, text: String, spaced: bool },
     Text { raw: String, first: bool, last: bool },
 }
 
@@ -81,5 +84,23 @@ pub fn flank(tokens: &mut [Tok], style: Style) {
         if !changed {
             return;
         }
+    }
+}
+
+/// Whether `mark` is written as a delimiter: code is a span of its own, and CommonMark drops highlights.
+pub fn written(mark: &Mark, style: Style) -> bool {
+    mark.kind != "code" && !(style.commonmark && mark.kind == "highlight")
+}
+
+/// The token of an inline node that closes every open mark: a hard break or a badge.
+pub fn standalone(node: &Node) -> Option<Tok> {
+    match node.kind.as_str() {
+        "hardBreak" => Some(Tok::Break),
+        "badge" => {
+            let (head, spaced) = badge::head(node);
+            let text: String = node.content.iter().filter_map(|t| t.text.as_deref()).collect();
+            Some(Tok::Badge { head, text, spaced })
+        }
+        _ => None,
     }
 }

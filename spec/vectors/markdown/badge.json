@@ -1,0 +1,130 @@
+{
+  "name": "badge",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "Shipped",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "text": "Blocked",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "warning"
+            },
+            "content": [
+              {
+                "text": "Pending",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "info"
+            },
+            "content": [
+              {
+                "text": "Note",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "accent"
+            },
+            "content": [
+              {
+                "text": "Main",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "neutral"
+            },
+            "content": [
+              {
+                "text": "Other",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "accent"
+            },
+            "content": [
+              {
+                "text": "Lead",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "[badge:success Shipped] [badge:danger Blocked] [badge:warning Pending] [badge:info Note] [badge:primary Main] [badge:neutral Other] [badge:accent Lead]",
+  "canonical": "[badge:success Shipped] [badge:danger Blocked] [badge:warning Pending] [badge:info Note] [badge:accent Main] [badge:neutral Other] [badge:accent Lead]"
+}

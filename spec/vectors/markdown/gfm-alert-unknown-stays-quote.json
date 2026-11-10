@@ -1,0 +1,24 @@
+{
+  "name": "gfm-alert-unknown-stays-quote",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "[!DANGER] not an alert",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "blockquote"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "> [!DANGER]\n> not an alert",
+  "canonical": "> \\[!DANGER\\] not an alert"
+}

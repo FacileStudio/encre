@@ -1,0 +1,51 @@
+{
+  "name": "compare-vs",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "Rust",
+              "tone": "neutral"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "fast",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Go",
+              "tone": "neutral"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "simple",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```vs\n### Rust\nfast\n### Go\nsimple\n```",
+  "canonical": "````columns\n```column title=\"Rust\"\nfast\n```\n\n```column title=\"Go\"\nsimple\n```\n````"
+}

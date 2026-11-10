@@ -1,0 +1,22 @@
+{
+  "name": "gfm-alert-empty",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "title": "",
+          "tone": "warning"
+        },
+        "content": [
+          {
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "> [!WARNING]",
+  "canonical": "```callout tone=\"warning\"\n\\\n```"
+}

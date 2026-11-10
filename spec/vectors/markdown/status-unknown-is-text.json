@@ -1,0 +1,19 @@
+{
+  "name": "status-unknown-is-text",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "[status:maybe] [badge:pink x]",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "[status:maybe] [badge:pink x]",
+  "canonical": "\\[status:maybe\\] \\[badge:pink x\\]"
+}

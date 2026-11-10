@@ -57,7 +57,7 @@ pub(crate) fn attrs_valid(kind: &str, attrs: &serde_json::Map<String, serde_json
     schema().node(kind).is_some_and(|t| attrs::check(&t.attrs, attrs).is_ok())
 }
 
-/// Validates `doc` against schema v1 and the rules of `spec/FORMAT.md` section 1.
+/// Validates `doc` against the current schema and the rules of `spec/FORMAT.md` section 1.
 pub fn validate(doc: &Node) -> Result<(), ValidationError> {
     if doc.kind != "doc" {
         return Err(ValidationError { path: "doc".to_owned(), message: "the root is not a `doc`".to_owned() });

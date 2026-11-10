@@ -1,5 +1,5 @@
 use super::escape::{Ctx, char_ref, code_span, delimiter, destination, escape};
-use super::tokens::{Tok, flank};
+use super::tokens::{Tok, flank, standalone, written};
 use crate::model::{Mark, Node};
 use crate::schema::schema;
 
@@ -30,15 +30,16 @@ fn close(tokens: &mut Vec<Tok>, stack: &mut Vec<Mark>, keep: usize, full: bool) 
     }
 }
 
-fn tokenize(nodes: &[Node], full: bool) -> Vec<Tok> {
+fn tokenize(nodes: &[Node], style: Style) -> Vec<Tok> {
     let mut tokens = Vec::new();
     let mut stack: Vec<Mark> = Vec::new();
     for (i, node) in nodes.iter().enumerate() {
-        let marks: Vec<&Mark> = node.marks.iter().filter(|m| m.kind != "code").collect();
+        let marks: Vec<&Mark> = node.marks.iter().filter(|m| written(m, style)).collect();
         let keep = stack.iter().take_while(|m| marks.contains(m)).count();
-        close(&mut tokens, &mut stack, if node.kind == "hardBreak" { 0 } else { keep }, full);
-        if node.kind == "hardBreak" {
-            tokens.push(Tok::Break);
+        let alone = standalone(node);
+        close(&mut tokens, &mut stack, if alone.is_some() { 0 } else { keep }, style.full);
+        if let Some(tok) = alone {
+            tokens.push(tok);
             continue;
         }
         let mut opening: Vec<&Mark> = marks.into_iter().filter(|m| !stack.contains(m)).collect();
@@ -48,7 +49,7 @@ fn tokenize(nodes: &[Node], full: bool) -> Vec<Tok> {
         let is_code = node.marks.iter().any(|m| m.kind == "code");
         tokens.push(if is_code { Tok::Code(text) } else { Tok::Text { raw: text, first: false, last: false } });
     }
-    close(&mut tokens, &mut stack, 0, full);
+    close(&mut tokens, &mut stack, 0, style.full);
     tokens
 }
 
@@ -79,12 +80,15 @@ pub fn render(tok: &Tok, style: Style, line_start: bool) -> String {
         Tok::Break if style.commonmark => " ".to_owned(),
         Tok::Break => "<br>".to_owned(),
         Tok::Text { raw, first, last } => text(raw, *first, *last, style, line_start),
+        Tok::Badge { text, .. } if style.commonmark => escape(&format!("[{text}]"), style.ctx, style.full, line_start),
+        Tok::Badge { head, spaced: false, .. } => format!("[{head}]"),
+        Tok::Badge { head, text, .. } => format!("[{head} {}]", escape(text, style.ctx, style.full, false)),
     }
 }
 
 /// Writes inline content, with every flanking fix applied.
 pub fn write(nodes: &[Node], style: Style) -> String {
-    let mut tokens = tokenize(nodes, style.full);
+    let mut tokens = tokenize(nodes, style);
     flank(&mut tokens, style);
     let mut out = String::new();
     let mut line_start = true;

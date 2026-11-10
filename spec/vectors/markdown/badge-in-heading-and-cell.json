@@ -1,0 +1,92 @@
+{
+  "name": "badge-in-heading-and-cell",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "text": "Release ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "Shipped",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "none"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "State",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableHeader"
+              }
+            ],
+            "type": "tableRow"
+          },
+          {
+            "content": [
+              {
+                "attrs": {
+                  "align": "none"
+                },
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "attrs": {
+                          "dot": true,
+                          "tone": "success"
+                        },
+                        "content": [
+                          {
+                            "text": "done",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "badge"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "tableCell"
+              }
+            ],
+            "type": "tableRow"
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "# Release [badge:success Shipped]\n\n| State |\n| --- |\n| [status:done] |"
+}

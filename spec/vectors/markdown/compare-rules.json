@@ -1,0 +1,89 @@
+{
+  "name": "compare-rules",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "Pros",
+              "tone": "success"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "content": [
+                          {
+                            "text": "quick",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "type": "listItem"
+                  }
+                ],
+                "type": "bulletList"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Risks",
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "content": [
+                          {
+                            "text": "slow",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "type": "listItem"
+                  }
+                ],
+                "type": "bulletList"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Other",
+              "tone": "neutral"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "maybe",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```pros-cons\nPros\n- quick\n---\nRisks\n- slow\n---\nOther\nmaybe\n```",
+  "canonical": "````columns\n```column title=\"Pros\" tone=\"success\"\n- quick\n```\n\n```column title=\"Risks\" tone=\"danger\"\n- slow\n```\n\n```column title=\"Other\"\nmaybe\n```\n````"
+}

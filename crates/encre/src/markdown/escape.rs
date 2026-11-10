@@ -28,6 +28,7 @@ fn special(chars: &[char], i: usize, ctx: Ctx, line_start: bool) -> bool {
         '\\' | '*' | '`' | '[' | ']' => true,
         '_' => edge(prev) || edge(next),
         '~' => true,
+        '=' => prev == Some('=') || next == Some('='),
         '<' => next.is_some_and(|n| n.is_ascii_alphabetic() || "/!?".contains(n)),
         '&' => next.is_some_and(|n| n.is_ascii_alphanumeric() || n == '#'),
         '|' => ctx == Ctx::Cell,
@@ -94,6 +95,7 @@ pub fn delimiter(kind: &str, full: bool) -> &'static str {
         "bold" => "**",
         "italic" if full => "_",
         "italic" => "*",
+        "highlight" => "==",
         _ => "~~",
     }
 }

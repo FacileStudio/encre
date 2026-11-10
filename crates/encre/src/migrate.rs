@@ -11,7 +11,12 @@ pub enum MigrationError {
 
 type Migration = fn(Node) -> Node;
 
-const MIGRATIONS: &[Migration] = &[];
+/// Schema 2 only adds node types, a mark and an optional attribute, so a version 1 document is unchanged.
+fn v1_to_v2(doc: Node) -> Node {
+    doc
+}
+
+const MIGRATIONS: &[Migration] = &[v1_to_v2];
 
 /// Upgrades `doc`, stored at schema version `from`, to [`SCHEMA_VERSION`].
 pub fn migrate(doc: Node, from: u32) -> Result<Node, MigrationError> {

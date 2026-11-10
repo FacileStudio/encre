@@ -2,11 +2,18 @@ use crate::model::Node;
 use serde_json::Value;
 
 fn inline(nodes: &[Node]) -> String {
-    nodes.iter().map(|n| if n.kind == "hardBreak" { "\n" } else { n.text.as_deref().unwrap_or("") }).collect()
+    nodes
+        .iter()
+        .map(|n| match n.kind.as_str() {
+            "hardBreak" => "\n".to_owned(),
+            "badge" => inline(&n.content),
+            _ => n.text.clone().unwrap_or_default(),
+        })
+        .collect()
 }
 
 fn data(node: &Node) -> String {
-    let mut parts: Vec<String> = ["title", "label", "value", "delta"]
+    let mut parts: Vec<String> = ["title", "label", "value", "delta", "sub"]
         .iter()
         .map(|key| node.attr_str(key).to_owned())
         .filter(|s| !s.is_empty())
@@ -19,11 +26,11 @@ fn data(node: &Node) -> String {
 
 fn block(node: &Node) -> String {
     match node.kind.as_str() {
-        "paragraph" | "heading" | "codeBlock" => inline(&node.content),
+        "paragraph" | "heading" | "codeBlock" | "diagram" => inline(&node.content),
         "tableRow" => node.content.iter().map(|cell| blocks(&cell.content)).collect::<Vec<_>>().join("\t"),
         "image" => node.attr_str("alt").to_owned(),
         "stat" | "chart" => data(node),
-        "callout" => [node.attr_str("title").to_owned(), blocks(&node.content)]
+        "callout" | "column" => [node.attr_str("title").to_owned(), blocks(&node.content)]
             .into_iter()
             .filter(|s| !s.is_empty())
             .collect::<Vec<_>>()

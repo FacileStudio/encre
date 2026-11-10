@@ -1,0 +1,22 @@
+{
+  "name": "columns-one-is-code",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "columns"
+        },
+        "content": [
+          {
+            "text": "```column\nalone\n```",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "````columns\n```column\nalone\n```\n````",
+  "canonical": "~~~columns\n```column\nalone\n```\n~~~"
+}

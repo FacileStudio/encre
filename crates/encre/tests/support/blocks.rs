@@ -2,11 +2,9 @@ use super::inline::inline;
 use super::node;
 use encre::Node;
 use proptest::prelude::*;
-use serde_json::{Value, json};
+use serde_json::Value;
 
-const CODE: &[char] = &['a', ' ', '\t', '\n', '`', '~', '#', '\\', '<', '&', '>', '-', '*'];
-
-fn line() -> impl Strategy<Value = String> {
+pub fn line() -> impl Strategy<Value = String> {
     prop::collection::vec(prop::sample::select(super::inline::TEXT_LINE), 0..6).prop_map(|c| c.into_iter().collect())
 }
 
@@ -16,8 +14,7 @@ fn paragraph() -> impl Strategy<Value = Node> {
 
 fn code_block() -> impl Strategy<Value = Node> {
     let language = prop::sample::select(vec!["", "rust", "stat", "callout x", "a`b", "c++", "x\\y", "a&b"]);
-    let body = prop::collection::vec(prop::sample::select(CODE), 0..12).prop_map(|c| c.into_iter().collect::<String>());
-    (language, body).prop_map(|(language, body)| {
+    (language, super::extra::code_text()).prop_map(|(language, body)| {
         let content = if body.is_empty() { Vec::new() } else { vec![Node::text(&body, Vec::new())] };
         node("codeBlock", &[("language", Value::from(language))], content)
     })
@@ -48,21 +45,6 @@ fn leaf() -> impl Strategy<Value = Node> {
         (line(), line(), prop::sample::select(vec!["a.png", "a b.png", "", "x(1)"])).prop_map(|(alt, title, src)| {
             node("image", &[("src", src.into()), ("alt", alt.into()), ("title", title.into())], Vec::new())
         });
-    let stat = (line(), line(), line()).prop_map(|(l, v, d)| {
-        node("stat", &[("label", l.into()), ("value", v.into()), ("delta", d.into())], Vec::new())
-    });
-    let chart = (any::<bool>(), line(), prop::collection::vec(line(), 0..3), -5i64..50, any::<bool>()).prop_map(
-        |(bar, title, labels, n, float)| {
-            let point = if float { json!(n as f64 / 4.0) } else { json!(n) };
-            let series = json!([{"name": "web", "data": [point, 1]}]);
-            let kind = if bar { "bar" } else { "line" };
-            node(
-                "chart",
-                &[("kind", kind.into()), ("title", title.into()), ("labels", json!(labels)), ("series", series)],
-                vec![],
-            )
-        },
-    );
     let heading = (1..4i64, inline()).prop_map(|(level, content)| node("heading", &[("level", level.into())], content));
     prop_oneof![
         6 => paragraph(),
@@ -71,8 +53,9 @@ fn leaf() -> impl Strategy<Value = Node> {
         1 => Just(node("horizontalRule", &[], Vec::new())),
         1 => image,
         1 => table(),
-        1 => stat,
-        1 => chart,
+        1 => super::extra::stat(),
+        1 => super::extra::chart(),
+        1 => super::extra::diagram(),
     ]
 }
 
@@ -102,7 +85,8 @@ pub fn block() -> impl Strategy<Value = Node> {
                 &[("start", start.into())],
                 c
             )),
-            prop::collection::vec(item("taskItem", inner), 1..3).prop_map(|c| node("taskList", &[], c)),
+            prop::collection::vec(item("taskItem", inner.clone()), 1..3).prop_map(|c| node("taskList", &[], c)),
+            super::extra::columns(inner),
         ]
     })
 }

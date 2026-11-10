@@ -1,0 +1,19 @@
+{
+  "name": "read-blocks-schema-2",
+  "markdown": "```mermaid\nA --> B\n```\n\n````columns\n```column title=\"A\"\nx\n```\n\n```column\ny ==z==\n```\n````",
+  "op": {
+    "op": "read_blocks"
+  },
+  "want_blocks": [
+    {
+      "id": "b000000000",
+      "markdown": "```mermaid\nA --> B\n```",
+      "type": "diagram"
+    },
+    {
+      "id": "b000000001",
+      "markdown": "````columns\n```column title=\"A\"\nx\n```\n\n```column\ny ==z==\n```\n````",
+      "type": "columns"
+    }
+  ]
+}

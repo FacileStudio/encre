@@ -3,7 +3,7 @@ use serde_json::Value;
 use std::sync::OnceLock;
 
 /// The schema version of documents this crate writes.
-pub const SCHEMA_VERSION: u32 = 1;
+pub const SCHEMA_VERSION: u32 = 2;
 
 /// Node types the Rust projections handle, in `spec/schema.json` order.
 pub const NODE_KINDS: &[&str] = &[
@@ -26,12 +26,16 @@ pub const NODE_KINDS: &[&str] = &[
     "callout",
     "stat",
     "chart",
+    "diagram",
+    "columns",
+    "column",
     "text",
     "hardBreak",
+    "badge",
 ];
 
 /// Mark types the Rust projections handle, in rank order.
-pub const MARK_KINDS: &[&str] = &["link", "bold", "italic", "strike", "code"];
+pub const MARK_KINDS: &[&str] = &["link", "bold", "italic", "strike", "highlight", "code"];
 
 /// The parsed `spec/schema.json`.
 #[derive(Debug, Deserialize)]
@@ -103,6 +107,8 @@ pub struct AttrSpec {
     /// Whether the attribute must be present and non-null.
     #[serde(default)]
     pub required: bool,
+    /// The schema version that added the attribute, when later than 1.
+    pub since: Option<u32>,
     /// Smallest allowed integer.
     pub min: Option<i64>,
     /// Largest allowed integer.

@@ -1,0 +1,9 @@
+{
+  "name": "append-columns",
+  "markdown": "# Choice\n\n> [!NOTE]\n> Pick one.",
+  "op": {
+    "op": "append",
+    "markdown": "```compare\n### Pros\nfast\n### Cons\nnew\n```"
+  },
+  "want_markdown": "# Choice\n\n```callout tone=\"info\"\nPick one.\n```\n\n````columns\n```column title=\"Pros\" tone=\"success\"\nfast\n```\n\n```column title=\"Cons\" tone=\"danger\"\nnew\n```\n````"
+}

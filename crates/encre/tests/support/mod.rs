@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 pub mod blocks;
+pub mod extra;
 pub mod inline;
 pub mod text;
 

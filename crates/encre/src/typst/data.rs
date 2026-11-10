@@ -18,8 +18,8 @@ fn strings(value: Option<&Value>) -> Vec<String> {
 
 /// A muse-typst metric card.
 pub fn stat(node: &Node) -> String {
-    let delta = node.attr_str("delta");
-    let sub = if delta.is_empty() { String::new() } else { format!(", sub: {}", quoted(delta)) };
+    let sub: Vec<&str> = [node.attr_str("delta"), node.attr_str("sub")].into_iter().filter(|s| !s.is_empty()).collect();
+    let sub = if sub.is_empty() { String::new() } else { format!(", sub: {}", quoted(&sub.join(" · "))) };
     format!("#metric({}, {}{sub})", quoted(node.attr_str("value")), quoted(node.attr_str("label")))
 }
 

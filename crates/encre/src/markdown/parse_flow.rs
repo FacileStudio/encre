@@ -1,6 +1,6 @@
 use super::md_tree::Md;
 use super::parse::{Reader, attr, empty_paragraph};
-use super::parse_inline::{self, Item};
+use super::parse_inline::{Item, Scan};
 use crate::model::Node;
 use pulldown_cmark::{Event, Tag};
 use serde_json::{Map, Value};
@@ -26,7 +26,7 @@ fn trimmed(mut nodes: Vec<Node>, start: bool, end: bool) -> Vec<Node> {
     if let Some(text) = nodes.last_mut().filter(|_| end).and_then(|n| n.text.as_mut()) {
         *text = text.trim_end_matches([' ', '\t']).to_owned();
     }
-    parse_inline::normalize(nodes)
+    normalize(nodes)
 }
 
 fn task_marker(item: &[Md]) -> Option<bool> {
@@ -51,7 +51,7 @@ pub fn html(children: &[Md]) -> Node {
         }
         content.push(Node::text(line, Vec::new()));
     }
-    Node::new("paragraph", Map::new(), parse_inline::normalize(content))
+    Node::new("paragraph", Map::new(), normalize(content))
 }
 
 impl Reader<'_> {
@@ -59,7 +59,7 @@ impl Reader<'_> {
     pub fn paragraph(&self, children: &[Md]) -> Vec<Node> {
         let keep = lone_backslash(children, self.source);
         let mut items = Vec::new();
-        parse_inline::convert(&children[..keep], &[], true, &mut items);
+        Scan { source: self.source, images: true }.convert(&children[..keep], &[], &mut items);
         let (mut blocks, mut current, mut after_image) = (Vec::new(), Vec::new(), false);
         for item in items {
             match item {
@@ -84,10 +84,11 @@ impl Reader<'_> {
         if content.first().is_none_or(|block| block.kind != "paragraph") {
             content.insert(0, empty_paragraph());
         }
-        match task {
+        let built = match task {
             Some(checked) => Node::new("taskItem", attr("checked", checked), content),
             None => Node::new("listItem", Map::new(), content),
-        }
+        };
+        self.stamped(vec![built], &item.range()).remove(0)
     }
 
     /// Converts a list; a bullet list is split into runs of task and plain items.
@@ -105,4 +106,21 @@ impl Reader<'_> {
             })
             .collect()
     }
+}
+
+/// Merges adjacent text nodes with equal marks and drops empty text.
+pub fn normalize(nodes: Vec<Node>) -> Vec<Node> {
+    let mut out: Vec<Node> = Vec::new();
+    for node in nodes {
+        if node.kind == "text" && node.text.as_deref().unwrap_or("").is_empty() {
+            continue;
+        }
+        match out.last_mut() {
+            Some(last) if last.kind == "text" && node.kind == "text" && last.marks == node.marks => {
+                last.text.get_or_insert_default().push_str(node.text.as_deref().unwrap_or(""));
+            }
+            _ => out.push(node),
+        }
+    }
+    out
 }

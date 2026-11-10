@@ -550,6 +550,122 @@
           "title": "Weekly signups"
         },
         "type": "chart"
+      },
+      {
+        "content": [
+          {
+            "text": "Status ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "tone": "success"
+            },
+            "content": [
+              {
+                "text": "Shipped",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " and ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": true,
+              "tone": "danger"
+            },
+            "content": [
+              {
+                "text": "failed",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " with ",
+            "type": "text"
+          },
+          {
+            "marks": [
+              {
+                "type": "highlight"
+              }
+            ],
+            "text": "marked text",
+            "type": "text"
+          },
+          {
+            "text": ".",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "language": "d2"
+        },
+        "content": [
+          {
+            "text": "client -> server",
+            "type": "text"
+          }
+        ],
+        "type": "diagram"
+      },
+      {
+        "content": [
+          {
+            "attrs": {
+              "title": "Plain side"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Left column",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "attrs": {
+              "title": "Good side",
+              "tone": "success"
+            },
+            "content": [
+              {
+                "content": [
+                  {
+                    "text": "Right column",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "columns"
+      },
+      {
+        "attrs": {
+          "delta": "+2",
+          "label": "Active repos",
+          "sub": "In production",
+          "value": "16"
+        },
+        "type": "stat"
       }
     ],
     "type": "doc"
@@ -562,5 +678,5 @@
     },
     "title": "Quarterly report"
   },
-  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"Quarterly report\", subtitle: none, doc-type: \"Report\", cover: false, footer: none)\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#heading(level: 1)[#\"Quarterly report\"]\n\n#heading(level: 2)[#\"Revenue and costs\"]\n\n#heading(level: 3)[#\"Details\"]\n\n#\"Plain text with \"#strong[#\"strong words\"]#\", \"#emph[#\"emphasis\"]#\", \"#strike[#\"struck out\"]#\", \"#raw(\"inline code\")#\", a \"#link(\"https://facile.studio\")[#\"link to Facile\"]#\" and \"#strong[#raw(\"bold code\")]#\".\"#linebreak()#\"After a hard break.\"\n\n#list([#\"First bullet\"], [#\"Second bullet\"\n\n#list([#\"Nested bullet\"])])\n\n#enum(start: 3, [#\"Third step\"], [#\"Fourth step\"])\n\n#list(marker: [], [#\"☐\"#h(0.4em)#\"Open task\"], [#\"☑\"#h(0.4em)#\"Finished task\"])\n\n#quote(block: true)[#\"Quoted wisdom\"\n\n#\"Second quoted line\"]\n\n#raw(block: true, lang: \"rust\", \"fn main() { println!(\\\"hello\\\"); }\")\n\n#divider()\n\n#figure(image(\"/images/flow.svg\", alt: \"Diagram of the flow\"), caption: [#\"Flow caption\"])\n\n#emph[#\"Missing picture alt\"]\n\n#table(columns: 3, align: (left, center, right,), table.header([#\"Region\"], [#\"Sales\"], [#\"Growth\"]), [#\"North\"], [#\"1200\"], [#\"+4%\"], [#\"South\"], [#\"900\"], [#\"-2%\"])\n\n#alert([#\"Run the gate \"#strong[#\"first\"]#\".\"], tone: \"warning\", title: \"Before you deploy\")\n\n#metric(\"12 400 €\", \"Monthly revenue\", sub: \"+4%\")\n\n#figure(table(columns: 3, table.header([], [#\"Monday\"], [#\"Tuesday\"]), [#\"website\"], [#\"3\"], [#\"5.5\"]), caption: [#\"Weekly signups\"])\n"
+  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"Quarterly report\", subtitle: none, doc-type: \"Report\", cover: false, footer: none)\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#heading(level: 1)[#\"Quarterly report\"]\n\n#heading(level: 2)[#\"Revenue and costs\"]\n\n#heading(level: 3)[#\"Details\"]\n\n#\"Plain text with \"#strong[#\"strong words\"]#\", \"#emph[#\"emphasis\"]#\", \"#strike[#\"struck out\"]#\", \"#raw(\"inline code\")#\", a \"#link(\"https://facile.studio\")[#\"link to Facile\"]#\" and \"#strong[#raw(\"bold code\")]#\".\"#linebreak()#\"After a hard break.\"\n\n#list([#\"First bullet\"], [#\"Second bullet\"\n\n#list([#\"Nested bullet\"])])\n\n#enum(start: 3, [#\"Third step\"], [#\"Fourth step\"])\n\n#list(marker: [], [#\"☐\"#h(0.4em)#\"Open task\"], [#\"☑\"#h(0.4em)#\"Finished task\"])\n\n#quote(block: true)[#\"Quoted wisdom\"\n\n#\"Second quoted line\"]\n\n#raw(block: true, lang: \"rust\", \"fn main() { println!(\\\"hello\\\"); }\")\n\n#divider()\n\n#figure(image(\"/images/flow.svg\", alt: \"Diagram of the flow\"), caption: [#\"Flow caption\"])\n\n#emph[#\"Missing picture alt\"]\n\n#table(columns: 3, align: (left, center, right,), table.header([#\"Region\"], [#\"Sales\"], [#\"Growth\"]), [#\"North\"], [#\"1200\"], [#\"+4%\"], [#\"South\"], [#\"900\"], [#\"-2%\"])\n\n#alert([#\"Run the gate \"#strong[#\"first\"]#\".\"], tone: \"warning\", title: \"Before you deploy\")\n\n#metric(\"12 400 €\", \"Monthly revenue\", sub: \"+4%\")\n\n#figure(table(columns: 3, table.header([], [#\"Monday\"], [#\"Tuesday\"]), [#\"website\"], [#\"3\"], [#\"5.5\"]), caption: [#\"Weekly signups\"])\n\n#\"Status \"#badge(\"Shipped\", tone: \"success\")#\" and \"#box[#status-dot(tone: \"danger\")#h(0.3em)#\"failed\"]#\" with \"#highlight[#\"marked text\"]#\".\"\n\n#block(width: 100%)[#text(size: 0.8em, weight: \"medium\")[#\"d2\"]\n#raw(block: true, \"client -> server\")]\n\n#grid(columns: 2, gutter: 1em, [#strong[#\"Plain side\"]\n\n#\"Left column\"], [#alert([#\"Right column\"], tone: \"success\", title: \"Good side\")])\n\n#metric(\"16\", \"Active repos\", sub: \"+2 · In production\")\n"
 }

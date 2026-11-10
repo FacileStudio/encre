@@ -1,0 +1,135 @@
+{
+  "name": "v1-custom",
+  "markdown": "```callout tone=\"warning\" title=\"Before you deploy\"\nRun the gate **first**.\n\n- a list\n```\n\n```callout\nDefault tone.\n```\n\n```stat\n{\"label\": \"Revenue\", \"value\": \"12 400 €\", \"delta\": \"+4%\"}\n```\n\n```chart\n{\"kind\": \"line\", \"title\": \"Signups\", \"labels\": [\"Mon\", \"Tue\"], \"series\": [{\"name\": \"web\", \"data\": [3, 5.5]}, {\"name\": \"app\", \"data\": [-1, 0]}]}\n```\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "callout",
+        "attrs": {
+          "id": "y000000001",
+          "tone": "warning",
+          "title": "Before you deploy"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "attrs": {
+              "id": "y000000002"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Run the gate "
+              },
+              {
+                "type": "text",
+                "text": "first",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "."
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "attrs": {
+              "id": "y000000003"
+            },
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "id": "y000000004"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "attrs": {
+                      "id": "y000000005"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "a list"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "callout",
+        "attrs": {
+          "id": "y000000006"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "attrs": {
+              "id": "y000000007"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Default tone."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "attrs": {
+          "id": "y000000008",
+          "label": "Revenue",
+          "value": "12 400 €",
+          "delta": "+4%"
+        }
+      },
+      {
+        "type": "chart",
+        "attrs": {
+          "id": "y000000009",
+          "kind": "line",
+          "title": "Signups",
+          "labels": [
+            "Mon",
+            "Tue"
+          ],
+          "series": [
+            {
+              "data": [
+                3,
+                5.5
+              ],
+              "name": "web"
+            },
+            {
+              "data": [
+                -1,
+                0
+              ],
+              "name": "app"
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000010"
+        }
+      }
+    ]
+  }
+}

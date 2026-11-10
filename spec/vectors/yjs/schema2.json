@@ -1,0 +1,214 @@
+{
+  "name": "schema2",
+  "markdown": "```callout tone=\"warning\"\nRead ==this== first.\n```\n\nRelease [badge:success Shipped] and [status:pending], ==**bold** highlight==\n\n```mermaid\nflowchart LR\n  A --> B\n```\n\n````columns\n```column title=\"Pros\" tone=\"success\"\n- fast\n```\n\n```column\nplain [badge:accent x]\n```\n````\n\n```stat\n{\"label\": \"Active\", \"value\": \"16\", \"delta\": \"\", \"sub\": \"In production\"}\n```\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "callout",
+        "attrs": {
+          "id": "y000000001",
+          "tone": "warning"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "attrs": {
+              "id": "y000000002"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Read "
+              },
+              {
+                "type": "text",
+                "text": "this",
+                "marks": [
+                  {
+                    "type": "highlight"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " first."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000003"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Release "
+          },
+          {
+            "type": "badge",
+            "attrs": {
+              "tone": "success"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Shipped"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " and "
+          },
+          {
+            "type": "badge",
+            "attrs": {
+              "tone": "warning",
+              "dot": true
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "pending"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ", "
+          },
+          {
+            "type": "text",
+            "text": "bold",
+            "marks": [
+              {
+                "type": "bold"
+              },
+              {
+                "type": "highlight"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " highlight",
+            "marks": [
+              {
+                "type": "highlight"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "diagram",
+        "attrs": {
+          "id": "y000000004"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "flowchart LR\n  A --> B"
+          }
+        ]
+      },
+      {
+        "type": "columns",
+        "attrs": {
+          "id": "y000000005"
+        },
+        "content": [
+          {
+            "type": "column",
+            "attrs": {
+              "id": "y000000006",
+              "title": "Pros",
+              "tone": "success"
+            },
+            "content": [
+              {
+                "type": "bulletList",
+                "attrs": {
+                  "id": "y000000007"
+                },
+                "content": [
+                  {
+                    "type": "listItem",
+                    "attrs": {
+                      "id": "y000000008"
+                    },
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "attrs": {
+                          "id": "y000000009"
+                        },
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "fast"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "column",
+            "attrs": {
+              "id": "y000000010"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "attrs": {
+                  "id": "y000000011"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "plain "
+                  },
+                  {
+                    "type": "badge",
+                    "attrs": {
+                      "tone": "accent"
+                    },
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "attrs": {
+          "id": "y000000012",
+          "label": "Active",
+          "value": "16",
+          "sub": "In production"
+        }
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000013"
+        }
+      }
+    ]
+  }
+}

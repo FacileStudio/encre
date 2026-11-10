@@ -1,0 +1,154 @@
+{
+  "name": "gfm-alert-tones",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "title": "",
+          "tone": "success"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "a",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "info"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "b",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "warning"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "c",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "danger"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "d",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "success"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "e",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "success"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "f",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "danger"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "g",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      },
+      {
+        "attrs": {
+          "title": "",
+          "tone": "danger"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "h",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "> [!TIP]\n> a\n\n> [!IMPORTANT]\n> b\n\n> [!WARNING]\n> c\n\n> [!CAUTION]\n> d\n\n> [!PROS]\n> e\n\n> [!ADVANTAGE]\n> f\n\n> [!CONS]\n> g\n\n> [!drawback]\n> h",
+  "canonical": "```callout tone=\"success\"\na\n```\n\n```callout tone=\"info\"\nb\n```\n\n```callout tone=\"warning\"\nc\n```\n\n```callout tone=\"danger\"\nd\n```\n\n```callout tone=\"success\"\ne\n```\n\n```callout tone=\"success\"\nf\n```\n\n```callout tone=\"danger\"\ng\n```\n\n```callout tone=\"danger\"\nh\n```"
+}

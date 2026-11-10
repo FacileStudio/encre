@@ -1,4 +1,5 @@
 use super::md_tree::Md;
+use super::parse_span::{Part, parts};
 use crate::model::{Mark, Node};
 use crate::schema::schema;
 use pulldown_cmark::{Event, Tag};
@@ -49,14 +50,29 @@ fn leaf(event: &Event, marks: &[Mark]) -> Option<Item> {
     })
 }
 
-/// Converts inline nodes to items, carrying `marks` down. With `images` false, an image becomes its alt text.
-pub fn convert(nodes: &[Md], marks: &[Mark], images: bool, out: &mut Vec<Item>) {
-    for node in nodes {
-        let (tag, children) = match node {
-            Md::Leaf { event, .. } => {
-                out.extend(leaf(event, marks));
-                continue;
+/// Converts inline markdown nodes, reading badges and highlights from the `source` text around them.
+pub struct Scan<'s> {
+    pub source: &'s str,
+    pub images: bool,
+}
+
+impl Scan<'_> {
+    /// Converts inline nodes to items, carrying `marks` down. With `images` false, an image becomes its alt text.
+    pub fn convert(&self, nodes: &[Md], marks: &[Mark], out: &mut Vec<Item>) {
+        let highlighted = with_mark(marks, Mark::new("highlight", Map::new()));
+        for part in parts(nodes, self.source) {
+            let marks = if part.highlighted() { &highlighted[..] } else { marks };
+            match part {
+                Part::Text(value, _) => out.push(text(&value, marks)),
+                Part::Badge(badge) => out.push(Item::Inline(badge)),
+                Part::Node(node, _) => self.node(node, marks, out),
             }
+        }
+    }
+
+    fn node(&self, node: &Md, marks: &[Mark], out: &mut Vec<Item>) {
+        let (tag, children) = match node {
+            Md::Leaf { event, .. } => return out.extend(leaf(event, marks)),
             Md::Block { tag, children, .. } => (tag, children),
         };
         let mark = match tag {
@@ -64,32 +80,19 @@ pub fn convert(nodes: &[Md], marks: &[Mark], images: bool, out: &mut Vec<Item>) 
             Tag::Strong => Mark::new("bold", Map::new()),
             Tag::Strikethrough => Mark::new("strike", Map::new()),
             Tag::Link { dest_url, title, .. } => Mark::new("link", pairs(&[("href", dest_url), ("title", title)])),
-            Tag::Image { dest_url, title, .. } if images => {
-                out.push(Item::Image(image(dest_url, &node.plain(), title)));
-                continue;
+            Tag::Image { dest_url, title, .. } if self.images => {
+                return out.push(Item::Image(image(dest_url, &node.plain(), title)));
             }
-            _ => {
-                out.push(text(&node.plain(), marks));
-                continue;
-            }
+            _ => return out.push(text(&node.plain(), marks)),
         };
-        convert(children, &with_mark(marks, mark), images, out);
+        self.convert(children, &with_mark(marks, mark), out);
     }
-}
 
-/// Merges adjacent text nodes with equal marks and drops empty text.
-pub fn normalize(nodes: Vec<Node>) -> Vec<Node> {
-    let mut out: Vec<Node> = Vec::new();
-    for node in nodes {
-        if node.kind == "text" && node.text.as_deref().unwrap_or("").is_empty() {
-            continue;
-        }
-        match out.last_mut() {
-            Some(last) if last.kind == "text" && node.kind == "text" && last.marks == node.marks => {
-                last.text.get_or_insert_default().push_str(node.text.as_deref().unwrap_or(""));
-            }
-            _ => out.push(node),
-        }
+    /// Converts inline nodes where no image block can appear.
+    pub fn inline(&self, nodes: &[Md]) -> Vec<Node> {
+        let mut items = Vec::new();
+        self.convert(nodes, &[], &mut items);
+        let nodes = items.into_iter().filter_map(|item| if let Item::Inline(n) = item { Some(n) } else { None });
+        super::parse_flow::normalize(nodes.collect())
     }
-    out
 }

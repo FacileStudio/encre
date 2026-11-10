@@ -1,0 +1,41 @@
+{
+  "name": "gfm-alert-note",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "title": "",
+          "tone": "info"
+        },
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Read the ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ],
+                "text": "plan",
+                "type": "text"
+              },
+              {
+                "text": " first.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "callout"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "> [!NOTE]\n> Read the **plan** first.",
+  "canonical": "```callout tone=\"info\"\nRead the **plan** first.\n```"
+}

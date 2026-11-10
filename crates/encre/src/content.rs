@@ -20,16 +20,27 @@ fn split_terms(expr: &str) -> Vec<String> {
     terms
 }
 
+fn range(term: &str) -> Option<(&str, usize, usize)> {
+    let (body, bounds) = term.strip_suffix('}')?.split_once('{')?;
+    let (min, max) = bounds.split_once(',').unwrap_or((bounds, bounds));
+    Some((body, min.trim().parse().ok()?, max.trim().parse().unwrap_or(usize::MAX)))
+}
+
+fn quantified(term: &str) -> (&str, usize, usize) {
+    match term.chars().last() {
+        Some('*') => (&term[..term.len() - 1], 0, usize::MAX),
+        Some('+') => (&term[..term.len() - 1], 1, usize::MAX),
+        Some('?') => (&term[..term.len() - 1], 0, 1),
+        Some('}') => range(term).unwrap_or((term, 1, 1)),
+        _ => (term, 1, 1),
+    }
+}
+
 fn parse(expr: &str) -> Vec<Term> {
     split_terms(expr)
         .into_iter()
         .map(|term| {
-            let (body, min, max) = match term.chars().last() {
-                Some('*') => (&term[..term.len() - 1], 0, usize::MAX),
-                Some('+') => (&term[..term.len() - 1], 1, usize::MAX),
-                Some('?') => (&term[..term.len() - 1], 0, 1),
-                _ => (term.as_str(), 1, 1),
-            };
+            let (body, min, max) = quantified(&term);
             let names = body.trim_matches(['(', ')']).split('|').map(|name| name.trim().to_owned()).collect();
             Term { names, min, max }
         })

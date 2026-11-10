@@ -27,9 +27,9 @@ fn link() -> impl Strategy<Value = Mark> {
 }
 
 fn marks() -> impl Strategy<Value = Vec<Mark>> {
-    (prop::option::weighted(0.15, link()), prop::collection::vec(any::<bool>(), 4)).prop_map(|(link, flags)| {
+    (prop::option::weighted(0.15, link()), prop::collection::vec(any::<bool>(), 5)).prop_map(|(link, flags)| {
         let mut marks: Vec<Mark> = link.into_iter().collect();
-        for (on, kind) in flags.into_iter().zip(["bold", "italic", "strike", "code"]) {
+        for (on, kind) in flags.into_iter().zip(["bold", "italic", "strike", "highlight", "code"]) {
             if on {
                 marks.push(Mark::new(kind, Map::new()));
             }
@@ -42,6 +42,7 @@ fn piece() -> impl Strategy<Value = Node> {
     prop_oneof![
         8 => (text(), marks()).prop_map(|(t, m)| Node::text(&t, m)),
         1 => Just(Node::new("hardBreak", Map::new(), Vec::new())),
+        1 => super::extra::badge(),
     ]
 }
 

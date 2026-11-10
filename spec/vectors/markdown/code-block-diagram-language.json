@@ -1,0 +1,21 @@
+{
+  "name": "code-block-diagram-language",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "mermaid"
+        },
+        "content": [
+          {
+            "text": "not a diagram",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "~~~mermaid\nnot a diagram\n~~~"
+}

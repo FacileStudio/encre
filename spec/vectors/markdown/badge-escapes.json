@@ -1,0 +1,42 @@
+{
+  "name": "badge-escapes",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "info"
+            },
+            "content": [
+              {
+                "text": "a ] b",
+                "type": "text"
+              }
+            ],
+            "type": "badge"
+          },
+          {
+            "text": " and ",
+            "type": "text"
+          },
+          {
+            "attrs": {
+              "dot": false,
+              "tone": "info"
+            },
+            "type": "badge"
+          },
+          {
+            "text": " and text [badge:info x]",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "[badge:info a \\] b] and [badge:info] and text \\[badge:info x\\]"
+}

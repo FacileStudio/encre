@@ -1,0 +1,22 @@
+{
+  "name": "compare-single-is-code",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "compare"
+        },
+        "content": [
+          {
+            "text": "### Only\none",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```compare\n### Only\none\n```",
+  "canonical": "~~~compare\n### Only\none\n~~~"
+}

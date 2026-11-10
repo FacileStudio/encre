@@ -1,0 +1,33 @@
+{
+  "name": "diagram-d2-dot",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "d2"
+        },
+        "content": [
+          {
+            "text": "x -> y",
+            "type": "text"
+          }
+        ],
+        "type": "diagram"
+      },
+      {
+        "attrs": {
+          "language": "dot"
+        },
+        "content": [
+          {
+            "text": "digraph { a -> b }",
+            "type": "text"
+          }
+        ],
+        "type": "diagram"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```d2\nx -> y\n```\n\n```dot\ndigraph { a -> b }\n```"
+}

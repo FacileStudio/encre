@@ -1,0 +1,40 @@
+{
+  "name": "badge-not-in-code",
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "marks": [
+              {
+                "type": "code"
+              }
+            ],
+            "text": "[badge:info x]",
+            "type": "text"
+          },
+          {
+            "text": " and",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "language": ""
+        },
+        "content": [
+          {
+            "text": "[status:done]",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "`[badge:info x]` and\n\n```\n[status:done]\n```",
+  "canonical": "` [badge:info x] ` and\n\n```\n[status:done]\n```"
+}

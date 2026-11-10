@@ -1,0 +1,10 @@
+{
+  "name": "patch-badge",
+  "markdown": "Release [badge:warning Pending] today.",
+  "op": {
+    "op": "patch",
+    "find": "[badge:warning Pending]",
+    "replace": "[status:done]"
+  },
+  "want_markdown": "Release [status:done] today."
+}

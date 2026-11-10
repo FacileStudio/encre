@@ -1,4 +1,4 @@
-# encre format, version 1
+# encre format, version 2
 
 This document is normative. `schema.json` is the machine-readable half of section 1. When this file and an implementation disagree, the implementation is wrong. The words MUST, MUST NOT and MAY are used in their RFC 2119 sense. It covers the format only: renderings such as Typst and PDF, the OpenUI adapter and the test vector files are described in `docs/`.
 
@@ -34,10 +34,18 @@ A document is a ProseMirror JSON tree that validates against `spec/schema.json`.
 | `callout` | block | `block+` | `id`, `tone`: neutral, info, success, warning or danger, `title` |
 | `stat` | block | | `id`, `label`, `value`, `delta` |
 | `chart` | block | | `id`, `kind` bar or line, `title`, `labels` (strings), `series` (`{name, data}` objects) |
+| `diagram` | block | `text*`, no marks | `id`, `language`: mermaid, d2 or dot (default mermaid) |
+| `columns` | block | `column{2,4}` | `id` |
+| `column` | | `block+` | `id`, `title`, `tone`: neutral, success, danger, warning or info |
 | `text` | inline | | |
 | `hardBreak` | inline | | |
+| `badge` | inline | `text*`, no marks; takes no marks itself | `tone`: neutral, accent, info, success, warning or danger, `dot` |
 
-Marks, in rank order: `link` (`href` required, `title`), `bold`, `italic`, `strike`, `code`. `code` combines with every other mark. Underline is not in v1.
+`stat` also takes `sub`, a subtitle shown under the value, separate from `delta`.
+
+Marks, in rank order: `link` (`href` required, `title`), `bold`, `italic`, `strike`, `highlight`, `code`. `code` combines with every other mark. Underline is not in the schema.
+
+`schema.json` marks what version 2 added with `"since": 2`: the nodes `diagram`, `columns`, `column` and `badge`, the mark `highlight` and the attribute `stat.sub`. A reader treats `since` as information only, except where section 2.1 says otherwise.
 
 ### 1.2 Attribute types
 
@@ -59,10 +67,10 @@ An attribute that is absent takes its default. An attribute whose schema default
 
 A valid document also follows these rules. They keep the markdown projection lossless.
 
-1. Text is never empty. Text outside `codeBlock` contains no line break and no control character other than tab. Text inside `codeBlock` contains no control character other than tab and line feed.
+1. Text is never empty. Text outside `codeBlock` and `diagram` contains no line break and no control character other than tab. Text inside them contains no control character other than tab and line feed.
 2. Two adjacent text nodes never carry the same marks: they are one text node.
 3. A text node's marks are in rank order, each type at most once.
-4. `hardBreak` carries no marks. The editor strips them.
+4. `hardBreak` and `badge` carry no marks. The editor strips them from hard breaks.
 5. Every row of a table has the same number of cells. The first row holds only `tableHeader` cells and the other rows only `tableCell` cells. Every cell of a column has the same `align`.
 6. In a table cell, text carrying `code` never holds a backslash directly before a pipe (`\|`): a GFM cell cannot write it.
 7. Text carrying both `link` and `code` never holds `]:`: at the start of a paragraph it would read as a link reference definition.
@@ -87,17 +95,22 @@ The `default` fragment holds what y-prosemirror (`@tiptap/y-tiptap` 3.3.0, the b
 
 A change bumps `version` in `schema.json` and adds a function to `crates/encre/src/migrate.rs` that upgrades a stored document from the previous version. No change reinterprets an existing document silently.
 
-## 2. Facile Markdown v1
+Version 2 only adds node types, a mark and an optional attribute, so every valid version 1 document is a valid version 2 document, and the migration from 1 is the identity. A test checks it on every vector document.
+
+## 2. Facile Markdown v2
 
 Facile Markdown is CommonMark 0.31 with the GFM extensions for tables, task list items and strikethrough (`~~a~~`, and `~a~` on input), plus the rules below. Autolinks are the CommonMark ones (`<https://…>`); bare URLs stay text. The reference reader is pulldown-cmark. A parser MUST accept any input and MUST NOT fail on malformed custom blocks: they become code blocks.
 
 ### 2.1 Custom blocks
 
-A custom block is a fenced code block opened with backticks whose info string's first word is a custom block name: `callout`, `stat` or `chart`. A tilde fence is always a code block.
+A custom block is a fenced code block opened with backticks whose info string's first word is a custom block name: `callout`, `stat`, `chart`, `columns`, `mermaid`, `d2` or `dot`, and the input aliases `compare`, `pros-cons` and `vs`. A tilde fence is always a code block.
 
 - **Attributes** follow the name as `key="value"`, separated by spaces. Double quotes are required. `\"` and `\\` are the only escapes, and the parser reads them from the raw source line, before CommonMark processes the info string. An attribute left out takes its default. A writer omits attributes equal to their default and writes the rest in schema order.
 - **A block with children** (`callout`) holds Facile Markdown inside its fence. The fence is one backtick longer than the longest backtick run inside it, and at least three.
-- **A block with data only** (`stat`, `chart`) holds one JSON object inside its fence. A writer writes every attribute but `id`, keys in schema order, with `", "` and `": "` separators. A reader accepts keys in any order and fills missing ones with defaults.
+- **A block with data only** (`stat`, `chart`) holds one JSON object inside its fence. A writer writes every attribute but `id`, keys in schema order, with `", "` and `": "` separators, and leaves out an attribute marked `since` when it equals its default. A reader accepts keys in any order and fills missing ones with defaults, except attributes marked `since`, which it sets only when the object gives them.
+- **A diagram** is a fence whose info string is exactly `mermaid`, `d2` or `dot`: that word is the `language`, and the fence content is the text, verbatim, as for a code block. Extra words in the info string make it a code block.
+- **Columns** are a `columns` fence holding two to four `column` fences and nothing else. A `column` fence takes `title` and `tone` as attributes and holds Facile Markdown. Every fence follows the length rule of blocks with children, so the outer fence is longer than any column fence. Anything else inside, or fewer than two or more than four columns, makes the block a code block.
+- **Compare aliases.** A `compare`, `pros-cons` or `vs` fence with no attributes is read as `columns`; a writer always writes `columns`. Its content is split into sections at lines starting with `### `, or, when that gives fewer than two sections, at lines of three or more `-`. A section's first line, without leading `#`, is the column title (backticks become `'`); each other non-blank line becomes its own block. A title holding `advantage`, `pro`, `positive`, `plus` or `benefit` (any case) gives tone `success`; else one holding `drawback`, `con`, `negative`, `minus`, `risk` or `issue` gives `danger`; else `neutral`. Fewer than two or more than four sections make it a code block.
 - An unknown attribute, a duplicate attribute, an attribute value outside its type, a key outside the schema or JSON that does not parse makes the block a code block whose language is the info string and whose text is the fence content.
 - A code block whose language's first word is a custom block name is written with a tilde fence, so it stays a code block.
 
@@ -117,9 +130,30 @@ sh scripts/check.sh
 ```chart
 {"kind": "bar", "title": "Signups", "labels": ["Mon", "Tue"], "series": [{"name": "web", "data": [3, 5]}]}
 ```
+
+```mermaid
+flowchart LR
+  A[CLI] --> B[Server]
+```
+
+````columns
+```column title="Advantages" tone="success"
+Fast to ship
+```
+
+```column title="Drawbacks" tone="danger"
+- Two copies
+```
+````
 ```````
 
-### 2.2 Dialect rules
+### 2.2 Inline syntax
+
+- **Highlight** is `==text==`. A delimiter is a run of exactly two `=` written bare (not escaped, not from a character reference). An opener is followed by a character other than literal whitespace, a closer is preceded by one, and they pair left to right within one inline container, like the other emphasis marks. A literal `==` is written with backslashes.
+- **Badge** is `[badge:<tone> <text>]`, or `[badge:<tone>]` when the text is empty. `primary` is read as `accent`. A **status** is a badge with `dot`: `[status:<state>]` gives a dot badge whose text is the state; `[status:<state> <text>]` gives one with that text. States: `active`, `done`, `ready` and `success` are `success`; `error`, `failed`, `stopped` and `dead` are `danger`; `pending`, `wip`, `running` and `loading` are `warning`; a tone name is itself. The brackets must be written bare; the text runs to the first bare `]` and holds no line break or other inline syntax, and backslash escapes and character references inside it give literal characters. An unknown tone or state leaves the brackets as text. Code spans and code blocks never hold badges. A writer writes `[status:<state>]` when the text is a state of the badge's tone, else `[status:<tone> <text>]`, and escapes the text.
+- **GFM alerts.** A blockquote whose first line is exactly `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`, `[!PROS]`, `[!ADVANTAGE]`, `[!CONS]` or `[!DRAWBACK]` (any case) is a `callout` with an empty title, so the app shows its own localized title. NOTE and IMPORTANT give `info`; TIP, PROS and ADVANTAGE give `success`; WARNING gives `warning`; CAUTION, CONS and DRAWBACK give `danger`. The rest of the blockquote is the callout's content. A writer always writes a `callout` fence. Status markers at the start of list items (`[+]`, `[-]`, `✅`, ...) are text.
+
+### 2.3 Dialect rules
 
 1. **Raw HTML is text.** An HTML block becomes a paragraph holding its lines as text, one hard break between lines. Inline HTML is kept as literal text, with one exception: `<br>`, `<br/>` and `<br />` are a hard break.
 2. **Empty paragraph.** A lone backslash alone on the last line of a paragraph is removed. So a paragraph holding only `\` is an empty paragraph, and a paragraph ending in a hard break is written with a final `\` line. A literal backslash is always written `\\`.
@@ -127,9 +161,9 @@ sh scripts/check.sh
 4. **Lists.** A GFM list whose items are all task items is a `taskList`. A list mixing task and plain items is split into runs. Adjacent lists are written with alternating markers (`-` then `*`, `1.` then `1)`) so they stay separate.
 5. **Images.** A paragraph that holds only images and whitespace becomes image blocks. An image inside other inline content splits the paragraph around it.
 6. **Mapped constructs.** Setext headings are headings. Headings of level 4 to 6 become level 3. Indented code is a code block. Reference links and images are resolved. A soft line break becomes a space. A task checkbox in an ordered list is dropped. An empty list item, blockquote or callout gets one empty paragraph. A list item that starts with another block gets an empty first paragraph.
-7. Footnotes, math, front matter, GFM alerts and literal autolinks are not recognized.
+7. Footnotes, math, front matter and literal autolinks are not recognized.
 
-### 2.3 Canonical serialization
+### 2.4 Canonical serialization
 
 The same tree always gives the same bytes.
 
@@ -139,7 +173,7 @@ The same tree always gives the same bytes.
 - Code block content is written verbatim. The fence is one character longer than the longest run of its character in the content, and at least three.
 - **Escaping.** A writer first escapes only what is likely to change the parse, then parses each inline container on its own and compares. When the parse differs, it writes that container in full form: every ASCII punctuation character backslash-escaped, and a character that would be lost or would break a delimiter written as a decimal character reference (`&#32;`). Finally it parses the whole document; when that differs, it writes every container in full form.
 
-### 2.4 Round-trip laws
+### 2.5 Round-trip laws
 
 Each is a property test over generated input with 10 000 cases.
 
@@ -147,9 +181,19 @@ Each is a property test over generated input with 10 000 cases.
 2. `serialize(parse(md))` is a fixed point: applying it twice gives the same bytes as once.
 3. `serialize_commonmark(doc)` parses with a CommonMark parser without error.
 
+### 2.6 Validating markdown
+
+Reading is total: any text gives a document. That document can still break a rule of section 1.3, because Facile Markdown can say things the tree forbids. Validating markdown reads it, then validates the tree, and places each error at the source line and column (1-based, in characters) where the block that holds it starts. The constructs that reach a refusal are:
+
+- a control character other than tab and line feed (NUL and escape included), in text or code, which rule 1 refuses;
+- a code span holding `\\|` in a table cell: GFM turns `\|` into `|`, so the code text holds `\|`, which rule 6 refuses. A plain `\|` gives a pipe and is valid;
+- linked code holding `]:`, such as ``see [`a]:b`](u)``, which rule 7 refuses. At the very start of a paragraph the same text is a link reference definition and disappears, so it is valid.
+
+Everything else normalizes: malformed custom blocks become code blocks, unknown badges stay text, and section 2.3 maps the rest.
+
 ## 3. CommonMark export
 
-`serialize_commonmark` writes Facile Markdown minus what only Facile Markdown readers understand: empty paragraphs and trailing hard breaks are dropped, hard breaks in headings become a space, and custom blocks stay fenced code blocks, which is how any other reader shows them.
+`serialize_commonmark` writes Facile Markdown minus what only Facile Markdown readers understand: empty paragraphs and trailing hard breaks are dropped, hard breaks in headings become a space, and `callout`, `stat` and `chart` stay fenced code blocks, which is how any other reader shows them. A `diagram` is the fenced code block it already is. `columns` become each column's title as a bold paragraph followed by its blocks. A badge becomes its text in brackets, and a highlight is plain text.
 
 ## 4. Agent operations
 
