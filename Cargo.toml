@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/encre", "crates/encre-wasm"]
+members = ["crates/encre", "crates/encre-cli", "crates/encre-wasm"]
 
 [workspace.package]
 version = "0.5.0"

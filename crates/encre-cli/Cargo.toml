@@ -1,0 +1,18 @@
+[package]
+name = "encre-cli"
+description = "The encre command-line tool: convert, validate, edit and render encre documents"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[[bin]]
+name = "encre"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+encre = { path = "../encre", features = ["openui", "pdf"] }
+serde_json = "1.0.154"
