@@ -1,0 +1,51 @@
+import type { CalloutTone } from './extensions/custom.js';
+
+/** Callout tones in schema order. */
+export const TONES: CalloutTone[] = ['neutral', 'info', 'success', 'warning', 'danger'];
+
+/** Interface copy of the encre editor. */
+export const labels = {
+  calloutTitle: "Titre de l'encadré",
+  tone: 'Ton',
+  tones: { neutral: 'Neutre', info: 'Information', success: 'Succès', warning: 'Attention', danger: 'Danger' },
+  statLabel: 'Libellé',
+  statValue: 'Valeur',
+  statDelta: 'Évolution',
+  chartTitle: 'Titre du graphique',
+  chartKind: 'Type',
+  chartBar: 'Barres',
+  chartLine: 'Courbe',
+  chartLabels: 'Étiquettes, séparées par des virgules',
+  chartSeries: 'Séries, une par ligne : nom: 1, 2, 3',
+  emptyChart: 'Aucune donnée',
+  toolbar: 'Mise en forme',
+  bold: 'Gras',
+  italic: 'Italique',
+  strike: 'Barré',
+  code: 'Code',
+  link: 'Lien',
+  linkPrompt: 'Adresse du lien',
+  paragraph: 'Texte',
+  heading: (level: number) => `Titre ${level}`,
+  bulletList: 'Liste à puces',
+  orderedList: 'Liste numérotée',
+  taskList: 'Liste de tâches',
+  blockquote: 'Citation',
+  codeBlock: 'Bloc de code',
+  horizontalRule: 'Séparateur',
+  table: 'Tableau',
+  callout: 'Encadré',
+  stat: 'Indicateur',
+  chart: 'Graphique',
+  image: 'Image',
+  imagePrompt: "Adresse de l'image",
+  undo: 'Annuler',
+  redo: 'Rétablir',
+  insert: 'Insérer',
+  slashEmpty: 'Aucun bloc ne correspond',
+  addRow: 'Ajouter une ligne',
+  addColumn: 'Ajouter une colonne',
+  deleteRow: 'Supprimer la ligne',
+  deleteColumn: 'Supprimer la colonne',
+  deleteTable: 'Supprimer le tableau'
+};
