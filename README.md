@@ -31,13 +31,13 @@ Rust, from a git tag. Features: `yjs` (Yjs layout and live operations), `pdf` (T
 
 ```toml
 [dependencies]
-encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.6.0", features = ["yjs", "pdf"] }
+encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.7.0", features = ["yjs", "pdf"] }
 ```
 
 Svelte, from the same tag:
 
 ```sh
-bun add "github:FacileStudio/encre#v0.6.0"
+bun add "github:FacileStudio/encre#v0.7.0"
 ```
 
 ### CLI
@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut doc = encre::markdown::parse("# Plan\n\nShip the **gate** first.")?;
     encre::assign_ids(&mut doc);
     encre::validate(&doc)?;
-    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.6.0".to_owned() })?;
+    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.7.0".to_owned() })?;
     println!("{}", encre::markdown::serialize(&doc));
     Ok(())
 }

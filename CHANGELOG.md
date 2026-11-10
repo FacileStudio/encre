@@ -4,6 +4,23 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.7.0] - 2026-11-10
+
+### Added
+
+- `Editor` image upload: an optional `onimage(file)` hook, called on pasted and dropped image
+  files and from a new "Image" slash and toolbar command that opens a file picker. The returned
+  `src` and `alt` become an `image` node at the caret or drop point. A local placeholder shows
+  while the hook runs. PNG, JPEG, GIF and WebP only (never SVG), capped by `maxImageBytes`;
+  refusals and failures reach `onerror`. Without `onimage` nothing changes.
+- `Editor` `presence` prop: `'inline'` (default, as before) or `'none'`, so an app can render
+  `Presence` itself, for example in its page header.
+- `IMAGE_TYPES`, `imageRefusal`, `ImageUpload` and `UploadedImage` exports.
+- `findBlocks`, `slashExtension` and `Toolbar` take an optional command list.
+- `.github/workflows/release.yml`: a `v*` tag builds the static linux amd64 and arm64 `encre`
+  binaries with `scripts/build-cli.sh` and publishes them with `checksums.txt` on the GitHub
+  release. `docs/cli.md` shows the Dockerfile download.
+
 ## [0.6.0] - 2026-11-10
 
 ### Added
@@ -86,6 +103,7 @@ the minor version.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.7.0]: https://github.com/FacileStudio/encre/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/FacileStudio/encre/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/FacileStudio/encre/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/FacileStudio/encre/compare/v0.3.0...v0.4.0
