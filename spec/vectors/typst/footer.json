@@ -1,0 +1,22 @@
+{
+  "doc": {
+    "content": [
+      {
+        "content": [
+          {
+            "text": "Body text.",
+            "type": "text"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "type": "doc"
+  },
+  "name": "footer",
+  "options": {
+    "footer": "Facile Docs · \"public\" page",
+    "title": "With a footer"
+  },
+  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"With a footer\", subtitle: none, doc-type: \"Document\", cover: false, footer: \"Facile Docs · \\\"public\\\" page\")\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#\"Body text.\"\n"
+}

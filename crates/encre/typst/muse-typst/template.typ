@@ -15,6 +15,7 @@
   logo: "assets/facile-logo.svg",
   header-logo: auto,
   header-logo-height: 0.38cm,
+  footer: [Facile Studio · Document de cadrage confidentiel],
   body
 ) = {
   let running-logo = if header-logo == auto { logo } else { header-logo }
@@ -82,7 +83,9 @@
               columns: (1fr, 1fr),
               align: (left, right),
               [
-                #text(size: 8pt, fill: fc-fg-muted, [Facile Studio · Document de cadrage confidentiel])
+                #if footer != none [
+                  #text(size: 8pt, fill: fc-fg-muted, footer)
+                ]
               ],
               [
                 #text(size: 8pt, fill: fc-fg-muted, [Page #page-num sur #total-pages])

@@ -207,4 +207,6 @@ Every failure is a typed error whose message lists what matched and how to narro
 
 The body sets `font: ("Satoshi", "DejaVu Sans")` and raw text `("Menlo", "DejaVu Sans Mono")`, so a compiler with muse-typst's own fonts installed uses them and the embedded compiler falls back to DejaVu.
 
-`spec/vectors/typst/<name>.json` holds `options` (`title`, `subtitle`, `doc_type`, `cover`, and `images` mapping an image `src` to the path the resolver answers), the `doc`, and the exact `want_typst`.
+`muse-doc` gets `footer: none` unless the caller gives a footer text, so a page footer holds only the page number by default.
+
+`spec/vectors/typst/<name>.json` holds `options` (`title`, `subtitle`, `doc_type`, `cover`, `footer`, and `images` mapping an image `src` to the path the resolver answers), the `doc`, and the exact `want_typst`.

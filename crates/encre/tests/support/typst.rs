@@ -38,6 +38,7 @@ pub fn render_vector(v: &TypstVector) -> String {
         subtitle: opts["subtitle"].as_str().map(str::to_owned),
         doc_type: opts["doc_type"].as_str().unwrap_or("Document").to_owned(),
         cover: opts["cover"].as_bool().unwrap_or(false),
+        footer: opts["footer"].as_str().map(str::to_owned),
         image: Some(&resolve),
     };
     render(&v.doc, &options)

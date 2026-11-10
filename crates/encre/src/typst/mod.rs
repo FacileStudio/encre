@@ -26,6 +26,8 @@ pub struct RenderOptions<'a> {
     pub doc_type: String,
     /// Whether to start with muse-typst's cover page.
     pub cover: bool,
+    /// Text at the left of every footer, beside the page number; `None` writes none.
+    pub footer: Option<String>,
     /// Resolves an image `src` to a path the compiler can read; `None` writes the alt text instead.
     pub image: Option<ImageResolver<'a>>,
 }
@@ -37,6 +39,7 @@ impl Default for RenderOptions<'_> {
             subtitle: None,
             doc_type: "Document".to_owned(),
             cover: false,
+            footer: None,
             image: None,
         }
     }
@@ -44,9 +47,10 @@ impl Default for RenderOptions<'_> {
 
 fn preamble(options: &RenderOptions) -> String {
     let subtitle = options.subtitle.as_deref().map_or_else(|| "none".to_owned(), quoted);
+    let footer = options.footer.as_deref().map_or_else(|| "none".to_owned(), quoted);
     format!(
         "#import \"/muse-typst/lib.typ\": *\n\
-         #show: muse-doc.with(title: {}, subtitle: {subtitle}, doc-type: {}, cover: {})\n\
+         #show: muse-doc.with(title: {}, subtitle: {subtitle}, doc-type: {}, cover: {}, footer: {footer})\n\
          #set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n\
          #show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n",
         quoted(&options.title),

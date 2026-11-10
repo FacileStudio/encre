@@ -27,5 +27,5 @@
   },
   "name": "empty-paragraphs",
   "options": {},
-  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"\", subtitle: none, doc-type: \"Document\", cover: false)\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#\"Before.\"\n\n#\"After.\"\n"
+  "want_typst": "#import \"/muse-typst/lib.typ\": *\n#show: muse-doc.with(title: \"\", subtitle: none, doc-type: \"Document\", cover: false, footer: none)\n#set text(font: (\"Satoshi\", \"DejaVu Sans\"))\n#show raw: set text(font: (\"Menlo\", \"DejaVu Sans Mono\"))\n\n#\"Before.\"\n\n#\"After.\"\n"
 }
