@@ -1,0 +1,50 @@
+use proptest::prelude::*;
+
+const ATOMS: &[&str] = &[
+    "a",
+    "b ",
+    " ",
+    "\n",
+    "\n\n",
+    "- ",
+    "* ",
+    "1. ",
+    "2) ",
+    "> ",
+    "# ",
+    "### ",
+    "```",
+    "~~~",
+    "`",
+    "**",
+    "*",
+    "_",
+    "~~",
+    "[x](y)",
+    "![i](s)",
+    "<br>",
+    "<div>",
+    "|",
+    "| --- |",
+    "---",
+    "===",
+    "\\",
+    "&amp;",
+    "&#32;",
+    "    ",
+    "\t",
+    "[ ] ",
+    "[x] ",
+    "```stat\n{\"label\": \"a\"}\n```",
+    "````callout tone=\"info\"\nhi\n````",
+    "www.a.com",
+    "https://b.c",
+    "é",
+    "[r]: /u",
+    "[r]",
+];
+
+/// Markdown-like text built from fragments that stress the reader, for the fixed-point law.
+pub fn markdown_text() -> impl Strategy<Value = String> {
+    prop::collection::vec(prop::sample::select(ATOMS), 0..30).prop_map(|parts| parts.concat())
+}
