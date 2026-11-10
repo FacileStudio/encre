@@ -74,6 +74,8 @@ A valid document also follows these rules. They keep the markdown projection los
 5. Every row of a table has the same number of cells. The first row holds only `tableHeader` cells and the other rows only `tableCell` cells. Every cell of a column has the same `align`.
 6. In a table cell, text carrying `code` never holds a backslash directly before a pipe (`\|`): a GFM cell cannot write it.
 7. Text carrying both `link` and `code` never holds `]:`: at the start of a paragraph it would read as a link reference definition.
+8. A document nests at most 48 levels deep: `doc` is level 1, its children level 2, and so on down to text. The limit keeps every valid document readable as JSON by parsers that stop at 128 nested arrays and objects, and keeps every recursive reader within a small stack.
+9. One path from the root holds at most 8 `callout`, `columns` and `column` nodes. Facile Markdown reads each of them from the content of a fence, so the limit bounds how often one byte of markdown is read.
 
 ### 1.4 Block ids
 
@@ -183,11 +185,17 @@ Each is a property test over generated input with 10 000 cases.
 
 ### 2.6 Validating markdown
 
-Reading is total: any text gives a document. That document can still break a rule of section 1.3, because Facile Markdown can say things the tree forbids. Validating markdown reads it, then validates the tree, and places each error at the source line and column (1-based, in characters) where the block that holds it starts. The constructs that reach a refusal are:
+Reading is total but for two limits, which a reader MUST refuse with an error instead of a document:
+
+- blocks and inline spans that nest more than 64 levels deep. Each open block quote, list, list item, table, table row, table cell, heading, paragraph, code block, HTML block, emphasis, strong emphasis, strikethrough, link and image is one level, and the content of a custom block fence starts one level below the fence;
+- custom block fences that open more than 8 `callout`, `columns` and `column` nodes on one path (rule 9). A `compare` fence opens two.
+
+Validating markdown reports these at the line and column where the offending syntax starts, with the path `doc`. Any other text gives a document. That document can still break a rule of section 1.3, because Facile Markdown can say things the tree forbids. Validating markdown reads it, then validates the tree, and places each error at the source line and column (1-based, in characters) where the block that holds it starts. The constructs that reach a refusal are:
 
 - a control character other than tab and line feed (NUL and escape included), in text or code, which rule 1 refuses;
 - a code span holding `\\|` in a table cell: GFM turns `\|` into `|`, so the code text holds `\|`, which rule 6 refuses. A plain `\|` gives a pipe and is valid;
-- linked code holding `]:`, such as ``see [`a]:b`](u)``, which rule 7 refuses. At the very start of a paragraph the same text is a link reference definition and disappears, so it is valid.
+- linked code holding `]:`, such as ``see [`a]:b`](u)``, which rule 7 refuses. At the very start of a paragraph the same text is a link reference definition and disappears, so it is valid;
+- blocks nested more than 48 levels deep, or more than 8 custom blocks on one path written as GFM alerts, which rules 8 and 9 refuse.
 
 Everything else normalizes: malformed custom blocks become code blocks, unknown badges stay text, and section 2.3 maps the rest.
 

@@ -18,15 +18,18 @@ fn tone(marker: &str) -> Option<&'static str> {
 
 impl Reader<'_> {
     fn alert(&self, children: &[Md]) -> Option<(&'static str, Vec<Node>)> {
-        let Some(Md::Block { tag: Tag::Paragraph, range, children: inline }) = children.first() else {
+        let Some(Md::Block { tag: Tag::Paragraph, range, children: inline, .. }) = children.first() else {
             return None;
         };
         let rest = self.source.get(range.start..)?;
         let end = range.start + rest.find('\n').unwrap_or(rest.len());
         let tone = tone(self.source[range.start..end].trim_end())?;
         let start = inline.iter().position(|n| n.range().start > end).unwrap_or(inline.len());
-        let mut blocks = if start < inline.len() { self.paragraph(&inline[start..]) } else { Vec::new() };
-        blocks.extend(self.blocks(&children[1..]));
+        let mut blocks = Vec::new();
+        if start < inline.len() {
+            self.paragraph(&inline[start..], &mut blocks);
+        }
+        self.blocks_into(&children[1..], &mut blocks);
         Some((tone, blocks))
     }
 

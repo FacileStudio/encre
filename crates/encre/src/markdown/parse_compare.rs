@@ -47,13 +47,13 @@ fn label(title: &str) -> String {
     title.trim_start_matches('#').trim().replace('`', "'").chars().filter(|c| *c == '\t' || !c.is_control()).collect()
 }
 
-fn section(section: &str) -> Node {
+fn section(reader: &Reader, section: &str) -> Node {
     let (title, body) = section.trim().split_once('\n').unwrap_or((section.trim(), ""));
     let title = label(title);
     let lines: Vec<&str> = body.lines().map(str::trim).filter(|l| !l.is_empty()).collect();
     let mut attrs: Map<String, Value> = attr("title", title.as_str());
     attrs.insert("tone".to_owned(), Value::from(tone(&title)));
-    Node::new("column", attrs, Reader { source: &lines.join("\n\n"), track: None }.doc().content)
+    Node::new("column", attrs, reader.part(&lines.join("\n\n")).doc().content)
 }
 
 impl Reader<'_> {
@@ -61,6 +61,9 @@ impl Reader<'_> {
     pub fn compare(&self) -> Option<Node> {
         let headed = sections(self.source, true);
         let parts = if headed.len() >= 2 { headed } else { sections(self.source, false) };
-        columns(parts.iter().map(|part| section(part)).collect())
+        if !(2..=4).contains(&parts.len()) {
+            return None;
+        }
+        columns(parts.iter().map(|part| section(self, part)).collect())
     }
 }

@@ -30,13 +30,14 @@ fn diagram(name: &str, rest: &str, value: &str) -> Option<Node> {
 }
 
 impl Reader<'_> {
-    /// Reads a custom block from its raw info string (after the name) and fence content; None when malformed.
-    fn custom(&self, name: &str, rest: &str, value: &str, offset: usize) -> Option<Node> {
-        let inner = || self.nested(value, offset);
+    /// Reads a custom block from its raw info string (after the name) and the content of a fence opening at
+    /// `at` inside `depth` blocks; None when malformed.
+    fn custom(&self, name: &str, rest: &str, value: &str, at: (usize, usize)) -> Option<Node> {
+        let inner = |fences| self.nested(value, at.0, at.1, fences);
         match name {
-            "callout" => Some(Node::new(name, info_attrs(name, rest)?, inner().doc().content)),
-            "columns" => rest.trim().is_empty().then(|| inner().columns()).flatten(),
-            "compare" | "pros-cons" | "vs" => rest.trim().is_empty().then(|| inner().compare()).flatten(),
+            "callout" => Some(Node::new(name, info_attrs(name, rest)?, inner(1).doc().content)),
+            "columns" => rest.trim().is_empty().then(|| inner(1).columns()).flatten(),
+            "compare" | "pros-cons" | "vs" => rest.trim().is_empty().then(|| inner(2).compare()).flatten(),
             _ if DIAGRAMS.contains(&name) => diagram(name, rest, value),
             _ => data_block(name, rest, value),
         }
@@ -51,7 +52,7 @@ impl Reader<'_> {
     }
 
     /// Converts a code block, or the custom block a backtick fence names.
-    pub fn code(&self, kind: &CodeBlockKind, range: Range<usize>, children: &[Md]) -> Node {
+    pub fn code(&self, kind: &CodeBlockKind, range: Range<usize>, depth: usize, children: &[Md]) -> Node {
         let mut text: String = children.iter().map(Md::plain).collect();
         if text.ends_with('\n') {
             text.pop();
@@ -63,7 +64,7 @@ impl Reader<'_> {
         let custom = self.fence_info(range.start).filter(|(name, _)| CUSTOM.contains(name));
         if matches!(kind, CodeBlockKind::Fenced(_))
             && let Some((name, rest)) = custom
-            && let Some(node) = self.custom(name, rest, &text, range.start)
+            && let Some(node) = self.custom(name, rest, &text, (range.start, depth))
         {
             return node;
         }

@@ -29,22 +29,27 @@ pub fn image(src: &str, alt: &str, title: &str) -> Node {
     Node::new("image", pairs(&[("src", src), ("alt", alt), ("title", title)]), Vec::new())
 }
 
-fn text(value: &str, marks: &[Mark]) -> Item {
-    Item::Inline(Node::text(&value.replace('\n', " "), marks.to_vec()))
+fn text(mut value: String, marks: &[Mark]) -> Item {
+    if value.contains('\n') {
+        value = value.replace('\n', " ");
+    }
+    let mut node = Node::text("", marks.to_vec());
+    node.text = Some(value);
+    Item::Inline(node)
 }
 
 fn leaf(event: &Event, marks: &[Mark]) -> Option<Item> {
     let hard_break = || Item::Inline(Node::new("hardBreak", Map::new(), Vec::new()));
     Some(match event {
-        Event::Text(t) => text(t, marks),
-        Event::Code(c) => text(c, &with_mark(marks, Mark::new("code", Map::new()))),
+        Event::Text(t) => text(t.to_string(), marks),
+        Event::Code(c) => text(c.to_string(), &with_mark(marks, Mark::new("code", Map::new()))),
         Event::InlineHtml(h) | Event::Html(h)
             if matches!(h.to_ascii_lowercase().as_str(), "<br>" | "<br/>" | "<br />") =>
         {
             hard_break()
         }
-        Event::InlineHtml(h) | Event::Html(h) => text(h, marks),
-        Event::SoftBreak => text(" ", marks),
+        Event::InlineHtml(h) | Event::Html(h) => text(h.to_string(), marks),
+        Event::SoftBreak => text(" ".to_owned(), marks),
         Event::HardBreak => hard_break(),
         _ => return None,
     })
@@ -59,11 +64,14 @@ pub struct Scan<'s> {
 impl Scan<'_> {
     /// Converts inline nodes to items, carrying `marks` down. With `images` false, an image becomes its alt text.
     pub fn convert(&self, nodes: &[Md], marks: &[Mark], out: &mut Vec<Item>) {
-        let highlighted = with_mark(marks, Mark::new("highlight", Map::new()));
+        let mut highlighted = None;
         for part in parts(nodes, self.source) {
-            let marks = if part.highlighted() { &highlighted[..] } else { marks };
+            let marks = match part.highlighted() {
+                true => &highlighted.get_or_insert_with(|| with_mark(marks, Mark::new("highlight", Map::new())))[..],
+                false => marks,
+            };
             match part {
-                Part::Text(value, _) => out.push(text(&value, marks)),
+                Part::Text(value, _) => out.push(text(value, marks)),
                 Part::Badge(badge) => out.push(Item::Inline(badge)),
                 Part::Node(node, _) => self.node(node, marks, out),
             }
@@ -71,6 +79,13 @@ impl Scan<'_> {
     }
 
     fn node(&self, node: &Md, marks: &[Mark], out: &mut Vec<Item>) {
+        if let (Md::Leaf { event: Event::SoftBreak, .. }, Some(Item::Inline(last))) = (node, out.last_mut())
+            && last.kind == "text"
+            && last.marks == marks
+            && let Some(text) = last.text.as_mut().filter(|t| !t.ends_with([' ', '\t']) && !t.is_empty())
+        {
+            return text.push(' ');
+        }
         let (tag, children) = match node {
             Md::Leaf { event, .. } => return out.extend(leaf(event, marks)),
             Md::Block { tag, children, .. } => (tag, children),
@@ -83,7 +98,7 @@ impl Scan<'_> {
             Tag::Image { dest_url, title, .. } if self.images => {
                 return out.push(Item::Image(image(dest_url, &node.plain(), title)));
             }
-            _ => return out.push(text(&node.plain(), marks)),
+            _ => return out.push(text(node.plain(), marks)),
         };
         self.convert(children, &with_mark(marks, mark), out);
     }

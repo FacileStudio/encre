@@ -21,6 +21,7 @@ yrs = { version = "0.28.1", optional = true }
 comrak = { version = "0.59.0", default-features = false }
 pdf-extract = "0.12.1"
 proptest = "1.12.0"
+pulldown-cmark = { version = "0.13.6", default-features = false }
 
 [features]
 yjs = ["dep:yrs"]

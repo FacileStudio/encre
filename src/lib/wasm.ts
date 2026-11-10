@@ -24,7 +24,7 @@ function loaded(): void {
   if (!ready) throw new Error('encre-wasm is not loaded: await loadEncre() first');
 }
 
-/** Reads Facile Markdown into a document without ids. */
+/** Reads Facile Markdown into a document without ids. Throws when it nests past the limits of FORMAT.md 2.6. */
 export function parseMarkdown(markdown: string): EncreNode {
   loaded();
   return JSON.parse(encre.parse(markdown)) as EncreNode;

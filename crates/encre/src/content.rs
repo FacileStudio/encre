@@ -1,4 +1,5 @@
-use crate::schema::Schema;
+use crate::schema::{Schema, schema};
+use std::sync::OnceLock;
 
 struct Term {
     names: Vec<String>,
@@ -73,7 +74,17 @@ fn matches_from(schema: &Schema, terms: &[Term], kinds: &[&str]) -> bool {
     }
 }
 
+fn compiled(expr: &str) -> Option<&'static [Term]> {
+    static TERMS: OnceLock<Vec<(&'static str, Vec<Term>)>> = OnceLock::new();
+    let terms = TERMS.get_or_init(|| schema().nodes.iter().map(|n| (n.content.as_str(), parse(&n.content))).collect());
+    let same = |e: &&str| std::ptr::eq(*e, expr);
+    terms.iter().find(|(e, _)| same(e)).or_else(|| terms.iter().find(|(e, _)| *e == expr)).map(|(_, t)| &t[..])
+}
+
 /// Whether child node types `kinds` satisfy the ProseMirror content expression `expr`.
 pub fn matches(schema: &Schema, expr: &str, kinds: &[&str]) -> bool {
-    matches_from(schema, &parse(expr), kinds)
+    match compiled(expr) {
+        Some(terms) => matches_from(schema, terms, kinds),
+        None => matches_from(schema, &parse(expr), kinds),
+    }
 }

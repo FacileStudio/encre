@@ -57,11 +57,13 @@ pub enum OpError {
     #[error("patch: {0}")]
     BadPatch(&'static str),
     /// `patch` found a different number of matches than expected.
-    #[error("{}", patch_message(*.expect, .found))]
+    #[error("{}", patch_message(*.expect, *.count, .found))]
     PatchMatches {
         /// Matches required.
         expect: usize,
         /// Matches found.
+        count: usize,
+        /// The first matches, at most [`LISTED`].
         found: Vec<PatchMatch>,
     },
     /// `replace_all` against a document that changed since the agent read it.
@@ -86,14 +88,20 @@ pub enum OpError {
     Yjs(#[from] crate::yjs::YjsError),
 }
 
-fn patch_message(expect: usize, found: &[PatchMatch]) -> String {
+/// How many matches a `patch` refusal lists.
+pub const LISTED: usize = 20;
+
+fn patch_message(expect: usize, count: usize, found: &[PatchMatch]) -> String {
     let plural = if expect == 1 { "match" } else { "matches" };
-    let head = format!("patch expected {expect} {plural}, found {}", found.len());
+    let head = format!("patch expected {expect} {plural}, found {count}");
     if found.is_empty() {
         return format!("{head}; find must be exact text of one block's markdown, as read_blocks shows it");
     }
-    let list: Vec<String> = found.iter().map(|m| m.to_string()).collect();
-    let hint = if found.len() > expect { "add more surrounding text to find" } else { "lower expect or check find" };
+    let mut list: Vec<String> = found.iter().map(|m| m.to_string()).collect();
+    if count > found.len() {
+        list.push(format!("and {} more", count - found.len()));
+    }
+    let hint = if count > expect { "add more surrounding text to find" } else { "lower expect or check find" };
     format!("{head}: {}; {hint}", list.join(", "))
 }
 

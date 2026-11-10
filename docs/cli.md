@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.8.0
+ARG ENCRE_VERSION=0.8.1
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -155,8 +155,9 @@ The Typst source names an embedded image `/images/<src>`. `pdf` reads only those
 
 ### What `validate` refuses in markdown
 
-Markdown input is parsed, and parsing never fails, so `validate --from markdown` refuses only what
-the parsed tree cannot hold (`spec/FORMAT.md` section 2.6) plus what the CLI itself checks. Each
+Markdown input is parsed, and parsing fails only past the two nesting limits, so
+`validate --from markdown` refuses only those, what the parsed tree cannot hold
+(`spec/FORMAT.md` section 2.6) and what the CLI itself checks. Each
 error names the tree `path` and the 1-based `line` and `column` where the block holding the problem
 starts. Without `--json`, the message starts with `line L, column C:`.
 
@@ -169,6 +170,11 @@ starts. Without `--json`, the message starts with `line L, column C:`.
   (rule 6).
 - Linked code holding `]:`, as in ``see [`a]:b`](u)``: at a paragraph start it would read as a
   link reference definition (rule 7).
+- Blocks and inline spans nested more than 64 levels deep, and custom block fences that open more
+  than 8 `callout`, `columns` and `column` nodes on one path. The path is `doc` and the position is
+  the syntax that crosses the limit; `encre parse` refuses the same input with exit code 1.
+- A document nested more than 48 levels deep, or holding more than 8 custom blocks on one path
+  through GFM alerts (rules 8 and 9).
 
 Everything else is valid. `\|` in code in a cell is a pipe. ``[`a]:b`](u)`` at the very start of a
 paragraph is a link reference definition and leaves nothing. Malformed custom blocks become code
@@ -180,7 +186,7 @@ The Go module `github.com/FacileStudio/encre/go` (package `encre`, in this repos
 wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always with `--json`.
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.8.0
+go get github.com/FacileStudio/encre/go@v0.8.1
 ```
 
 | Function | What it does |

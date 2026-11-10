@@ -12,7 +12,7 @@ mod plan;
 use crate::model::Node;
 use serde::{Deserialize, Serialize};
 
-pub use error::{OpError, PatchMatch};
+pub use error::{LISTED, OpError, PatchMatch};
 
 /// One agent operation, in the JSON form agents send: `{"op": "insert_after", "block_id": …, "markdown": …}`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -11,18 +11,14 @@ pub fn char_ref(c: char) -> String {
     format!("&#{};", u32::from(c))
 }
 
-fn line_start_special(chars: &[char], i: usize) -> bool {
-    let c = chars[i];
+fn line_start_special(c: char, i: usize, digits: usize) -> bool {
     if i == 0 {
         return matches!(c, '#' | '>' | '+' | '-' | '=' | '|');
     }
-    matches!(c, '.' | ')') && chars[..i].iter().all(char::is_ascii_digit)
+    matches!(c, '.' | ')') && digits >= i
 }
 
-fn special(chars: &[char], i: usize, ctx: Ctx, line_start: bool) -> bool {
-    let c = chars[i];
-    let prev = i.checked_sub(1).map(|p| chars[p]);
-    let next = chars.get(i + 1).copied();
+fn special(c: char, (prev, next): (Option<char>, Option<char>), i: usize, ctx: Ctx, line_start: Option<usize>) -> bool {
     let edge = |x: Option<char>| x.is_none_or(|x| !x.is_alphanumeric());
     match c {
         '\\' | '*' | '`' | '[' | ']' => true,
@@ -32,23 +28,31 @@ fn special(chars: &[char], i: usize, ctx: Ctx, line_start: bool) -> bool {
         '<' => next.is_some_and(|n| n.is_ascii_alphabetic() || "/!?".contains(n)),
         '&' => next.is_some_and(|n| n.is_ascii_alphanumeric() || n == '#'),
         '|' => ctx == Ctx::Cell,
-        _ => ctx == Ctx::Paragraph && line_start && line_start_special(chars, i),
+        _ => ctx == Ctx::Paragraph && line_start.is_some_and(|digits| line_start_special(c, i, digits)),
     }
 }
 
 /// Escapes `text`. `full` backslash-escapes every ASCII punctuation character; otherwise only what
 /// is likely to change the parse is escaped. `line_start` says the text begins a paragraph line.
 pub fn escape(text: &str, ctx: Ctx, full: bool, line_start: bool) -> String {
-    let chars: Vec<char> = text.chars().collect();
     let mut out = String::with_capacity(text.len());
-    for (i, &c) in chars.iter().enumerate() {
-        let escaped = if full { c.is_ascii_punctuation() } else { special(&chars, i, ctx, line_start) };
-        if escaped {
+    escape_into(text, (ctx, full, line_start), &mut out);
+    out
+}
+
+/// [`escape`] onto the end of `out`; `how` is the context, the full flag and the line start flag.
+pub fn escape_into(text: &str, (ctx, full, line_start): (Ctx, bool, bool), out: &mut String) {
+    let digits = line_start.then(|| text.chars().take_while(char::is_ascii_digit).count());
+    let (mut chars, mut prev) = (text.chars().peekable(), None);
+    let mut i = 0;
+    while let Some(c) = chars.next() {
+        let next = chars.peek().copied();
+        if if full { c.is_ascii_punctuation() } else { special(c, (prev, next), i, ctx, digits) } {
             out.push('\\');
         }
         out.push(c);
+        (prev, i) = (Some(c), i + 1);
     }
-    out
 }
 
 /// Writes a link or image destination and optional title: `(dest "title")`.

@@ -21,10 +21,11 @@ fn lone_backslash(children: &[Md], source: &str) -> usize {
 
 fn trimmed(mut nodes: Vec<Node>, start: bool, end: bool) -> Vec<Node> {
     if let Some(text) = nodes.first_mut().filter(|_| start).and_then(|n| n.text.as_mut()) {
-        *text = text.trim_start_matches([' ', '\t']).to_owned();
+        let cut = text.len() - text.trim_start_matches([' ', '\t']).len();
+        text.drain(..cut);
     }
     if let Some(text) = nodes.last_mut().filter(|_| end).and_then(|n| n.text.as_mut()) {
-        *text = text.trim_end_matches([' ', '\t']).to_owned();
+        text.truncate(text.trim_end_matches([' ', '\t']).len());
     }
     normalize(nodes)
 }
@@ -55,28 +56,27 @@ pub fn html(children: &[Md]) -> Node {
 }
 
 impl Reader<'_> {
-    /// Converts a paragraph, splitting it around images.
-    pub fn paragraph(&self, children: &[Md]) -> Vec<Node> {
+    /// Converts a paragraph onto the end of `out`, splitting it around images.
+    pub fn paragraph(&self, children: &[Md], out: &mut Vec<Node>) {
         let keep = lone_backslash(children, self.source);
         let mut items = Vec::new();
         Scan { source: self.source, images: true }.convert(&children[..keep], &[], &mut items);
-        let (mut blocks, mut current, mut after_image) = (Vec::new(), Vec::new(), false);
+        let (start, mut current, mut after_image) = (out.len(), Vec::new(), false);
         for item in items {
             match item {
                 Item::Inline(node) => current.push(node),
                 Item::Image(image) => {
                     let part = trimmed(std::mem::take(&mut current), after_image, true);
-                    blocks.extend((!part.is_empty()).then(|| Node::new("paragraph", Map::new(), part)));
-                    blocks.push(image);
+                    out.extend((!part.is_empty()).then(|| Node::new("paragraph", Map::new(), part)));
+                    out.push(image);
                     after_image = true;
                 }
             }
         }
         let part = trimmed(current, after_image, false);
-        if !part.is_empty() || blocks.is_empty() {
-            blocks.push(Node::new("paragraph", Map::new(), part));
+        if !part.is_empty() || out.len() == start {
+            out.push(Node::new("paragraph", Map::new(), part));
         }
-        blocks
     }
 
     fn item(&self, item: &Md, task: Option<bool>) -> Node {
@@ -109,18 +109,14 @@ impl Reader<'_> {
 }
 
 /// Merges adjacent text nodes with equal marks and drops empty text.
-pub fn normalize(nodes: Vec<Node>) -> Vec<Node> {
-    let mut out: Vec<Node> = Vec::new();
-    for node in nodes {
-        if node.kind == "text" && node.text.as_deref().unwrap_or("").is_empty() {
-            continue;
+pub fn normalize(mut nodes: Vec<Node>) -> Vec<Node> {
+    nodes.retain(|node| node.kind != "text" || !node.text.as_deref().unwrap_or("").is_empty());
+    nodes.dedup_by(|node, last| {
+        let merge = last.kind == "text" && node.kind == "text" && last.marks == node.marks;
+        if merge {
+            last.text.get_or_insert_default().push_str(node.text.as_deref().unwrap_or(""));
         }
-        match out.last_mut() {
-            Some(last) if last.kind == "text" && node.kind == "text" && last.marks == node.marks => {
-                last.text.get_or_insert_default().push_str(node.text.as_deref().unwrap_or(""));
-            }
-            _ => out.push(node),
-        }
-    }
-    out
+        merge
+    });
+    nodes
 }

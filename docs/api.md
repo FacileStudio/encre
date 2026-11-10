@@ -22,7 +22,7 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 
 | Item | What it does |
 |---|---|
-| `parse(&str) -> Result<Node, ParseError>` | Facile Markdown to a document without ids; accepts any input |
+| `parse(&str) -> Result<Node, ParseError>` | Facile Markdown to a document without ids; refuses only markdown past the nesting limits of `spec/FORMAT.md` section 2.6 |
 | `validate(&str) -> Result<Node, SourceError>` | Parses, then validates; `SourceError` has `path`, `message` and the 1-based `line` and `column` of the block |
 | `serialize(&Node) -> String` | Canonical Facile Markdown |
 | `serialize_commonmark(&Node) -> String` | Portable CommonMark with GFM, lossy |
@@ -37,7 +37,7 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 | `apply_yjs(&mut TransactionMut, &XmlFragmentRef, version, &Op)` | The same on an open document, in the caller's transaction (feature `yjs`) |
 | `Outcome` | `Markdown(String)`, `Blocks(Vec<BlockView>)` or `Changed(Vec<String>)`, the inserted ids |
 | `BlockView` | `{ id, type, markdown }` of one top-level block |
-| `OpError`, `PatchMatch` | Typed refusals; the message says how to narrow the request |
+| `OpError`, `PatchMatch`, `LISTED` | Typed refusals; the message says how to narrow the request. `PatchMatches` carries the match `count` and the first `LISTED` (20) matches |
 
 ## Rust: `yjs` (feature `yjs`)
 

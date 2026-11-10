@@ -48,20 +48,16 @@ pub fn take(node: &mut Node, path: &str, out: &mut Vec<(String, (usize, usize))>
 }
 
 impl Reader<'_> {
-    /// A reader for `inner`, the content of a fence opening at `offset`, tracked when this one is.
-    pub fn nested<'b>(&self, inner: &'b str, offset: usize) -> Reader<'b> {
-        let track = self.track.as_ref().map(|t| {
-            let (line, column) = t.position(self.source, offset);
-            Track::new(inner, line, column - 1)
-        });
-        Reader { source: inner, track }
-    }
-
     /// Puts the source position of `range` on each of `nodes` when this reader tracks positions.
     pub fn stamped(&self, mut nodes: Vec<Node>, range: &Range<usize>) -> Vec<Node> {
-        if let Some(track) = &self.track {
-            stamp(&mut nodes, track.position(self.source, range.start));
-        }
+        self.stamp_from(&mut nodes, 0, range);
         nodes
+    }
+
+    /// Puts the source position of `range` on the nodes of `out` from index `at` when this reader tracks positions.
+    pub fn stamp_from(&self, out: &mut [Node], at: usize, range: &Range<usize>) {
+        if let Some(track) = &self.track {
+            stamp(&mut out[at..], track.position(self.source, range.start));
+        }
     }
 }

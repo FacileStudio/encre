@@ -1,6 +1,6 @@
-use super::md_tree::{Md, tree};
+use super::md_tree::Md;
 use super::parse_inline::Scan;
-use super::track::Track;
+pub(super) use super::reader::Reader;
 use crate::model::Node;
 use pulldown_cmark::{Event, Tag};
 use serde_json::{Map, Value};
@@ -22,37 +22,28 @@ pub fn attr(name: &str, value: impl Into<Value>) -> Map<String, Value> {
     attrs
 }
 
-/// Reads Facile Markdown into a document without ids.
-pub fn parse_doc(markdown: &str) -> Result<Node, ParseError> {
-    Ok(Reader { source: markdown, track: None }.doc())
-}
-
-pub(super) struct Reader<'a> {
-    pub source: &'a str,
-    pub track: Option<Track>,
-}
-
 impl Reader<'_> {
-    /// The whole source as a document, never empty.
-    pub fn doc(&self) -> Node {
-        Node::new("doc", Map::new(), self.filled(&tree(self.source)))
-    }
-
     /// Converts sibling nodes; a run of inline nodes (a tight list item) is one paragraph.
     pub fn blocks(&self, nodes: &[Md]) -> Vec<Node> {
         let mut out = Vec::new();
+        self.blocks_into(nodes, &mut out);
+        out
+    }
+
+    /// Converts sibling nodes onto the end of `out`.
+    pub fn blocks_into(&self, nodes: &[Md], out: &mut Vec<Node>) {
         let mut start = 0;
         while start < nodes.len() {
             let run = nodes[start..].iter().take_while(|n| n.is_inline()).count().max(1);
-            let built = if nodes[start].is_inline() {
-                self.paragraph(&nodes[start..start + run])
+            let at = out.len();
+            if nodes[start].is_inline() {
+                self.paragraph(&nodes[start..start + run], out);
             } else {
-                self.block(&nodes[start])
-            };
-            out.extend(self.stamped(built, &nodes[start].range()));
+                self.block(&nodes[start], out);
+            }
+            self.stamp_from(out, at, &nodes[start].range());
             start += run;
         }
-        out
     }
 
     /// Converts sibling nodes, never returning an empty list.
@@ -61,25 +52,26 @@ impl Reader<'_> {
         if blocks.is_empty() { vec![empty_paragraph()] } else { blocks }
     }
 
-    fn block(&self, node: &Md) -> Vec<Node> {
-        let Md::Block { tag, range, children } = node else {
-            return match node {
-                Md::Leaf { event: Event::Rule, .. } => vec![Node::new("horizontalRule", Map::new(), Vec::new())],
-                _ => Vec::new(),
-            };
-        };
-        match tag {
-            Tag::Paragraph => self.paragraph(children),
-            Tag::Heading { level: l, .. } => {
-                vec![Node::new("heading", attr("level", (*l as i64).min(3)), self.inline(children))]
+    fn block(&self, node: &Md, out: &mut Vec<Node>) {
+        let Md::Block { tag, range, depth, children } = node else {
+            if let Md::Leaf { event: Event::Rule, .. } = node {
+                out.push(Node::new("horizontalRule", Map::new(), Vec::new()));
             }
-            Tag::BlockQuote(_) => vec![self.quote(children)],
-            Tag::CodeBlock(kind) => vec![self.code(kind, range.clone(), children)],
-            Tag::List(start) => self.list(*start, children),
-            Tag::Table(aligns) => vec![super::parse_table::table(self, aligns, children)],
-            Tag::HtmlBlock => vec![super::parse_flow::html(children)],
-            _ => self.blocks(children),
-        }
+            return;
+        };
+        let built = match tag {
+            Tag::Paragraph => return self.paragraph(children, out),
+            Tag::Heading { level: l, .. } => {
+                Node::new("heading", attr("level", (*l as i64).min(3)), self.inline(children))
+            }
+            Tag::BlockQuote(_) => self.quote(children),
+            Tag::CodeBlock(kind) => self.code(kind, range.clone(), *depth, children),
+            Tag::List(start) => return out.extend(self.list(*start, children)),
+            Tag::Table(aligns) => super::parse_table::table(self, aligns, children),
+            Tag::HtmlBlock => super::parse_flow::html(children),
+            _ => return self.blocks_into(children, out),
+        };
+        out.push(built);
     }
 
     /// Converts inline nodes where no image block can appear.

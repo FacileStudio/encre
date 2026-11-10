@@ -128,9 +128,15 @@ pub fn schema() -> &'static Schema {
 }
 
 impl Schema {
-    /// The node type `name`.
+    /// The node type `name`; a hash lookup on the embedded schema, a scan on any other.
     pub fn node(&self, name: &str) -> Option<&NodeType> {
-        self.nodes.iter().find(|node| node.name == name)
+        static INDEX: OnceLock<std::collections::HashMap<&'static str, usize>> = OnceLock::new();
+        if !std::ptr::eq(self, schema()) {
+            return self.nodes.iter().find(|node| node.name == name);
+        }
+        let index =
+            INDEX.get_or_init(|| schema().nodes.iter().enumerate().map(|(i, n)| (n.name.as_str(), i)).collect());
+        index.get(name).map(|i| &self.nodes[*i])
     }
 
     /// The mark type `name`.

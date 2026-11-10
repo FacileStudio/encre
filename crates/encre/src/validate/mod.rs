@@ -17,16 +17,39 @@ pub struct ValidationError {
     pub message: String,
 }
 
+/// How deep a document may nest: the `doc` node is level 1 (`spec/FORMAT.md` section 1.3).
+pub const MAX_DEPTH: usize = 48;
+
+/// How many `callout`, `columns` and `column` nodes one path may hold (`spec/FORMAT.md` section 1.3).
+pub const MAX_CUSTOM: usize = 8;
+
+/// A failure deep in the tree: the child indexes from the failing node up, and the message.
+type Failure = (Vec<usize>, String);
+
 struct Walk<'a> {
     schema: &'a Schema,
     ids: HashSet<String>,
 }
 
+fn nesting(depth: usize, custom: usize) -> Result<(), String> {
+    if depth > MAX_DEPTH {
+        return Err(format!("the document nests more than {MAX_DEPTH} levels deep"));
+    }
+    if custom > MAX_CUSTOM {
+        return Err(format!("custom blocks nest more than {MAX_CUSTOM} levels deep"));
+    }
+    Ok(())
+}
+
 impl Walk<'_> {
-    fn node(&mut self, node: &Node, path: &str) -> Result<(), ValidationError> {
-        self.rules(node).map_err(|message| ValidationError { path: path.to_owned(), message })?;
+    fn node(&mut self, node: &Node, depth: usize, custom: usize) -> Result<(), Failure> {
+        let custom = custom + usize::from(matches!(node.kind.as_str(), "callout" | "columns" | "column"));
+        nesting(depth, custom).and_then(|()| self.rules(node)).map_err(|message| (Vec::new(), message))?;
         for (i, child) in node.content.iter().enumerate() {
-            self.node(child, &format!("{path}.content[{i}]"))?;
+            self.node(child, depth + 1, custom).map_err(|(mut trail, message)| {
+                trail.push(i);
+                (trail, message)
+            })?;
         }
         Ok(())
     }
@@ -65,5 +88,8 @@ pub fn validate(doc: &Node) -> Result<(), ValidationError> {
     if !doc.marks.is_empty() {
         return Err(ValidationError { path: "doc".to_owned(), message: "the root carries marks".to_owned() });
     }
-    Walk { schema: schema(), ids: HashSet::new() }.node(doc, "doc")
+    Walk { schema: schema(), ids: HashSet::new() }.node(doc, 1, 0).map_err(|(trail, message)| {
+        let path = trail.iter().rev().fold("doc".to_owned(), |path, i| format!("{path}.content[{i}]"));
+        ValidationError { path, message }
+    })
 }

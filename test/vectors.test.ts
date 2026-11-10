@@ -1,10 +1,10 @@
-import { getSchema } from '@tiptap/core';
+import { type Editor, getSchema } from '@tiptap/core';
 import { Node as PMNode } from '@tiptap/pm/model';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { encreExtensions } from '../src/lib/extensions/index.js';
-import { insertable, looksLikeMarkdown } from '../src/lib/paste.js';
+import { insertable, looksLikeMarkdown, pasteMarkdown } from '../src/lib/paste.js';
 import type { EncreNode } from '../src/lib/schema.js';
 import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown, validateDocument } from '../src/lib/wasm.js';
 
@@ -47,6 +47,11 @@ describe('wasm entry points', () => {
     expect(() => serializeMarkdown({ type: 'doc', content: [{ type: 'paragraph', attrs: { colour: 'red' } }] })).toThrow(/unknown attribute/);
   });
 
+  it('refuses markdown nested past the limit and keeps working', () => {
+    expect(() => parseMarkdown('>'.repeat(100_000))).toThrow(/64 levels/);
+    expect(parseMarkdown('ok').content?.[0]?.type).toBe('paragraph');
+  });
+
   it('exports CommonMark without Facile-only syntax', () => {
     expect(serializeCommonMark(parseMarkdown('a\\\n\\\n\n\\'))).toBe('a');
   });
@@ -58,5 +63,11 @@ describe('markdown paste', () => {
     expect(looksLikeMarkdown('just words, nothing else')).toBe(false);
     expect(insertable(parseMarkdown('**bold**'))).toEqual([{ type: 'text', text: 'bold', marks: [{ type: 'bold' }] }]);
     expect(insertable(parseMarkdown('- a\n- b'))[0]?.type).toBe('bulletList');
+  });
+
+  it('leaves a paste encre refuses to Tiptap', () => {
+    const text = `${'> '.repeat(100)}x`;
+    const event = { clipboardData: { getData: (type: string) => (type === 'text/plain' ? text : '') } } as ClipboardEvent;
+    expect(pasteMarkdown({} as Editor, event)).toBe(false);
   });
 });

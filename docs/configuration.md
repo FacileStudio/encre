@@ -66,9 +66,10 @@ tests do with `readFileSync`.
 | `ENCRE_BIN` | the Go module in `go/` and its tests | The `encre` binary to run, default `encre` on `PATH` (tests: `target/*/encre`) |
 | `ENCRE_GEN` | `vite.config.ts` | Runs `scripts/gen-*.ts` instead of the test suites |
 | `PROPTEST_CASES` | `crates/encre/tests/laws.rs` | Cases per round-trip law, default `10000` |
+| `HOSTILE_CASE` | `crates/encre/tests/hostile.rs` | Runs only the named crafted input, such as `fence ladder` |
 | `MUSE_TYPST` | `scripts/sync-muse-typst.sh` | The muse-typst checkout to copy, default `~/Code/Facile/muse-typst` |
 | `ENCRE_CLI_TARGETS` | `scripts/build-cli.sh` | Rust targets to build, default the two linux musl ones |
 | `ENCRE_CLI_OUT` | `scripts/build-cli.sh` | Output directory, default `target/cli` |
-| `CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS` | `scripts/build-wasm.sh` | Rust flags for the wasm build, default `-Ccodegen-units=1` |
+| `CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS` | `scripts/build-wasm.sh` | Rust flags for the wasm build, default `-Ccodegen-units=1` plus `--remap-path-prefix` for the toolchain source and `CARGO_HOME` |
 
 Back to the [documentation index](README.md).

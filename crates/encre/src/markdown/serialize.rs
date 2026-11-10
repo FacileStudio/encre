@@ -1,7 +1,7 @@
 use super::compare::same_inline;
 use super::escape::{Ctx, destination, escape};
 use super::inline::{self, Style};
-use super::parse::parse_doc;
+use super::reader::parse_doc;
 use crate::model::{Mark, Node};
 use serde_json::Map;
 
@@ -44,7 +44,8 @@ fn inline_trial(nodes: &[Node], written: &str, ctx: Ctx) -> bool {
 }
 
 impl Writer {
-    /// Writes inline content, falling back to the full form when the parse would differ.
+    /// Writes inline content, falling back to the full form when the parse would differ. When both forms are the
+    /// same bytes the parse cannot choose between them, so it is skipped.
     pub fn inline(&self, nodes: &[Node], ctx: Ctx) -> String {
         let kept = nodes.iter().rposition(|n| n.kind != "hardBreak").map_or(0, |i| i + 1);
         let nodes = if self.commonmark { &nodes[..kept] } else { nodes };
@@ -57,10 +58,11 @@ impl Writer {
             written
         };
         let minimal = paragraph_end(inline::write(nodes, style(self.full)));
-        if self.full || inline_trial(nodes, &minimal, ctx) {
+        if self.full {
             return minimal;
         }
-        paragraph_end(inline::write(nodes, style(true)))
+        let full = paragraph_end(inline::write(nodes, style(true)));
+        if minimal == full || inline_trial(nodes, &minimal, ctx) { minimal } else { full }
     }
 
     /// Writes one block.

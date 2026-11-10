@@ -18,6 +18,7 @@ mod parse_inline;
 mod parse_span;
 mod parse_table;
 mod plain;
+mod reader;
 mod serialize;
 mod source;
 mod tokens;
@@ -34,15 +35,16 @@ pub use parse::ParseError;
 pub use plain::plain_text;
 pub use source::SourceError;
 
-/// Reads Facile Markdown. Any text is accepted; blocks get no ids (see [`crate::assign_ids`]).
+/// Reads Facile Markdown; blocks get no ids (see [`crate::assign_ids`]). Any text is accepted but markdown that
+/// nests deeper than the limits of `spec/FORMAT.md` section 2.6.
 pub fn parse(markdown: &str) -> Result<Node, ParseError> {
-    parse::parse_doc(markdown)
+    reader::parse_doc(markdown)
 }
 
 /// Writes `doc` as canonical Facile Markdown: the same tree always gives the same bytes.
 pub fn serialize(doc: &Node) -> String {
     let minimal = Writer { full: false, commonmark: false }.blocks(&doc.content);
-    let same = parse::parse_doc(&minimal).is_ok_and(|back| compare::comparable(&back) == compare::comparable(doc));
+    let same = reader::parse_doc(&minimal).is_ok_and(|back| compare::same(&back, doc));
     if same { minimal } else { Writer { full: true, commonmark: false }.blocks(&doc.content) }
 }
 
@@ -54,7 +56,19 @@ pub fn serialize_commonmark(doc: &Node) -> String {
 /// Reads Facile Markdown and validates the document it gives. The error names the tree path and the 1-based
 /// line and column of the source block that holds the problem.
 pub fn validate(markdown: &str) -> Result<Node, SourceError> {
-    let mut doc = parse::Reader { source: markdown, track: Some(Track::new(markdown, 0, 0)) }.doc();
+    match reader::parse_doc(markdown) {
+        Ok(doc) if crate::validate(&doc).is_ok() => Ok(doc),
+        _ => located(markdown),
+    }
+}
+
+fn located(markdown: &str) -> Result<Node, SourceError> {
+    let reader = reader::Reader::root(markdown, Some(Track::new(markdown, 0, 0)));
+    let mut doc = reader.doc();
+    if let Some(refusal) = reader.refused.get() {
+        let (line, column) = refusal.at.unwrap_or((1, 1));
+        return Err(SourceError { path: "doc".to_owned(), message: refusal.message.to_owned(), line, column });
+    }
     let mut positions = Vec::new();
     track::take(&mut doc, "doc", &mut positions);
     crate::validate(&doc).map(|()| doc).map_err(|e| source::locate(e, &positions))

@@ -1,5 +1,5 @@
 use super::edit::Replace;
-use super::error::{OpError, PatchMatch};
+use super::error::{LISTED, OpError, PatchMatch};
 use super::plan::{block_markdown, blocks};
 use crate::model::Node;
 
@@ -21,25 +21,31 @@ pub fn replaces(doc: &Node, find: &str, replace: &str, expect: usize) -> Result<
     if expect == 0 {
         return Err(OpError::BadPatch("expect must be at least 1"));
     }
-    let mut found = Vec::new();
-    let mut hits = Vec::new();
+    let (found, count, hits) = matches(doc, find);
+    if count != expect {
+        return Err(OpError::PatchMatches { expect, count, found });
+    }
+    hits.into_iter().map(|(i, markdown)| replacement(i, &markdown.replace(find, replace))).collect()
+}
+
+/// The first [`LISTED`] matches of `find`, how many there are, and the markdown of each block that holds one.
+fn matches(doc: &Node, find: &str) -> (Vec<PatchMatch>, usize, Vec<(usize, String)>) {
+    let (mut found, mut count, mut hits) = (Vec::new(), 0, Vec::new());
     for (i, block) in doc.content.iter().enumerate() {
         let markdown = block_markdown(block);
-        let name = block.id().map_or_else(|| format!("#{i}"), str::to_owned);
-        let before = found.len();
-        found.extend(
-            markdown
-                .match_indices(find)
-                .map(|(at, _)| PatchMatch { block: name.clone(), context: context(&markdown, at, find.len()) }),
-        );
-        if found.len() > before {
+        let before = count;
+        for (at, _) in markdown.match_indices(find) {
+            count += 1;
+            if found.len() < LISTED {
+                let block = block.id().map_or_else(|| format!("#{i}"), str::to_owned);
+                found.push(PatchMatch { block, context: context(&markdown, at, find.len()) });
+            }
+        }
+        if count > before {
             hits.push((i, markdown));
         }
     }
-    if found.len() != expect {
-        return Err(OpError::PatchMatches { expect, found });
-    }
-    hits.into_iter().map(|(i, markdown)| replacement(i, &markdown.replace(find, replace))).collect()
+    (found, count, hits)
 }
 
 fn replacement(at: usize, markdown: &str) -> Result<Replace, OpError> {

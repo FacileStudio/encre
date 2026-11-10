@@ -3,6 +3,7 @@ use super::error::OpError;
 use super::{BlockView, Op, Outcome, patch};
 use crate::markdown::{parse, serialize};
 use crate::model::Node;
+use crate::validate::ValidationError;
 use serde_json::Map;
 
 /// What an operation answers, and the edit it makes when it writes.
@@ -47,7 +48,8 @@ pub fn blocks(op: &'static str, markdown: &str) -> Result<Vec<Node>, OpError> {
     if markdown.trim().is_empty() {
         return Err(OpError::EmptyMarkdown { op });
     }
-    Ok(parse(markdown).map(|doc| doc.content).unwrap_or_default())
+    let refused = |e: crate::markdown::ParseError| ValidationError { path: "doc".to_owned(), message: e.0 };
+    parse(markdown).map(|doc| doc.content).map_err(|e| OpError::Invalid { op, error: refused(e) })
 }
 
 /// The markdown of one block on its own.
