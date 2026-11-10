@@ -16,3 +16,7 @@ run = "sh scripts/build-wasm.sh"
 [tasks."vectors:yjs"]
 description = "Regenerate the y-prosemirror vectors with Tiptap, then the Rust-written updates"
 run = "ENCRE_GEN=1 bunx vitest run && ENCRE_REGEN=1 cargo test -p encre --features yjs --test yjs"
+
+[tasks.cli]
+description = "Build the static encre binaries for linux amd64 and arm64 into target/cli"
+run = "sh scripts/build-cli.sh"
