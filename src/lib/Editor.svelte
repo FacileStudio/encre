@@ -20,6 +20,8 @@
   import { SlashState, slashExtension } from './slash.svelte.js';
   import SlashMenu from './SlashMenu.svelte';
   import Toolbar from './Toolbar.svelte';
+  import { pasteMarkdown } from './paste.js';
+  import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
 
   let { content, editable = true, placeholder, toolbar = true, onchange, class: className = '' }: EditorProps = $props();
 
@@ -34,11 +36,15 @@
       extensions: [...encreExtensions({ placeholder }), slashExtension(slash)],
       content: content ?? null,
       editable,
-      editorProps: { attributes: { class: 'encre-prose outline-none min-h-40' } },
+      editorProps: {
+        attributes: { class: 'encre-prose outline-none min-h-40' },
+        handlePaste: (_view, event) => (editor ? pasteMarkdown(editor, event) : false)
+      },
       onTransaction: () => (version += 1),
       onUpdate: ({ editor: changed }) => onchange?.(changed.getJSON() as EncreNode)
     });
     editor = instance;
+    loadEncre().catch(() => undefined);
     return () => instance.destroy();
   });
 
@@ -54,6 +60,24 @@
   /** The current document as ProseMirror JSON. */
   export function getDocument(): EncreNode | null {
     return (editor?.getJSON() as EncreNode | undefined) ?? null;
+  }
+
+  /** Replaces the whole document with Facile Markdown. */
+  export async function importMarkdown(markdown: string): Promise<void> {
+    await loadEncre();
+    setDocument(parseMarkdown(markdown));
+  }
+
+  /** The document as canonical Facile Markdown. */
+  export async function exportMarkdown(): Promise<string> {
+    await loadEncre();
+    return serializeMarkdown(getDocument() ?? { type: 'doc', content: [{ type: 'paragraph' }] });
+  }
+
+  /** The document as portable CommonMark. */
+  export async function exportCommonMark(): Promise<string> {
+    await loadEncre();
+    return serializeCommonMark(getDocument() ?? { type: 'doc', content: [{ type: 'paragraph' }] });
   }
 
   /** Replaces the whole document. */
