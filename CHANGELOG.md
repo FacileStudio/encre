@@ -4,6 +4,44 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.8.1] - 2026-11-10
+
+### Security
+
+- Every markdown path now runs in linear time on hostile input. Reading, validating, writing and
+  `plain_text` were quadratic or worse on crafted text: runs of backslashes (the bracket and `=`
+  scan counted backslashes back from every character), digits followed by dots (the escaper
+  re-read the line start for every dot), every `[` building a string, flanking fixes re-sweeping
+  every token, mark runs re-measured at every node, and `patch` storing a context for every match.
+  `docs/development.md` records the cost of each crafted input at 1 MiB and 8 MiB before and after.
+- Deeply nested markdown no longer overflows the stack. `>` repeated or `*` runs aborted the
+  process, and so the WebAssembly module.
+
+### Changed
+
+- New normative limits (`spec/FORMAT.md` rules 8 and 9 and section 2.6). A document nests at most
+  48 levels and holds at most 8 `callout`, `columns` and `column` nodes on one path; `validate`
+  refuses beyond. Markdown whose blocks and inline spans nest more than 64 levels, or whose custom
+  fences open more than 8 custom blocks on one path, is refused by `parse` (a `ParseError`) and by
+  `markdown::validate` (path `doc`, at the line and column of the syntax that crosses the limit).
+  Agent operations refuse such markdown as `OpError::Invalid` and change nothing.
+- `OpError::PatchMatches` gains `count`, and `found` lists at most the first 20 matches
+  (`ops::LISTED`); the message ends with "and N more".
+- A validation message no longer starts with the child's relative path (`content[0]: `): `path`
+  alone says where the problem is.
+- `markdown::validate` reads the source once and tracks positions only when it has an error to
+  place.
+- `scripts/build-wasm.sh` remaps local paths out of the module, so every machine builds the same
+  `src/lib/encre-wasm`.
+
+### Added
+
+- `crates/encre/tests/hostile.rs`, run by `mise run test`: every crafted input at 1 MiB and 8 MiB,
+  failing when 8 MiB costs more than 20 times 1 MiB.
+- CI on pushes to `main` and pull requests (`.github/workflows/ci.yml`), and bun 1.4.2 in
+  `mise.toml`.
+- The Go module is tagged `go/vX.Y.Z` with every release.
+
 ## [0.8.0] - 2026-11-10
 
 ### Schema 2
@@ -175,6 +213,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.8.1]: https://github.com/FacileStudio/encre/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/FacileStudio/encre/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/FacileStudio/encre/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/FacileStudio/encre/compare/v0.5.0...v0.6.0

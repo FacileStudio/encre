@@ -1,5 +1,7 @@
 # encre
 
+[![ci](https://github.com/FacileStudio/encre/actions/workflows/ci.yml/badge.svg)](https://github.com/FacileStudio/encre/actions/workflows/ci.yml)
+
 The Facile document format: one validated tree that people edit in Tiptap, agents edit as
 markdown, and every suite app exports to Typst and PDF.
 
@@ -35,13 +37,13 @@ Rust, from a git tag. Features: `yjs` (Yjs layout and live operations), `pdf` (T
 
 ```toml
 [dependencies]
-encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.8.0", features = ["yjs", "pdf"] }
+encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.8.1", features = ["yjs", "pdf"] }
 ```
 
 Svelte, from the same tag:
 
 ```sh
-bun add "github:FacileStudio/encre#v0.8.0"
+bun add "github:FacileStudio/encre#v0.8.1"
 ```
 
 ### CLI
@@ -62,8 +64,10 @@ command and what markdown validation refuses.
 ### Go
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.8.0
+go get github.com/FacileStudio/encre/go@v0.8.1
 ```
+
+The Go module has its own tag, `go/vX.Y.Z`, on the same commit as `vX.Y.Z`.
 
 ```go
 import "github.com/FacileStudio/encre/go"
@@ -85,7 +89,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut doc = encre::markdown::parse("# Plan\n\nShip the **gate** first.")?;
     encre::assign_ids(&mut doc);
     encre::validate(&doc)?;
-    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.8.0".to_owned() })?;
+    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.8.1".to_owned() })?;
     println!("{}", encre::markdown::serialize(&doc));
     Ok(())
 }
