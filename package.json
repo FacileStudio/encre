@@ -31,6 +31,8 @@
     "@tiptap/extension-bubble-menu": "3.33.0",
     "@tiptap/extension-code": "3.33.0",
     "@tiptap/extension-code-block": "3.33.0",
+    "@tiptap/extension-collaboration": "3.33.0",
+    "@tiptap/extension-collaboration-caret": "3.33.0",
     "@tiptap/extension-hard-break": "3.33.0",
     "@tiptap/extension-image": "3.33.0",
     "@tiptap/extension-link": "3.33.0",
@@ -39,7 +41,8 @@
     "@tiptap/extensions": "3.33.0",
     "@tiptap/pm": "3.33.0",
     "@tiptap/starter-kit": "3.33.0",
-    "@tiptap/suggestion": "3.33.0"
+    "@tiptap/suggestion": "3.33.0",
+    "@tiptap/y-tiptap": "3.3.0"
   },
   "devDependencies": {
     "@facile/muse": "github:FacileStudio/muse#v0.17.1",
@@ -51,10 +54,16 @@
     "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
     "vite": "8.3.7",
-    "vitest": "5.1.0"
+    "vitest": "5.1.0",
+    "y-protocols": "1.0.7",
+    "y-websocket": "3.1.0",
+    "yjs": "13.6.33"
   },
   "peerDependencies": {
     "@facile/muse": "github:FacileStudio/muse#v0.17.1",
-    "svelte": "^5.57.0"
+    "svelte": "^5.57.0",
+    "yjs": "^13.6.33",
+    "y-websocket": "^3.1.0",
+    "y-protocols": "^1.0.7"
   }
 }

@@ -1,4 +1,6 @@
 <script module lang="ts">
+  import type * as Y from 'yjs';
+  import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
   import type { EncreNode } from './schema.js';
 
   /** Props of the encre editor. */
@@ -9,6 +11,12 @@
     toolbar?: boolean;
     onchange?: (doc: EncreNode) => void;
     class?: string;
+    /** The shared document; when set, it is the source of truth and `content` is ignored. */
+    ydoc?: Y.Doc;
+    /** A y-websocket `WebsocketProvider` (or any object with an `awareness`) for carets and presence. */
+    provider?: AwarenessProvider;
+    /** This user, as other people see them. */
+    user?: CollabUser;
   }
 </script>
 
@@ -16,6 +24,7 @@
   import { Editor } from '@tiptap/core';
   import { onMount } from 'svelte';
   import BubbleMenu from './BubbleMenu.svelte';
+  import Presence from './Presence.svelte';
   import { encreExtensions } from './extensions/index.js';
   import { SlashState, slashExtension } from './slash.svelte.js';
   import SlashMenu from './SlashMenu.svelte';
@@ -23,7 +32,17 @@
   import { pasteMarkdown } from './paste.js';
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
 
-  let { content, editable = true, placeholder, toolbar = true, onchange, class: className = '' }: EditorProps = $props();
+  let {
+    content,
+    editable = true,
+    placeholder,
+    toolbar = true,
+    onchange,
+    class: className = '',
+    ydoc,
+    provider,
+    user
+  }: EditorProps = $props();
 
   let element: HTMLDivElement;
   let editor = $state<Editor | null>(null);
@@ -33,8 +52,11 @@
   onMount(() => {
     const instance = new Editor({
       element,
-      extensions: [...encreExtensions({ placeholder }), slashExtension(slash)],
-      content: content ?? null,
+      extensions: [
+        ...encreExtensions({ placeholder, collaboration: ydoc ? { document: ydoc, provider, user } : undefined }),
+        slashExtension(slash)
+      ],
+      content: ydoc ? null : (content ?? null),
       editable,
       editorProps: {
         attributes: { class: 'encre-prose outline-none min-h-40' },
@@ -87,6 +109,9 @@
 </script>
 
 <div class="flex flex-col gap-3 {className}">
+  {#if provider}
+    <Presence {provider} />
+  {/if}
   {#if editor && toolbar && editable}
     <Toolbar {editor} {version} class="sticky top-0 z-10" />
   {/if}

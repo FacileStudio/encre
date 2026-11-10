@@ -70,3 +70,33 @@
   height: 0;
   pointer-events: none;
 }
+
+.encre-caret {
+  position: relative;
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  margin: 0 -1px;
+  vertical-align: text-bottom;
+  background: var(--encre-caret);
+  pointer-events: none;
+  word-break: normal;
+}
+
+.encre-caret-label {
+  position: absolute;
+  bottom: 100%;
+  left: -1px;
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-fc-xs);
+  background: var(--encre-caret);
+  color: var(--color-fc-fg);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.encre-caret-selection { background: color-mix(in oklab, var(--encre-caret) 30%, transparent); }
+.encre-presence { background: var(--encre-caret, var(--color-fc-accent)); color: var(--color-fc-fg); }

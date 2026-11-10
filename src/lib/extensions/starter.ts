@@ -7,8 +7,13 @@ import { EncreCode, EncreLink } from './marks.js';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { EncreCodeBlock, EncreHardBreak, EncreImage, EncreOrderedList } from './nodes.js';
 
+/** Options of the encre StarterKit. */
+export interface StarterOptions {
+  undoRedo?: boolean;
+}
+
 /** StarterKit with every node and mark the encre schema does not have switched off. */
-export function encreStarterKit(): Extensions {
+export function encreStarterKit(options: StarterOptions = {}): Extensions {
   return [
     StarterKit.configure({
       heading: { levels: [1, 2, 3] },
@@ -17,7 +22,8 @@ export function encreStarterKit(): Extensions {
       code: false,
       codeBlock: false,
       hardBreak: false,
-      orderedList: false
+      orderedList: false,
+      undoRedo: options.undoRedo === false ? false : undefined
     }),
     EncreLink.configure({ openOnClick: false, autolink: true }),
     EncreCode,
