@@ -27,6 +27,7 @@ go_check() {
 
 test_suites() {
   cargo test --all-features --locked
+  cargo test --locked -p encre --test hostile -- --ignored --test-threads=1
   bun run test
   cargo build --locked -p encre-cli
   (cd go && ENCRE_BIN="$(pwd)/../target/debug/encre" go test -count=1 ./...)

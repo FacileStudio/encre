@@ -1,4 +1,5 @@
 [tools]
+bun = "1.4.2"
 node = "24.22.0"
 
 [tasks.check]
