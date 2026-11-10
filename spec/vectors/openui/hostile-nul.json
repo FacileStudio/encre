@@ -1,0 +1,5 @@
+{
+  "name": "hostile-nul",
+  "source": "\u0000",
+  "want_error": "line 1: unexpected character '\\0'"
+}

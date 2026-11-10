@@ -1,0 +1,5 @@
+{
+  "name": "hostile-lone-quote",
+  "source": "\"unterminated",
+  "want_error": "line 1: unterminated string"
+}

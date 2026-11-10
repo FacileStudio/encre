@@ -1,0 +1,5 @@
+{
+  "name": "bulle-partial-root",
+  "source": "roo",
+  "want_error": "line 1: expected = after roo"
+}
