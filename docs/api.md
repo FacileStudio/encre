@@ -97,7 +97,75 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser |
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |
 | `looksLikeMarkdown` | The paste heuristic the editor uses |
+| `IMAGE_TYPES`, `imageRefusal`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |
 
 The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
+
+### `Editor` props
+
+| Prop | Type | Default | What it does |
+|---|---|---|---|
+| `content` | `EncreNode` | empty | The initial document, ignored when `ydoc` is set |
+| `editable` | `boolean` | `true` | Read-only when false |
+| `placeholder` | `string` | none | Text shown in an empty document |
+| `toolbar` | `boolean` | `true` | Shows the toolbar |
+| `onchange` | `(doc: EncreNode) => void` | none | Called after every change |
+| `class` | `string` | `''` | Classes on the wrapper |
+| `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions` |
+| `presence` | `'inline' \| 'none'` | `'inline'` | `inline` shows who is here above the toolbar; `none` leaves it to the app |
+| `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
+| `onerror` | `(error: Error) => void` | none | A refused image or a failed upload |
+| `maxImageBytes` | `number` | no limit | The largest file handed to `onimage` |
+
+### Image upload
+
+Without `onimage` the editor uploads nothing and behaves as before. With it:
+
+- Pasting or dropping image files calls `onimage` once per file. A pasted image lands at the
+  caret, a dropped one at the drop point.
+- The slash menu and the toolbar block menu gain an "Image" entry that opens a file picker.
+- While the hook runs, a local "Envoi de l'image…" placeholder marks the spot. It is a
+  ProseMirror decoration, so it never enters the document or reaches collaborators. When the
+  hook resolves, an `image` node with the returned `src` and `alt` replaces it.
+- Before calling the hook the editor refuses anything but PNG, JPEG, GIF and WebP (never SVG),
+  and files above `maxImageBytes`. Refusals, a rejected promise and an empty `src` all reach
+  `onerror`, and the placeholder goes away.
+
+```svelte
+<Editor
+  {content}
+  maxImageBytes={10 * 1024 * 1024}
+  onimage={async (file) => {
+    const body = new FormData();
+    body.append('file', file);
+    const res = await fetch('/api/attachments', { method: 'POST', body });
+    if (!res.ok) throw new Error(`upload failed: ${res.status}`);
+    const { url } = await res.json();
+    return { src: url, alt: file.name };
+  }}
+  onerror={(error) => toast.error(error.message)}
+/>
+```
+
+### Presence in the page header
+
+`presence="none"` stops the editor from drawing avatars. The app renders the exported
+`Presence` with the same provider wherever it wants, for example in its page header:
+
+```svelte
+<script lang="ts">
+  import { Editor, Presence } from '@facile/encre';
+  let { ydoc, provider, user } = $props();
+</script>
+
+<header class="flex items-center justify-between">
+  <h1>Plan</h1>
+  <Presence {provider} />
+</header>
+<Editor {ydoc} {provider} {user} presence="none" />
+```
+
+For a custom display, `peers(provider)` returns the announced users, this client first; read
+it again on the awareness `change` event, as `Presence` does.
 
 Back to the [documentation index](README.md).
