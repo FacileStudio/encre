@@ -2,6 +2,7 @@
   import type * as Y from 'yjs';
   import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
   import type { EncreNode } from './schema.js';
+  import type { UploadedImage } from './upload.js';
 
   /** Props of the encre editor. */
   export interface EditorProps {
@@ -17,6 +18,12 @@
     provider?: AwarenessProvider;
     /** This user, as other people see them. */
     user?: CollabUser;
+    /** Uploads a pasted, dropped or picked image and answers its address; without it images are not uploaded. */
+    onimage?: (file: File) => Promise<UploadedImage>;
+    /** Reports a refused image or a failed upload. */
+    onerror?: (error: Error) => void;
+    /** The largest image, in bytes, handed to `onimage`. */
+    maxImageBytes?: number;
   }
 </script>
 
@@ -30,6 +37,9 @@
   import SlashMenu from './SlashMenu.svelte';
   import Toolbar from './Toolbar.svelte';
   import { pasteMarkdown } from './paste.js';
+  import { BLOCK_COMMANDS } from './blocks.js';
+  import { UploadPlaceholder } from './extensions/upload-placeholder.js';
+  import { dropImages, imageCommand, pasteImages, type ImageUpload } from './upload.js';
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
 
   let {
@@ -41,26 +51,33 @@
     class: className = '',
     ydoc,
     provider,
-    user
+    user,
+    onimage,
+    onerror,
+    maxImageBytes
   }: EditorProps = $props();
 
   let element: HTMLDivElement;
   let editor = $state<Editor | null>(null);
   let version = $state(0);
   const slash = new SlashState();
+  const upload = (): ImageUpload | undefined => (onimage ? { onimage, onerror, maxImageBytes } : undefined);
+  const commands = $derived(onimage ? [...BLOCK_COMMANDS, imageCommand(upload)] : BLOCK_COMMANDS);
 
   onMount(() => {
     const instance = new Editor({
       element,
       extensions: [
         ...encreExtensions({ placeholder, collaboration: ydoc ? { document: ydoc, provider, user } : undefined }),
-        slashExtension(slash)
+        slashExtension(slash, () => commands),
+        UploadPlaceholder
       ],
       content: ydoc ? null : (content ?? null),
       editable,
       editorProps: {
         attributes: { class: 'encre-prose outline-none min-h-40' },
-        handlePaste: (_view, event) => (editor ? pasteMarkdown(editor, event) : false)
+        handlePaste: (_view, event) => (editor ? pasteImages(editor, event, upload()) || pasteMarkdown(editor, event) : false),
+        handleDrop: (_view, event, _slice, moved) => (editor && !moved ? dropImages(editor, event, upload()) : false)
       },
       onTransaction: () => (version += 1),
       onUpdate: ({ editor: changed }) => onchange?.(changed.getJSON() as EncreNode)
@@ -113,7 +130,7 @@
     <Presence {provider} />
   {/if}
   {#if editor && toolbar && editable}
-    <Toolbar {editor} {version} class="sticky top-0 z-10" />
+    <Toolbar {editor} {version} {commands} class="sticky top-0 z-10" />
   {/if}
   <div bind:this={element} class="text-fc-fg"></div>
   {#if editor && editable}

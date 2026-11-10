@@ -32,9 +32,9 @@ export const BLOCK_COMMANDS: BlockCommand[] = [
   { id: 'chart', label: labels.chart, keywords: 'graphique chart', run: (e) => chain(e).insertChart('bar').run() }
 ];
 
-/** The block commands matching `query`, by label or keyword. */
-export function findBlocks(query: string): BlockCommand[] {
+/** The commands of `commands` (every block by default) matching `query`, by label or keyword. */
+export function findBlocks(query: string, commands: BlockCommand[] = BLOCK_COMMANDS): BlockCommand[] {
   const needle = query.trim().toLowerCase();
-  if (needle === '') return BLOCK_COMMANDS;
-  return BLOCK_COMMANDS.filter((b) => b.label.toLowerCase().includes(needle) || b.keywords.includes(needle));
+  if (needle === '') return commands;
+  return commands.filter((b) => b.label.toLowerCase().includes(needle) || b.keywords.includes(needle));
 }

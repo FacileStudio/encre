@@ -17,3 +17,4 @@ export { newBlockId, isBlockId } from './ids.js';
 export { linkHref, imageSrc } from './render/href.js';
 export { loadEncre, encreReady, parseMarkdown, serializeMarkdown, serializeCommonMark, validateDocument, openuiToDocument, type WasmSource } from './wasm.js';
 export { looksLikeMarkdown } from './paste.js';
+export { IMAGE_TYPES, imageRefusal, type ImageUpload, type UploadedImage } from './upload.js';

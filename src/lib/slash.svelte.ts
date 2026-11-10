@@ -1,7 +1,7 @@
 import { Extension, type Editor, type Range } from '@tiptap/core';
 import { PluginKey } from '@tiptap/pm/state';
 import Suggestion, { type SuggestionKeyDownProps, type SuggestionProps } from '@tiptap/suggestion';
-import { findBlocks, type BlockCommand } from './blocks.js';
+import { BLOCK_COMMANDS, findBlocks, type BlockCommand } from './blocks.js';
 
 /** What the slash menu shows: open or not, the matches, the highlighted one and where. */
 export class SlashState {
@@ -56,8 +56,8 @@ function renderer(slash: SlashState) {
   };
 }
 
-/** The `/` trigger that drives a `SlashState`. */
-export function slashExtension(slash: SlashState): Extension {
+/** The `/` trigger that drives a `SlashState`, offering `commands` (every block by default). */
+export function slashExtension(slash: SlashState, commands: () => BlockCommand[] = () => BLOCK_COMMANDS): Extension {
   return Extension.create({
     name: 'encreSlash',
     addProseMirrorPlugins() {
@@ -67,7 +67,7 @@ export function slashExtension(slash: SlashState): Extension {
           pluginKey: new PluginKey('encreSlash'),
           char: '/',
           startOfLine: false,
-          items: ({ query }) => findBlocks(query),
+          items: ({ query }) => findBlocks(query, commands()),
           command: ({ editor, range, props }) => runBlock(editor, range, props),
           render: () => renderer(slash)
         })

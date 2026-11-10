@@ -1,13 +1,18 @@
 <script lang="ts">
   import { IconButton, Menu, Tooltip } from '@facile/muse';
   import type { Editor } from '@tiptap/core';
-  import { BLOCK_COMMANDS } from './blocks.js';
+  import { BLOCK_COMMANDS, type BlockCommand } from './blocks.js';
   import { labels } from './labels.js';
   import MarkButtons from './MarkButtons.svelte';
 
-  let { editor, version, class: className = '' }: { editor: Editor; version: number; class?: string } = $props();
+  let {
+    editor,
+    version,
+    commands = BLOCK_COMMANDS,
+    class: className = ''
+  }: { editor: Editor; version: number; commands?: BlockCommand[]; class?: string } = $props();
 
-  const blockItems = BLOCK_COMMANDS.map((block) => ({ label: block.label, onselect: () => block.run(editor) }));
+  const blockItems = $derived(commands.map((block) => ({ label: block.label, onselect: () => block.run(editor) })));
   const tableItems = [
     { label: labels.addRow, onselect: () => editor.chain().focus().addRowAfter().run() },
     { label: labels.addColumn, onselect: () => editor.chain().focus().addColumnAfter().run() },

@@ -100,3 +100,23 @@
 
 .encre-caret-selection { background: color-mix(in oklab, var(--encre-caret) 30%, transparent); }
 .encre-presence { background: var(--encre-caret, var(--color-fc-accent)); color: var(--color-fc-fg); }
+
+.encre-uploading {
+  display: inline-block;
+  margin: 0 0.25em;
+  padding: 0.1em 0.6em;
+  border-radius: var(--radius-fc-pill);
+  background: var(--color-fc-surface);
+  color: var(--color-fc-fg-muted);
+  font-size: 0.875em;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .encre-uploading { animation: encre-uploading 1.2s ease-in-out infinite alternate; }
+}
+
+@keyframes encre-uploading {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
