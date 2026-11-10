@@ -1,6 +1,6 @@
 {
   "name": "@facile/encre",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The Facile document format: schema, Tiptap editor and markdown projection",
   "type": "module",
   "svelte": "./src/lib/index.ts",

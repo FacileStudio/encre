@@ -186,7 +186,7 @@ dependencies = [
 
 [[package]]
 name = "encre"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "comrak",
  "proptest",
@@ -199,7 +199,7 @@ dependencies = [
 
 [[package]]
 name = "encre-wasm"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "encre",
  "serde_json",
