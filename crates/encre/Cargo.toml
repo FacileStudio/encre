@@ -1,6 +1,6 @@
 [package]
 name = "encre"
-description = "The Facile document format: schema, validation and the Facile Markdown projection"
+description = "The Facile document format: schema, validation, Facile Markdown, Yjs, agent operations, Typst and PDF"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -8,15 +8,20 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+include_dir = { version = "0.7.4", optional = true }
 pulldown-cmark = { version = "0.13.6", default-features = false }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 thiserror = "2.0.21"
+typst = { version = "=0.14.2", optional = true }
+typst-pdf = { version = "=0.14.2", optional = true }
 yrs = { version = "0.28.1", optional = true }
 
 [dev-dependencies]
 comrak = { version = "0.59.0", default-features = false }
+pdf-extract = "0.12.1"
 proptest = "1.12.0"
 
 [features]
 yjs = ["dep:yrs"]
+pdf = ["dep:typst", "dep:typst-pdf", "dep:include_dir"]

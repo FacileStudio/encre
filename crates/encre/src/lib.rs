@@ -12,6 +12,8 @@ pub mod markdown;
 mod migrate;
 mod model;
 pub mod ops;
+#[cfg(feature = "pdf")]
+pub mod pdf;
 pub mod schema;
 pub mod typst;
 mod validate;
