@@ -13,7 +13,7 @@
     class?: string;
     /** The shared document; when set, it is the source of truth and `content` is ignored. */
     ydoc?: Y.Doc;
-    /** A y-websocket `WebsocketProvider` (or any object with an `awareness`) for carets and presence. */
+    /** A y-websocket `WebsocketProvider` (or a stand-in with `awareness`, `synced` and the `sync` event) for carets and presence. */
     provider?: AwarenessProvider;
     /** This user, as other people see them. */
     user?: CollabUser;
