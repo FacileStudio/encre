@@ -4,6 +4,21 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.9.2] - 2026-11-11
+
+### Added
+
+- `serializeMarkdown` and `serializeCommonMark` throw an `EncreDocumentError`, exported, when the
+  document is invalid. It extends `Error` with the same message as before, and carries `path`, the
+  tree path of the failing node, and `blockId`, the id of that node or of the nearest block around
+  it that has one.
+- `Editor` methods `revealPath(path)` and `revealBlock(blockId)` select a node and scroll to it, so
+  an app can jump to the spot an `EncreDocumentError` names. A textblock's text is selected.
+- `Editor.exportMarkdown` and `exportCommonMark` hand an `EncreDocumentError` to `onerror` before
+  they reject with it.
+- A markdown paste that `parseMarkdown` refuses still lands as literal text, and the editor now
+  hands the `EncreMarkdownError` (`line`, `column`, `path`) to `onerror`.
+
 ## [0.9.1] - 2026-11-11
 
 ### Added

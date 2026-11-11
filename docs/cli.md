@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.9.1
+ARG ENCRE_VERSION=0.9.2
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -186,7 +186,7 @@ The Go module `github.com/FacileStudio/encre/go` (package `encre`, in this repos
 wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always with `--json`.
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.9.1
+go get github.com/FacileStudio/encre/go@v0.9.2
 ```
 
 | Function | What it does |
