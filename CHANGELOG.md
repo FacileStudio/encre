@@ -4,6 +4,32 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.9.4] - 2026-11-11
+
+### Fixed
+
+- `yjs::read`, `yjs::from_update` and `ops::apply_yjs` refuse an update nested past 48 levels with
+  `YjsError::Invalid`, the message `validate` gives, before they recurse. A 115 KB update nested
+  5 000 deep overflowed the stack and aborted the process.
+- `openui::to_document` counts nesting through references, so `x0 = [x1]`, `x1 = [x2]` chains stop
+  at 64 levels with the new `Error::TooDeep`. Long chains overflowed the stack in the CLI and broke
+  the browser's wasm instance for every later call.
+- `patch` gives ids only to the blocks it inserts, so its cost is linear in the number of matching
+  blocks. 4 000 matching blocks took 113 s in a debug build.
+- Pasted or `setContent` HTML always validates: the editor rewrites a table with plain `td` header
+  cells, `colspan` rows or mixed column alignment into a rectangular GFM table aligned like its
+  header row, maps any `text-align` other than left, center and right to none, and clamps an
+  ordered list `start` to 0 to 999 999 999.
+- `caretColor` returns a `#rrggbb` color from muse's chart palette. y-tiptap draws only that form,
+  so carets and selections without a `user.color` were transparent.
+- `loadEncre` forgets a failed load, so the next call tries again.
+- PDF export writes a link only for http, https, mailto, tel and relative targets, as `Document`
+  does; other links become plain text.
+- Go: `PDF` passes `--title=`, `--footer=` and `--image-dir=` values, so a title starting with `-`
+  is not read as a flag.
+- Go: `Validate` returns an invalid `Verdict` for input larger than the size limit instead of an
+  `*Error`. The new package variable `MaxBytes` sets `--max-bytes` on every call.
+
 ## [0.9.3] - 2026-11-11
 
 ### Fixed
@@ -248,6 +274,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.9.4]: https://github.com/FacileStudio/encre/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/FacileStudio/encre/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/FacileStudio/encre/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/FacileStudio/encre/compare/v0.9.0...v0.9.1

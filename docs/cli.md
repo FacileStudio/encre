@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.9.3
+ARG ENCRE_VERSION=0.9.4
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -162,7 +162,8 @@ error names the tree `path` and the 1-based `line` and `column` where the block 
 starts. Without `--json`, the message starts with `line L, column C:`.
 
 - Bytes that are not UTF-8, and input larger than `--max-bytes`. These are errors on stderr
-  (exit 1), not a verdict on stdout, and carry no position.
+  (exit 1), not a verdict on stdout, and carry no position. Go's `Validate` turns them into an
+  invalid `Verdict` whose one problem has the path `doc`.
 - A control character other than tab and line feed, NUL and escape included, in text or code
   (rule 1).
 - A code span holding a backslash, a backslash and a pipe inside a table cell: GFM unescapes the
@@ -183,16 +184,17 @@ blocks, unknown badges and alerts stay text, and HTML is text.
 ## Calling it from Go
 
 The Go module `github.com/FacileStudio/encre/go` (package `encre`, in this repository's `go/`)
-wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always with `--json`.
+wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always with `--json`, and
+with `--max-bytes` when the package variable `MaxBytes` is above zero.
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.9.3
+go get github.com/FacileStudio/encre/go@v0.9.4
 ```
 
 | Function | What it does |
 |---|---|
 | `Run(ctx, stdin, args...) ([]byte, error)` | Any command; stdout on success, a `*Error` on a refusal |
-| `Validate(ctx, input, format) (Verdict, error)` | `Verdict{Valid, Errors []Problem{Path, Message, Line, Column}}`; an invalid document is not an error |
+| `Validate(ctx, input, format) (Verdict, error)` | `Verdict{Valid, Errors []Problem{Path, Message, Line, Column}}`; an invalid or oversized document is not an error |
 | `Parse(ctx, markdown, ids) (json.RawMessage, error)` | Facile Markdown to encre JSON |
 | `Serialize(ctx, doc) (string, error)` | encre JSON to canonical Facile Markdown |
 | `CommonMark(ctx, input, format) (string, error)` | Portable CommonMark |
