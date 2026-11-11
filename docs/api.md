@@ -163,8 +163,8 @@ Without `onimage` the editor uploads nothing and behaves as before. With it:
 A document can hold a node the schema refuses, for example a control character in a text node.
 `exportMarkdown` and `exportCommonMark` then hand an `EncreDocumentError` to `onerror` and reject
 with it. Its `path` names the failing node and `blockId` the block around it, when that block has
-an id. `revealPath(path)` and `revealBlock(blockId)` select that node and scroll to it; each
-returns false when the node is not in the document.
+an id. `revealPath(path)` and `revealBlock(blockId)` select that node and scroll to it, below the
+sticky toolbar; each returns false when the node is not in the document.
 
 ```svelte
 <script lang="ts">

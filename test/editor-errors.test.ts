@@ -87,6 +87,19 @@ describe('placed export refusals', () => {
     expect(editor.revealPath('doc.content[7]')).toBe(false);
     expect(editor.revealBlock('zzzzzzzzzz')).toBe(false);
   });
+
+  it('keeps a revealed node below the sticky toolbar', async () => {
+    const editor = open({ content: invalid, toolbar: true });
+    await tick();
+    const bar = document.querySelector('[role="toolbar"]')!.parentElement!;
+    Object.defineProperty(bar, 'offsetHeight', { value: 48 });
+    const view = editor.instance()!.view;
+    expect(editor.revealPath('doc.content[1]')).toBe(true);
+    expect(view.someProp('scrollThreshold')).toMatchObject({ top: 48 });
+    expect(view.someProp('scrollMargin')).toMatchObject({ top: 53 });
+    expect(editor.revealBlock(editor.getDocument()!.content![0]!.attrs!.id as string)).toBe(true);
+    expect(view.someProp('scrollMargin')).toMatchObject({ top: 53 });
+  });
 });
 
 describe('refused paste', () => {

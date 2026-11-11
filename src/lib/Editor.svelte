@@ -75,6 +75,7 @@
   }: EditorProps = $props();
 
   let element: HTMLDivElement;
+  let bar = $state<HTMLDivElement | null>(null);
   let editor = $state<Editor | null>(null);
   let version = $state(0);
   const slash = new SlashState();
@@ -144,14 +145,14 @@
     return reported(() => serializeCommonMark(getDocument() ?? empty), onerror);
   }
 
-  /** Selects and scrolls to the node at a JSON path such as an `EncreDocumentError`'s `path`; false when it is not there. */
+  /** Selects and scrolls to the node at a JSON path such as an `EncreDocumentError`'s `path`, below the sticky toolbar; false when it is not there. */
   export function revealPath(path: string): boolean {
-    return editor ? reveal(editor, positionOf(editor.state.doc, path)) : false;
+    return editor ? reveal(editor, positionOf(editor.state.doc, path), bar?.offsetHeight) : false;
   }
 
-  /** Selects and scrolls to the block whose id is `blockId`; false when no block has it. */
+  /** Selects and scrolls to the block whose id is `blockId`, below the sticky toolbar; false when no block has it. */
   export function revealBlock(blockId: string): boolean {
-    return editor ? reveal(editor, blockPosition(editor.state.doc, blockId)) : false;
+    return editor ? reveal(editor, blockPosition(editor.state.doc, blockId), bar?.offsetHeight) : false;
   }
 
   /** Replaces the whole document. */
@@ -165,7 +166,9 @@
     <Presence {provider} />
   {/if}
   {#if editor && toolbar && editable}
-    <Toolbar {editor} {version} {commands} labels={copy} class="sticky top-0 z-10" />
+    <div bind:this={bar} class="sticky top-0 z-10">
+      <Toolbar {editor} {version} {commands} labels={copy} />
+    </div>
   {/if}
   <div bind:this={element} class="text-fc-fg"></div>
   {#if editor && editable}

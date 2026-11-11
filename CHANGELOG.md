@@ -4,6 +4,14 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.9.3] - 2026-11-11
+
+### Fixed
+
+- `Editor` methods `revealPath` and `revealBlock` scrolled the node to the top of the scroll
+  container, under the editor's sticky toolbar. They now keep it below the toolbar's measured
+  height.
+
 ## [0.9.2] - 2026-11-11
 
 ### Added
@@ -240,6 +248,8 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.9.3]: https://github.com/FacileStudio/encre/compare/v0.9.2...v0.9.3
+[0.9.2]: https://github.com/FacileStudio/encre/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/FacileStudio/encre/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/FacileStudio/encre/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/FacileStudio/encre/compare/v0.7.0...v0.8.0
