@@ -24,7 +24,7 @@
     presence?: 'inline' | 'none';
     /** Uploads a pasted, dropped or picked image and answers its address; without it images are not uploaded. */
     onimage?: (file: File) => Promise<UploadedImage>;
-    /** Reports a refused image or a failed upload. */
+    /** Reports a refused image, a failed upload, a paste encre could not read as blocks, or a refused export. */
     onerror?: (error: Error) => void;
     /** The largest image, in bytes, handed to `onimage`. */
     maxImageBytes?: number;
@@ -52,6 +52,8 @@
   import { UploadPlaceholder } from './extensions/upload-placeholder.js';
   import { dropImages, imageCommand, pasteImages, type ImageUpload } from './upload.js';
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
+  import { blockPosition, positionOf, reveal } from './reveal.js';
+  import { reported } from './refusal.js';
 
   let {
     content,
@@ -97,7 +99,7 @@
       editable,
       editorProps: {
         attributes: { class: 'encre-prose outline-none min-h-40' },
-        handlePaste: (_view, event) => (editor ? pasteImages(editor, event, upload()) || pasteMarkdown(editor, event) : false),
+        handlePaste: (_view, event) => (editor ? pasteImages(editor, event, upload()) || pasteMarkdown(editor, event, onerror) : false),
         handleDrop: (_view, event, _slice, moved) => (editor && !moved ? dropImages(editor, event, upload()) : false)
       },
       onTransaction: () => (version += 1),
@@ -128,16 +130,28 @@
     setDocument(parseMarkdown(markdown));
   }
 
-  /** The document as canonical Facile Markdown. */
+  const empty: EncreNode = { type: 'doc', content: [{ type: 'paragraph' }] };
+
+  /** The document as canonical Facile Markdown; a refusal is an `EncreDocumentError`, also handed to `onerror`. */
   export async function exportMarkdown(): Promise<string> {
     await loadEncre();
-    return serializeMarkdown(getDocument() ?? { type: 'doc', content: [{ type: 'paragraph' }] });
+    return reported(() => serializeMarkdown(getDocument() ?? empty), onerror);
   }
 
-  /** The document as portable CommonMark. */
+  /** The document as portable CommonMark; a refusal is an `EncreDocumentError`, also handed to `onerror`. */
   export async function exportCommonMark(): Promise<string> {
     await loadEncre();
-    return serializeCommonMark(getDocument() ?? { type: 'doc', content: [{ type: 'paragraph' }] });
+    return reported(() => serializeCommonMark(getDocument() ?? empty), onerror);
+  }
+
+  /** Selects and scrolls to the node at a JSON path such as an `EncreDocumentError`'s `path`; false when it is not there. */
+  export function revealPath(path: string): boolean {
+    return editor ? reveal(editor, positionOf(editor.state.doc, path)) : false;
+  }
+
+  /** Selects and scrolls to the block whose id is `blockId`; false when no block has it. */
+  export function revealBlock(blockId: string): boolean {
+    return editor ? reveal(editor, blockPosition(editor.state.doc, blockId)) : false;
   }
 
   /** Replaces the whole document. */

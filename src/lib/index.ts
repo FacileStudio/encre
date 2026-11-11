@@ -33,5 +33,6 @@ export {
   type MarkdownValidation,
   type WasmSource
 } from './wasm.js';
+export { EncreDocumentError } from './refusal.js';
 export { looksLikeMarkdown } from './paste.js';
 export { IMAGE_TYPES, imageRefusal, type ImageUpload, type UploadedImage } from './upload.js';

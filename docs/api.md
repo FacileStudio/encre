@@ -84,7 +84,7 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 
 | Export | What it does |
 |---|---|
-| `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark` |
+| `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark`, `revealPath`, `revealBlock` |
 | `Document` | Read-only renderer: `doc`, `class`, `locale`, `labels`, `renderDiagram`, `highlight` |
 | `Toolbar`, `BubbleMenu`, `SlashMenu`, `Presence` | The editor's parts, for apps that assemble their own |
 | `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `blockCommands(labels)`, `findBlocks` | The slash menu's state and the block commands, French or in the given labels |
@@ -99,9 +99,10 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `newBlockId`, `isBlockId` | Block ids from `crypto.getRandomValues` |
 | `linkHref`, `imageSrc` | A link or image source when its scheme is safe to follow, else `undefined` |
 | `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded |
-| `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser |
+| `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser; the two serializers throw an `EncreDocumentError` on an invalid document |
 | `validateMarkdown(markdown) -> MarkdownValidation` | `{ valid, errors: MarkdownProblem[] }`, each problem `{ path, message, line, column }`; the same verdict as `encre validate --from markdown --json` |
 | `EncreMarkdownError` | What `parseMarkdown` throws: an `Error` with the Rust message unchanged, plus `line`, `column` and `path` when the source position is known |
+| `EncreDocumentError` | What `serializeMarkdown` and `serializeCommonMark` throw: an `Error` with the Rust message unchanged, plus `path` (`doc.content[1]`) and `blockId`, the id of the failing node or of the nearest enclosing block that has one |
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |
 | `looksLikeMarkdown` | The paste heuristic the editor uses |
 | `IMAGE_TYPES`, `imageRefusal(file, max?, labels?)`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |
@@ -121,7 +122,7 @@ The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 | `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions` |
 | `presence` | `'inline' \| 'none'` | `'inline'` | `inline` shows who is here above the toolbar; `none` leaves it to the app |
 | `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
-| `onerror` | `(error: Error) => void` | none | A refused image or a failed upload |
+| `onerror` | `(error: Error) => void` | none | A refused image, a failed upload, an `EncreMarkdownError` from a markdown paste encre could not read (the text lands literally), or an `EncreDocumentError` from `exportMarkdown` or `exportCommonMark` |
 | `maxImageBytes` | `number` | no limit | The largest file handed to `onimage` |
 | `locale` | `'fr' \| 'en' \| 'es' \| 'de'` | `'fr'` | The language of every string in the toolbar, menus, node views and placeholders |
 | `labels` | `LabelOverrides` | none | Replaces some of those strings; `tones` may name only some tones |
@@ -154,6 +155,29 @@ Without `onimage` the editor uploads nothing and behaves as before. With it:
     return { src: url, alt: file.name };
   }}
   onerror={(error) => toast.error(error.message)}
+/>
+```
+
+### Export refusals
+
+A document can hold a node the schema refuses, for example a control character in a text node.
+`exportMarkdown` and `exportCommonMark` then hand an `EncreDocumentError` to `onerror` and reject
+with it. Its `path` names the failing node and `blockId` the block around it, when that block has
+an id. `revealPath(path)` and `revealBlock(blockId)` select that node and scroll to it; each
+returns false when the node is not in the document.
+
+```svelte
+<script lang="ts">
+  import { Editor, EncreDocumentError } from '@facile/encre';
+  let editor: ReturnType<typeof Editor>;
+</script>
+
+<Editor
+  bind:this={editor}
+  onerror={(error) => {
+    toast.error(error.message);
+    if (error instanceof EncreDocumentError) editor.revealPath(error.path);
+  }}
 />
 ```
 

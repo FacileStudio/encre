@@ -1,4 +1,5 @@
 import init, * as encre from './encre-wasm/encre_wasm.js';
+import { placedError } from './refusal.js';
 import type { EncreNode } from './schema.js';
 
 /** Where the WebAssembly comes from: a URL, a response, or the bytes themselves. */
@@ -74,16 +75,24 @@ export function parseMarkdown(markdown: string): EncreNode {
   }
 }
 
-/** Writes a valid document as canonical Facile Markdown. Throws when the document is invalid. */
-export function serializeMarkdown(doc: EncreNode): string {
-  loaded();
-  return encre.serialize(JSON.stringify(doc));
+function checked(doc: EncreNode, write: (json: string) => string): string {
+  try {
+    return write(JSON.stringify(doc));
+  } catch (error) {
+    throw placedError(doc, error);
+  }
 }
 
-/** Writes a valid document as portable CommonMark. Throws when the document is invalid. */
+/** Writes a valid document as canonical Facile Markdown. Throws an `EncreDocumentError` when the document is invalid. */
+export function serializeMarkdown(doc: EncreNode): string {
+  loaded();
+  return checked(doc, encre.serialize);
+}
+
+/** Writes a valid document as portable CommonMark. Throws an `EncreDocumentError` when the document is invalid. */
 export function serializeCommonMark(doc: EncreNode): string {
   loaded();
-  return encre.serialize_commonmark(JSON.stringify(doc));
+  return checked(doc, encre.serialize_commonmark);
 }
 
 /** The reason `doc` is invalid, or null when it validates. */

@@ -17,17 +17,19 @@ export function insertable(doc: EncreNode): EncreNode[] {
 }
 
 /**
- * Handles a paste of plain-text markdown through encre-wasm; returns false to let Tiptap paste as usual, also
- * when encre refuses the markdown for nesting past its limits.
+ * Handles a paste of plain-text markdown through encre-wasm; returns false to let Tiptap paste as usual. When encre
+ * refuses the markdown for nesting past its limits, it reports the `EncreMarkdownError` to `onerror` and still returns
+ * false, so the text lands literally.
  */
-export function pasteMarkdown(editor: Editor, event: ClipboardEvent): boolean {
+export function pasteMarkdown(editor: Editor, event: ClipboardEvent, onerror?: (error: Error) => void): boolean {
   const data = event.clipboardData;
   const text = data?.getData('text/plain') ?? '';
   if (!encreReady() || !data || data.getData('text/html') !== '' || !looksLikeMarkdown(text)) return false;
   let doc: EncreNode;
   try {
     doc = parseMarkdown(text);
-  } catch {
+  } catch (error) {
+    onerror?.(error instanceof Error ? error : new Error(String(error)));
     return false;
   }
   editor.chain().focus().insertContent(insertable(doc)).run();
