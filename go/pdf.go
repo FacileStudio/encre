@@ -14,15 +14,15 @@ type PDFOptions struct {
 }
 
 func (o PDFOptions) args(format Format, output string) []string {
-	args := []string{"pdf", "--from", string(format), "--output", output}
+	args := []string{"pdf", "--from", string(format), "--output=" + output}
 	if o.Title != "" {
-		args = append(args, "--title", o.Title)
+		args = append(args, "--title="+o.Title)
 	}
 	if o.Footer != "" {
-		args = append(args, "--footer", o.Footer)
+		args = append(args, "--footer="+o.Footer)
 	}
 	if o.ImageDir != "" {
-		args = append(args, "--image-dir", o.ImageDir)
+		args = append(args, "--image-dir="+o.ImageDir)
 	}
 	return args
 }

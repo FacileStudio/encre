@@ -1,13 +1,35 @@
 use crate::escape::quoted;
 use crate::model::{Mark, Node};
 
+const SCHEMES: [&str; 4] = ["http", "https", "mailto", "tel"];
+
+/// Whether a reader may follow `href` from the PDF: http, https, mailto, tel or relative, as `Document` allows.
+fn followable(href: &str) -> bool {
+    if href.chars().any(char::is_control) {
+        return false;
+    }
+    let trimmed = href.trim();
+    let scheme = trimmed.split_once(':').map(|(scheme, _)| scheme).filter(|scheme| {
+        scheme.starts_with(|c: char| c.is_ascii_alphabetic())
+            && scheme.chars().all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '.' | '-'))
+    });
+    scheme.is_none_or(|scheme| SCHEMES.iter().any(|allowed| scheme.eq_ignore_ascii_case(allowed)))
+}
+
+fn link(mark: &Mark, inner: String) -> String {
+    match mark.attrs.get("href").and_then(|v| v.as_str()).filter(|href| followable(href)) {
+        Some(href) => format!("#link({})[{inner}]", quoted(href)),
+        None => inner,
+    }
+}
+
 fn wrap(mark: &Mark, inner: String) -> String {
     match mark.kind.as_str() {
         "bold" => format!("#strong[{inner}]"),
         "italic" => format!("#emph[{inner}]"),
         "strike" => format!("#strike[{inner}]"),
         "highlight" => format!("#highlight[{inner}]"),
-        "link" => format!("#link({})[{inner}]", quoted(mark.attrs.get("href").and_then(|v| v.as_str()).unwrap_or(""))),
+        "link" => link(mark, inner),
         _ => inner,
     }
 }

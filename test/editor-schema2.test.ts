@@ -53,3 +53,30 @@ describe('schema 2 commands', () => {
     expect(markdown()).toContain('```d2\nx -> y\n```');
   });
 });
+
+describe('pasted HTML', () => {
+  const html = [
+    '<table><tr><td>a</td><td>b</td></tr><tr><td colspan="2">c</td></tr></table>',
+    '<table><tr><th style="text-align: justify">a</th></tr><tr><td>b</td></tr></table>',
+    '<table><tr><th align="center">a</th><th>b</th></tr><tr><td>c</td><td align="right">d</td></tr></table>',
+    '<ol start="-2"><li><p>a</p></li></ol><ol start="5000000000"><li><p>b</p></li></ol>'
+  ];
+
+  it.each(html)('always validates: %s', (source) => {
+    const e = open();
+    e.commands.setContent(source);
+    expect(validateDocument(json())).toBeNull();
+  });
+
+  it('keeps the header alignment of each column and clamps list starts', () => {
+    const e = open();
+    e.commands.setContent(html[2]!);
+    const rows = json().content?.[0]?.content ?? [];
+    expect(rows.map((row) => row.content?.map((cell) => cell.attrs?.align ?? 'none'))).toEqual([
+      ['center', 'none'],
+      ['center', 'none']
+    ]);
+    e.commands.setContent(html[3]!);
+    expect(json().content?.filter((n) => n.type === 'orderedList').map((list) => list.attrs?.start ?? 1)).toEqual([0, 999_999_999]);
+  });
+});

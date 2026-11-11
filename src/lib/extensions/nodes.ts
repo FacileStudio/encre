@@ -22,11 +22,17 @@ export const EncreOrderedList = OrderedList.extend({
     return {
       start: {
         default: 1,
-        parseHTML: (element: HTMLElement) => Number.parseInt(element.getAttribute('start') ?? '1', 10) || 1
+        parseHTML: (element: HTMLElement) => listStart(element.getAttribute('start'))
       }
     };
   }
 });
+
+/** The `start` of a pasted ordered list, within the 0 to 999 999 999 the schema allows; 1 when it is not a number. */
+export function listStart(value: string | null): number {
+  const start = Number.parseInt(value ?? '1', 10);
+  return Number.isNaN(start) ? 1 : Math.min(Math.max(start, 0), 999_999_999);
+}
 
 /** Hard break that never carries marks, so markdown stays lossless. */
 export const EncreHardBreak = HardBreak.extend({

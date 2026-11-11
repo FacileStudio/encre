@@ -3,16 +3,25 @@ use super::attrs::{mark_name, to_json};
 use crate::compact::compact_attrs as compact;
 use crate::model::{Mark, Node};
 use crate::schema::schema;
+use crate::validate::{MAX_DEPTH, ValidationError};
 use serde_json::{Map, Value};
 use yrs::types::text::{Diff, YChange};
 use yrs::{Any, Out, ReadTxn, Text, Xml, XmlElementRef, XmlFragment, XmlOut, XmlTextRef};
 
-/// The nodes held by `parent`, text runs split into text nodes.
-pub fn children<T: ReadTxn, P: XmlFragment>(txn: &T, parent: &P) -> Result<Vec<Node>, YjsError> {
+/// The nodes held by `parent`, text runs split into text nodes; `trail` holds the child indexes from the root.
+pub fn children<T: ReadTxn, P: XmlFragment>(
+    txn: &T,
+    parent: &P,
+    trail: &mut Vec<usize>,
+) -> Result<Vec<Node>, YjsError> {
     let mut nodes = Vec::new();
     for child in parent.children(txn) {
         match child {
-            XmlOut::Element(element) => nodes.push(self::element(txn, &element)?),
+            XmlOut::Element(element) => {
+                trail.push(nodes.len());
+                nodes.push(self::element(txn, &element, trail)?);
+                trail.pop();
+            }
             XmlOut::Text(text) => nodes.extend(self::text(txn, &text)?),
             XmlOut::Fragment(_) => return Err(YjsError::Shape("a nested fragment")),
         }
@@ -20,7 +29,18 @@ pub fn children<T: ReadTxn, P: XmlFragment>(txn: &T, parent: &P) -> Result<Vec<N
     Ok(nodes)
 }
 
-fn element<T: ReadTxn>(txn: &T, element: &XmlElementRef) -> Result<Node, YjsError> {
+fn too_deep(trail: &[usize]) -> YjsError {
+    let path = trail.iter().fold("doc".to_owned(), |path, i| format!("{path}.content[{i}]"));
+    YjsError::Invalid(ValidationError {
+        path,
+        message: format!("the document nests more than {MAX_DEPTH} levels deep"),
+    })
+}
+
+fn element<T: ReadTxn>(txn: &T, element: &XmlElementRef, trail: &mut Vec<usize>) -> Result<Node, YjsError> {
+    if trail.len() >= MAX_DEPTH {
+        return Err(too_deep(trail));
+    }
     let kind = element.tag().to_string();
     let node_type = schema().node(&kind).ok_or_else(|| YjsError::Unknown("node", kind.clone()))?;
     let raw: Map<String, Value> = element
@@ -30,7 +50,7 @@ fn element<T: ReadTxn>(txn: &T, element: &XmlElementRef) -> Result<Node, YjsErro
             _ => None,
         })
         .collect();
-    Ok(Node::new(&kind, compact(&node_type.attrs, &raw), children(txn, element)?))
+    Ok(Node::new(&kind, compact(&node_type.attrs, &raw), children(txn, element, trail)?))
 }
 
 fn text<T: ReadTxn>(txn: &T, text: &XmlTextRef) -> Result<Vec<Node>, YjsError> {

@@ -2,6 +2,7 @@ import { Node, mergeAttributes, type CommandProps } from '@tiptap/core';
 import type { Node as PMNode } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
 import { alignColumn, emptyTable, insertColumn, insertRow, removeColumn, removeRow, type Align } from './table-model.js';
+import { cellAlign, tableNormalizer } from './table-normal.js';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -67,7 +68,7 @@ function rebuild(change: Rebuild) {
 
 const alignAttribute = {
   default: 'none',
-  parseHTML: (element: HTMLElement) => element.style.textAlign || element.getAttribute('align') || 'none',
+  parseHTML: cellAlign,
   renderHTML: (attrs: { align?: string }) => (attrs.align && attrs.align !== 'none' ? { style: `text-align: ${attrs.align}` } : {})
 };
 
@@ -125,6 +126,7 @@ export const Table = Node.create({
   isolating: true,
   parseHTML: () => [{ tag: 'table' }],
   renderHTML: ({ HTMLAttributes }) => ['table', HTMLAttributes, ['tbody', 0]],
+  addProseMirrorPlugins: () => [tableNormalizer()],
   addCommands() {
     return {
       insertTable: (options = {}) => (props) => placeTable(props, options.rows ?? 3, options.cols ?? 3),

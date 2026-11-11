@@ -52,6 +52,9 @@ pub enum Error {
     /// The program expands past the adapter's size limit.
     #[error("the program expands to more than {0} values")]
     TooLarge(usize),
+    /// References resolve to values nested past the parser's depth limit.
+    #[error("values nest deeper than {0} levels once references are resolved")]
+    TooDeep(usize),
     /// Nothing the program shows has a place in a document.
     #[error("the program holds nothing a document can keep: only buttons and forms")]
     Empty,

@@ -3,13 +3,15 @@ import type { Node as PMNode, Schema } from '@tiptap/pm/model';
 /** Column alignment of a table cell, as GFM writes it in the delimiter row. */
 export type Align = 'none' | 'left' | 'center' | 'right';
 
-function cellsOf(table: PMNode): PMNode[][] {
+/** The cells of `table`, row by row. */
+export function cellsOf(table: PMNode): PMNode[][] {
   const rows: PMNode[][] = [];
   table.forEach((row) => rows.push(Array.from({ length: row.childCount }, (_, i) => row.child(i))));
   return rows;
 }
 
-function build(schema: Schema, rows: (PMNode | null)[][], aligns: Align[], attrs: PMNode['attrs'] | null = null): PMNode {
+/** A table of `rows`, the first being the header, each column aligned as `aligns` says; a null cell is empty. */
+export function build(schema: Schema, rows: (PMNode | null)[][], aligns: Align[], attrs: PMNode['attrs'] | null = null): PMNode {
   const { table, tableRow, tableHeader, tableCell, paragraph } = schema.nodes;
   const builtRows = rows.map((cells, r) =>
     tableRow!.create(

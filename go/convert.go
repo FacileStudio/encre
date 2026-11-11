@@ -1,8 +1,11 @@
 package encre
 
 import (
+	"bytes"
+	"cmp"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 )
 
@@ -45,7 +48,8 @@ func text(ctx context.Context, input []byte, key string, args ...string) (string
 	return field(out, key)
 }
 
-// Validate checks a document in format. An invalid document is a Verdict, not an error.
+// Validate checks a document in format. An invalid document is a Verdict, not an error, and so is an input
+// larger than MaxBytes.
 func Validate(ctx context.Context, input []byte, format Format) (Verdict, error) {
 	args := []string{"validate", "--from", string(format)}
 	res, err := exec1(ctx, input, args)
@@ -56,7 +60,12 @@ func Validate(ctx context.Context, input []byte, format Format) (Verdict, error)
 	if (res.exit == 0 || res.exit == 1) && json.Unmarshal(res.stdout, &verdict) == nil {
 		return verdict, nil
 	}
-	return Verdict{}, refusal("validate", res.stderr, res.exit)
+	err = refusal("validate", res.stderr, res.exit)
+	var refused *Error
+	if errors.As(err, &refused) && refused.Invalid() && len(bytes.TrimSpace(res.stdout)) == 0 {
+		return Verdict{Valid: false, Errors: []Problem{{Path: cmp.Or(refused.Path, "doc"), Message: refused.Message}}}, nil
+	}
+	return Verdict{}, err
 }
 
 // Parse reads Facile Markdown into encre JSON; ids gives every block a fresh id.

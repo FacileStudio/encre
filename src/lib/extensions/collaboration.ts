@@ -53,11 +53,11 @@ export interface CollabOptions {
   user?: CollabUser;
 }
 
-const PALETTE = 6;
+const PALETTE = ['#7e66ca', '#cc7d1e', '#009696', '#bc3f53', '#629f39', '#bb61a2'];
 
-/** The muse chart token a client's caret takes when the user brings no color. */
+/** The muse chart color a client's caret takes when the user brings no color, as the `#rrggbb` y-tiptap accepts. */
 export function caretColor(clientId: number): string {
-  return `var(--color-fc-chart-${(clientId % PALETTE) + 1})`;
+  return PALETTE[clientId % PALETTE.length]!;
 }
 
 function renderCaret(user: Record<string, unknown>): HTMLElement {

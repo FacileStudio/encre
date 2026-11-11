@@ -1,8 +1,8 @@
 use super::error::OpError;
-use crate::ids::assign_ids;
+use crate::ids::{assign_new_ids, held_ids};
 use crate::model::Node;
 use crate::validate::validate;
-use serde_json::{Map, Value};
+use serde_json::Value;
 
 /// Top-level blocks `at..at + removed` of the old document give way to `nodes`.
 pub struct Replace {
@@ -51,13 +51,6 @@ impl Edit {
     }
 }
 
-fn with_ids(doc: &Node, nodes: Vec<Node>) -> Vec<Node> {
-    let kept = doc.content.len();
-    let mut scratch = Node::new("doc", Map::new(), doc.content.iter().cloned().chain(nodes).collect());
-    assign_ids(&mut scratch);
-    scratch.content.split_off(kept)
-}
-
 fn carry_id(old: &Node, nodes: &mut [Node]) {
     if let (Some(id), Some(first)) = (old.id(), nodes.first_mut())
         && old.kind == first.kind
@@ -71,9 +64,11 @@ pub fn edit(doc: &Node, op: &'static str, replaces: Vec<Replace>) -> Result<Edit
     let mut content = Vec::new();
     let mut splices = Vec::new();
     let mut cursor = 0;
+    let mut taken = held_ids(doc);
     for replace in replaces {
         content.extend_from_slice(&doc.content[cursor..replace.at]);
-        let mut nodes = with_ids(doc, replace.nodes);
+        let mut nodes = replace.nodes;
+        assign_new_ids(&mut nodes, &mut taken);
         if replace.keep_id && replace.removed == 1 {
             carry_id(&doc.content[replace.at], &mut nodes);
         }

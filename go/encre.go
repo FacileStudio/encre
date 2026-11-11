@@ -18,6 +18,10 @@ import (
 // DefaultTimeout bounds a call whose context has no deadline. Give a long PDF its own deadline.
 const DefaultTimeout = 30 * time.Second
 
+// MaxBytes, when above zero, is the --max-bytes every call passes: the largest input encre reads. At zero
+// the binary's default of 8 MiB applies. Set it once, before the first call.
+var MaxBytes int64
+
 // Error is a failure encre reported, with its exit code.
 type Error struct {
 	Exit    int    `json:"exit"`
@@ -51,7 +55,11 @@ func exec1(ctx context.Context, stdin []byte, args []string) (result, error) {
 		ctx, cancel = context.WithTimeout(ctx, DefaultTimeout)
 		defer cancel()
 	}
-	cmd := exec.CommandContext(ctx, Binary(), append(args, "--json")...)
+	args = append(args[:len(args):len(args)], "--json")
+	if MaxBytes > 0 {
+		args = append(args, fmt.Sprintf("--max-bytes=%d", MaxBytes))
+	}
+	cmd := exec.CommandContext(ctx, Binary(), args...)
 	cmd.Stdin = bytes.NewReader(stdin)
 	var out, errOut bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &out, &errOut

@@ -65,7 +65,7 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 |---|---|
 | `to_document(&str) -> Result<Node, Error>` | An OpenUI Lang program as a document without ids |
 | `to_blocks(&str) -> Result<Vec<Node>, Error>` | The same blocks, to place in an existing document |
-| `Error` | `Syntax { line, message }`, `NoRoot`, `Undefined`, `Cycle`, `UnknownComponent`, `Argument`, `TooLarge`, `Empty` |
+| `Error` | `Syntax { line, message }`, `NoRoot`, `Undefined`, `Cycle`, `UnknownComponent`, `Argument`, `TooLarge`, `TooDeep` (references resolve past 64 levels), `Empty` |
 
 ## encre-wasm
 
@@ -93,14 +93,14 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `Settings`, `settingsOf`, `EncreSettings`, `RenderDiagram` | The extension that carries labels and the diagram renderer to node views |
 | `CATALOGUES`, `labelsFor`, `Labels`, `LabelOverrides`, `Locale` | The interface copy in `fr`, `en`, `es` and `de`, and overrides |
 | `Highlight` | The type of `Document`'s `highlight` hook |
-| `FRAGMENT`, `caretColor`, `peers`, `CollabUser`, `CollabOptions`, `AwarenessProvider`, `Peer` | Collaboration helpers and types |
+| `FRAGMENT`, `caretColor`, `peers`, `CollabUser`, `CollabOptions`, `AwarenessProvider`, `Peer` | Collaboration helpers and types; `caretColor(clientId)` is a `#rrggbb` muse chart color, the only form y-tiptap draws |
 | `schema`, `SCHEMA_VERSION`, `BLOCK_ID_TYPES`, `EncreNode` and the spec types | `spec/schema.json` typed |
 | `compactDocument` | The compact form, as `compact` in Rust |
 | `newBlockId`, `isBlockId` | Block ids from `crypto.getRandomValues` |
 | `linkHref`, `imageSrc` | A link or image source when its scheme is safe to follow, else `undefined` |
-| `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded |
+| `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded; after a failed load, the next call tries again |
 | `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser; the two serializers throw an `EncreDocumentError` on an invalid document |
-| `validateMarkdown(markdown) -> MarkdownValidation` | `{ valid, errors: MarkdownProblem[] }`, each problem `{ path, message, line, column }`; the same verdict as `encre validate --from markdown --json` |
+| `validateMarkdown(markdown) -> MarkdownValidation` | `{ valid, errors: MarkdownProblem[] }`, each problem `{ path, message, line, column }`; the same verdict as `encre validate --from markdown --json`, except that the wasm has no size limit: the CLI and Go refuse past `--max-bytes` |
 | `EncreMarkdownError` | What `parseMarkdown` throws: an `Error` with the Rust message unchanged, plus `line`, `column` and `path` when the source position is known |
 | `EncreDocumentError` | What `serializeMarkdown` and `serializeCommonMark` throw: an `Error` with the Rust message unchanged, plus `path` (`doc.content[1]`) and `blockId`, the id of the failing node or of the nearest enclosing block that has one |
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |

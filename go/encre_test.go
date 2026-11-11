@@ -83,9 +83,21 @@ func TestExportsAndPDF(t *testing.T) {
 	if err != nil || !strings.Contains(plain, "Release done and this.") {
 		t.Fatalf("plain text: %q %v", plain, err)
 	}
-	pdf, err := PDF(ctx, input, Markdown, PDFOptions{Title: "Plan", Footer: "Facile"})
-	if err != nil || !bytes.HasPrefix(pdf, []byte("%PDF-")) {
-		t.Fatalf("pdf: %d bytes, %v", len(pdf), err)
+	for _, options := range []PDFOptions{{Title: "Plan", Footer: "Facile"}, {Title: "-draft", Footer: "--- confidential"}} {
+		pdf, err := PDF(ctx, input, Markdown, options)
+		if err != nil || !bytes.HasPrefix(pdf, []byte("%PDF-")) {
+			t.Fatalf("pdf %+v: %d bytes, %v", options, len(pdf), err)
+		}
+	}
+}
+
+func TestOversizedInputIsAnInvalidVerdict(t *testing.T) {
+	binary(t)
+	MaxBytes = 16
+	defer func() { MaxBytes = 0 }()
+	verdict, err := Validate(context.Background(), bytes.Repeat([]byte("a"), 32), Markdown)
+	if err != nil || verdict.Valid || len(verdict.Errors) != 1 || !strings.Contains(verdict.Errors[0].Message, "larger than 16 bytes") {
+		t.Fatalf("verdict: %+v %v", verdict, err)
 	}
 }
 

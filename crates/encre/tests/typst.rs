@@ -1,7 +1,7 @@
 #[path = "support/typst.rs"]
 mod typst_support;
 
-use encre::typst::escape_string;
+use encre::typst::{RenderOptions, escape_string, render};
 use typst_support::{render_vector, typst_vectors};
 
 #[test]
@@ -34,5 +34,16 @@ fn escape_matches_ardoise() {
     ];
     for (input, want) in cases {
         assert_eq!(escape_string(input), want, "{input:?}");
+    }
+}
+
+#[test]
+fn only_followable_links_reach_the_pdf() {
+    let markdown =
+        "[a](javascript:alert(1)) [b](data:text/html,x) [c](https://x.example) [d](/rel) [e](mailto:a@b.example)";
+    let typst = render(&encre::markdown::parse(markdown).expect("parses"), &RenderOptions::default());
+    assert!(!typst.contains("javascript") && !typst.contains("data:"), "{typst}");
+    for href in ["https://x.example", "/rel", "mailto:a@b.example"] {
+        assert!(typst.contains(&format!("#link(\"{href}\")")), "{href}: {typst}");
     }
 }

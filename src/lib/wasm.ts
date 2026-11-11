@@ -8,11 +8,17 @@ export type WasmSource = BufferSource | WebAssembly.Module | URL | string | Resp
 let loading: Promise<void> | null = null;
 let ready = false;
 
-/** Loads encre-wasm once. Later calls return the same promise. */
+/** Loads encre-wasm once. Later calls return the same promise; after a failed load, the next call tries again. */
 export function loadEncre(source?: WasmSource): Promise<void> {
-  loading ??= init(source === undefined ? undefined : { module_or_path: source }).then(() => {
-    ready = true;
-  });
+  loading ??= init(source === undefined ? undefined : { module_or_path: source }).then(
+    () => {
+      ready = true;
+    },
+    (error: unknown) => {
+      loading = null;
+      throw error;
+    }
+  );
   return loading;
 }
 

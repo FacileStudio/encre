@@ -47,7 +47,7 @@ pub fn new_doc() -> Doc {
 
 /// Reads the document held in `fragment`, in compact form: attributes equal to their default left out.
 pub fn read<T: ReadTxn>(txn: &T, fragment: &XmlFragmentRef) -> Result<Node, YjsError> {
-    Ok(Node::new("doc", serde_json::Map::new(), read::children(txn, fragment)?))
+    Ok(Node::new("doc", serde_json::Map::new(), read::children(txn, fragment, &mut Vec::new())?))
 }
 
 /// Replaces the whole content of `fragment` with `doc`, inside the caller's transaction.

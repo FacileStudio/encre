@@ -58,6 +58,9 @@ describe('two collaborating editors', () => {
     flushSync();
     expect(left.target.querySelectorAll('li[title]')).toHaveLength(2);
     expect(one.content?.every((block) => typeof block.attrs?.id === 'string')).toBe(true);
+    const colors = [...wb.getStates().values()].map((state) => (state.user as { color?: string }).color);
+    expect(colors).toHaveLength(2);
+    for (const color of colors) expect(color).toMatch(/^#[0-9a-f]{6}$/);
     void unmount(left.editor);
     void unmount(right.editor);
   });

@@ -3,7 +3,7 @@ use super::cursor::Cursor;
 use super::lex::{Tok, Token};
 use serde_json::Number;
 
-const MAX_DEPTH: usize = 64;
+pub const MAX_DEPTH: usize = 64;
 
 /// An OpenUI Lang expression, before references are resolved.
 #[derive(Debug, Clone, PartialEq)]

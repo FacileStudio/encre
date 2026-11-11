@@ -1,6 +1,6 @@
 use super::Error;
 use super::map::COMPONENTS;
-use super::parse::{Expr, Statement};
+use super::parse::{Expr, MAX_DEPTH, Statement};
 use serde_json::Number;
 use std::collections::HashMap;
 
@@ -37,13 +37,14 @@ struct Resolver<'a> {
     defs: HashMap<&'a str, &'a Expr>,
     stack: Vec<&'a str>,
     left: usize,
+    depth: usize,
 }
 
 /// The value of `root`, with references resolved. A later statement of the same name replaces an earlier one,
 /// as in OpenUI's own parser. Statements `root` never reaches are not evaluated.
 pub fn root(statements: &[Statement]) -> Result<Value, Error> {
     let defs: HashMap<&str, &Expr> = statements.iter().map(|s| (s.name.as_str(), &s.expr)).collect();
-    let mut resolver = Resolver { defs, stack: Vec::new(), left: MAX_VALUES };
+    let mut resolver = Resolver { defs, stack: Vec::new(), left: MAX_VALUES, depth: 0 };
     if !resolver.defs.contains_key("root") {
         return Err(Error::NoRoot);
     }
@@ -70,6 +71,16 @@ impl<'a> Resolver<'a> {
 
     fn value(&mut self, expr: &'a Expr) -> Result<Value, Error> {
         self.left = self.left.checked_sub(1).ok_or(Error::TooLarge(MAX_VALUES))?;
+        if self.depth >= MAX_DEPTH {
+            return Err(Error::TooDeep(MAX_DEPTH));
+        }
+        self.depth += 1;
+        let value = self.build(expr);
+        self.depth -= 1;
+        value
+    }
+
+    fn build(&mut self, expr: &'a Expr) -> Result<Value, Error> {
         Ok(match expr {
             Expr::Str(s) => Value::Str(s.clone()),
             Expr::Num(n) => Value::Num(n.clone()),

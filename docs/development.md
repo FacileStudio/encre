@@ -121,6 +121,10 @@ every number here. `plain_text` stays under 0.35 s at 8 MiB in both versions.
 | patch matches | 1.4s | 16.0ms | 10.8s | 116.0ms | - | - |
 
 `patch matches` is `apply` of a `patch` whose `find` matches every byte of the document.
+`patch_matching_is_linear` also applies a patch that changes every one of 500 and of 4 000 blocks;
+before v0.9.4 each replacement re-assigned the ids of the whole document, and 4 000 blocks took
+113 s in a debug build. The same file refuses a Yjs update nested 10 000 levels deep and OpenUI
+reference chains of 50 000 links on a 2 MiB thread, the stack of a tokio worker.
 
 What changed, path by path:
 

@@ -14,6 +14,7 @@ function ladder(depth: number): string {
 }
 
 beforeAll(async () => {
+  await expect(loadEncre(new Uint8Array([0, 1, 2, 3]))).rejects.toThrow();
   await loadEncre(readFileSync(join(import.meta.dirname, '../src/lib/encre-wasm/encre_wasm_bg.wasm')));
 });
 
