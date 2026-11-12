@@ -4,6 +4,33 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.10.0] - 2026-11-12
+
+### Changed
+
+- **Breaking:** the `pdf` feature compiles with typst 0.15.1 (was 0.14.2), so PDF bytes differ
+  from 0.9.x. On the sample documents the page count and extracted text are unchanged, the files
+  are about 10 % smaller and `Creator` reads `Typst 0.15.1`. The vendored muse-typst (e0bb711)
+  compiles unchanged. The feature also depends on `typst-layout`.
+- The workspace patches `citationberg` to upstream commit 06a591e (0.7.0 plus quick-xml 0.41), so
+  quick-xml 0.38 and its advisories leave the build. A `[patch]` does not reach dependents: a
+  workspace that uses encre with `pdf` needs the same entry, shown in `docs/development.md`.
+
+### Fixed
+
+- After a wasm trap (`memory access out of bounds`, `unreachable`, a stack overflow), the next
+  encre function or `loadEncre` call runs on a fresh instance built from the compiled module.
+  Before, every later call failed until the page reloaded. A trap inside `validateDocument` or
+  `parseMarkdown` now reaches the caller instead of reading as a refusal.
+- `Editor` node views follow a change of `locale`, `labels` or `renderDiagram`; they kept the copy
+  from mount. `placeholder`, `ydoc`, `provider` and `user` stay read at mount, as `docs/api.md`
+  now says.
+- Callout, column, stat and chart title inputs and the chart labels and series drop every control
+  character but tab, so a pasted U+0007 no longer makes exports refuse the document.
+- An empty chart entry (`web: 1, , 2` or a trailing comma) no longer becomes a 0.
+- Go: the tests fail instead of skipping when `CI` is set and no `encre` binary is found, or when
+  `ENCRE_BIN` names a missing file.
+
 ## [0.9.4] - 2026-11-11
 
 ### Fixed
@@ -274,6 +301,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.10.0]: https://github.com/FacileStudio/encre/compare/v0.9.4...v0.10.0
 [0.9.4]: https://github.com/FacileStudio/encre/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/FacileStudio/encre/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/FacileStudio/encre/compare/v0.9.1...v0.9.2

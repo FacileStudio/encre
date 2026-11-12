@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.9.4
+ARG ENCRE_VERSION=0.10.0
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -188,7 +188,7 @@ wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always w
 with `--max-bytes` when the package variable `MaxBytes` is above zero.
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.9.4
+go get github.com/FacileStudio/encre/go@v0.10.0
 ```
 
 | Function | What it does |

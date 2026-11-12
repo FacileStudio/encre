@@ -757,7 +757,7 @@ dependencies = [
 
 [[package]]
 name = "encre"
-version = "0.9.4"
+version = "0.10.0"
 dependencies = [
  "comrak",
  "include_dir",
@@ -775,7 +775,7 @@ dependencies = [
 
 [[package]]
 name = "encre-cli"
-version = "0.9.4"
+version = "0.10.0"
 dependencies = [
  "clap",
  "encre",
@@ -785,7 +785,7 @@ dependencies = [
 
 [[package]]
 name = "encre-wasm"
-version = "0.9.4"
+version = "0.10.0"
 dependencies = [
  "encre",
  "serde_json",
