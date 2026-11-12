@@ -348,3 +348,17 @@ async function __wbg_init_once(module_or_path) {
 }
 
 export { initSync, __wbg_init as default };
+
+/**
+ * Drops the current instance, so the next `initSync` or `init` builds a fresh one after a trap.
+ * @returns {WebAssembly.Module | undefined} the compiled module, to hand to `initSync`
+ */
+export function __encre_reset() {
+    const module = wasmModule;
+    wasm = undefined;
+    wasmInstance = undefined;
+    wasmModule = undefined;
+    __wbg_init_promise = undefined;
+    cachedUint8ArrayMemory0 = null;
+    return module;
+}

@@ -13,9 +13,10 @@ import (
 func binary(t *testing.T) {
 	t.Helper()
 	if bin := os.Getenv("ENCRE_BIN"); bin != "" {
-		if _, err := os.Stat(bin); err == nil {
-			return
+		if _, err := os.Stat(bin); err != nil {
+			t.Fatalf("ENCRE_BIN: %v", err)
 		}
+		return
 	}
 	for _, profile := range []string{"release", "debug"} {
 		path, _ := filepath.Abs(filepath.Join("..", "target", profile, "encre"))
@@ -23,6 +24,9 @@ func binary(t *testing.T) {
 			t.Setenv("ENCRE_BIN", path)
 			return
 		}
+	}
+	if os.Getenv("CI") != "" {
+		t.Fatal("no encre binary under CI: set ENCRE_BIN")
 	}
 	t.Skip("no encre binary: run cargo build -p encre-cli or set ENCRE_BIN")
 }
