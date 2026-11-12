@@ -20,6 +20,11 @@ export function toSeries(value: unknown): Series[] {
     }));
 }
 
+/** Drops the control characters a single-line attribute refuses (all but tab), then trims. */
+function singleLine(text: string): string {
+  return text.replace(/[^\P{Cc}\t]/gu, '').trim();
+}
+
 /** Writes series as editable text, one `name: 1, 2, 3` line each. */
 export function seriesToText(series: Series[]): string {
   return series.map((s) => `${s.name}: ${s.data.join(', ')}`).join('\n');
@@ -32,8 +37,12 @@ export function textToSeries(text: string): Series[] {
     .filter((line) => line.trim() !== '')
     .map((line) => {
       const at = line.indexOf(':');
-      const name = (at < 0 ? '' : line.slice(0, at)).trim();
-      const values = (at < 0 ? line : line.slice(at + 1)).split(',').map((v) => Number(v.trim()));
+      const name = singleLine(at < 0 ? '' : line.slice(0, at));
+      const values = (at < 0 ? line : line.slice(at + 1))
+        .split(',')
+        .map((v) => v.trim())
+        .filter((v) => v !== '')
+        .map(Number);
       return { name, data: values.filter((n) => Number.isFinite(n)) };
     });
 }
@@ -42,6 +51,6 @@ export function textToSeries(text: string): Series[] {
 export function textToLabels(text: string): string[] {
   return text
     .split(',')
-    .map((label) => label.trim())
+    .map(singleLine)
     .filter((label) => label !== '');
 }

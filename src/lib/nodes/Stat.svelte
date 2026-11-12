@@ -19,7 +19,7 @@
       {#each keys as key (key)}
         <Field label={names[key]}>
           {#snippet children({ id })}
-            <Input {id} value={text(key)} oninput={(e) => update({ [key]: e.currentTarget.value.replace(/[\r\n]/g, '') })} />
+            <Input {id} value={text(key)} oninput={(e) => update({ [key]: e.currentTarget.value.replace(/[^\P{Cc}\t]/gu, '') })} />
           {/snippet}
         </Field>
       {/each}

@@ -16,7 +16,7 @@
   }
 
   function rename(event: Event & { currentTarget: HTMLInputElement }) {
-    update({ title: event.currentTarget.value.replace(/[`\r\n]/g, '') });
+    update({ title: event.currentTarget.value.replace(/`|[^\P{Cc}\t]/gu, '') });
   }
 </script>
 

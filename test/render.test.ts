@@ -1,7 +1,7 @@
 import { flushSync, mount, unmount } from 'svelte';
 import { describe, expect, it } from 'vitest';
 import Document from '../src/lib/Document.svelte';
-import { textToSeries, seriesToText, toSeries } from '../src/lib/chart-data.js';
+import { textToLabels, textToSeries, seriesToText, toSeries } from '../src/lib/chart-data.js';
 import { linkHref } from '../src/lib/render/href.js';
 import type { EncreNode } from '../src/lib/schema.js';
 
@@ -43,6 +43,8 @@ describe('chart data', () => {
     const series = [{ name: 'web', data: [3, 5.5] }];
     expect(textToSeries(seriesToText(series))).toEqual(series);
     expect(toSeries([{ name: 1, data: [1, 'x', Number.NaN] }, null])).toEqual([{ name: '', data: [1] }]);
+    expect(textToSeries('w\u0007eb: 1, , 2,\r')).toEqual([{ name: 'web', data: [1, 2] }]);
+    expect(textToLabels('Q\u00011, , Q2')).toEqual(['Q1', 'Q2']);
   });
 });
 

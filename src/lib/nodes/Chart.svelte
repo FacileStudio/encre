@@ -23,7 +23,7 @@
     <div class="grid gap-3 sm:grid-cols-2">
       <Field label={copy.chartTitle}>
         {#snippet children({ id })}
-          <Input {id} value={title} oninput={(e) => update({ title: e.currentTarget.value.replace(/[\r\n]/g, '') })} />
+          <Input {id} value={title} oninput={(e) => update({ title: e.currentTarget.value.replace(/[^\P{Cc}\t]/gu, '') })} />
         {/snippet}
       </Field>
       <div class="flex flex-col gap-1.5">
