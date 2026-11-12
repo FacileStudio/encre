@@ -10,22 +10,37 @@ export interface EncreSettings {
   renderDiagram?: RenderDiagram;
 }
 
+class LiveSettings implements EncreSettings {
+  labels = $state.raw<Labels>(labelsFor('fr'));
+  renderDiagram = $state.raw<RenderDiagram | undefined>();
+
+  constructor(settings: EncreSettings) {
+    this.labels = settings.labels;
+    this.renderDiagram = settings.renderDiagram;
+  }
+}
+
+/** The editor storage of `Settings`: the settings node views read, reactive, so a change reaches mounted views. */
+export interface SettingsStorage {
+  live: EncreSettings;
+}
+
 declare module '@tiptap/core' {
   interface Storage {
-    encreSettings: EncreSettings;
+    encreSettings: SettingsStorage;
   }
 }
 
 /** Carries the labels and the diagram renderer to every node view through the editor storage. */
-export const Settings = Extension.create<EncreSettings, EncreSettings>({
+export const Settings = Extension.create<EncreSettings, SettingsStorage>({
   name: 'encreSettings',
   addOptions: () => ({ labels: labelsFor('fr') }),
   addStorage() {
-    return { labels: this.options.labels, renderDiagram: this.options.renderDiagram };
+    return { live: new LiveSettings(this.options) };
   }
 });
 
-/** The settings of `editor`, French labels when the extension is missing. */
+/** The settings of `editor`, French labels when the extension is missing. Assigning a field updates mounted node views. */
 export function settingsOf(editor: Editor): EncreSettings {
-  return (editor.storage as Partial<{ encreSettings: EncreSettings }>).encreSettings ?? { labels: labelsFor('fr') };
+  return (editor.storage as Partial<{ encreSettings: SettingsStorage }>).encreSettings?.live ?? { labels: labelsFor('fr') };
 }

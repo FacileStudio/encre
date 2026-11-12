@@ -1,7 +1,7 @@
 import type { Editor, NodeViewRenderer, NodeViewRendererProps } from '@tiptap/core';
 import type { Node as PMNode } from '@tiptap/pm/model';
 import { flushSync, mount, unmount, type Component } from 'svelte';
-import { settingsOf, type EncreSettings } from './settings.js';
+import { settingsOf, type EncreSettings } from './settings.svelte.js';
 
 /** The live state a node view component reads. */
 export class NodeViewState {

@@ -2,7 +2,7 @@ import type { Editor } from '@tiptap/core';
 import type { BlockCommand } from './blocks.js';
 import { addPlaceholder, placeholderPos, removePlaceholder } from './extensions/upload-placeholder.js';
 import { newBlockId } from './ids.js';
-import { settingsOf } from './extensions/settings.js';
+import { settingsOf } from './extensions/settings.svelte.js';
 import { labels as french, type Labels } from './labels.js';
 
 /** Where an uploaded image lives, as the app's `onimage` hook answers. */

@@ -5,7 +5,7 @@ import { Badge } from './badge.js';
 import { Column, Columns } from './columns.js';
 import { Callout, Chart, Stat } from './custom.js';
 import { Diagram } from './diagram.js';
-import { Settings, type RenderDiagram } from './settings.js';
+import { Settings, type RenderDiagram } from './settings.svelte.js';
 import { labelsFor, type Labels } from '../labels.js';
 import { encreStarterKit } from './starter.js';
 import { Table, TableCell, TableHeader, TableRow } from './table.js';
@@ -36,6 +36,6 @@ export { Callout, Chart, Stat, type BadgeTone, type CalloutTone, type ColumnTone
 export { Badge } from './badge.js';
 export { Column, Columns } from './columns.js';
 export { Diagram } from './diagram.js';
-export { Settings, settingsOf, type EncreSettings, type RenderDiagram } from './settings.js';
+export { Settings, settingsOf, type EncreSettings, type RenderDiagram } from './settings.svelte.js';
 export { Table, TableCell, TableHeader, TableRow } from './table.js';
 export type { Align } from './table-model.js';
