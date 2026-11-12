@@ -196,7 +196,9 @@ The script refuses a source checkout with uncommitted changes, then writes
 `crates/encre/typst/muse-typst/SOURCE` with the commit, its date and the typst version from
 muse-typst's `mise.toml`. After a sync:
 
-1. Check that `typst` and `typst-pdf` in `crates/encre/Cargo.toml` still equal that version.
+1. Check that `typst`, `typst-layout` and `typst-pdf` in `crates/encre/Cargo.toml` are that version
+   or newer. encre runs typst 0.15.1 while the vendored muse-typst commit pins 0.14.2; the PDF tests
+   prove that copy compiles under 0.15.1.
 2. Run the typst vectors and the PDF tests; regenerate `want_typst` if the preamble moved.
 3. Commit the copy, `SOURCE` and the vectors together.
 
@@ -208,5 +210,24 @@ Bump `version` in the root `Cargo.toml` and in `package.json`, run `cargo check`
 `vx.y.z` in Cargo and in `bun add`; `go get github.com/FacileStudio/encre/go@vx.y.z` resolves
 only through the `go/` tag. The release workflow runs on `v*` tags only, so the `go/` tag starts
 no second release.
+
+
+## Dependency patches
+
+The workspace `Cargo.toml` patches `citationberg` to upstream commit `06a591e`, which is the
+0.7.0 release plus its bump to quick-xml 0.41. citationberg 0.7.0 on crates.io still requires
+quick-xml 0.38, which has open advisories, and reaches encre through typst-library and hayagriva.
+encre never emits `#bibliography`, so the parser sees no user input, but scanners flag it anyway.
+
+A `[patch]` applies only to the workspace that declares it. A service that depends on encre with
+the `pdf` feature gets quick-xml 0.38 back unless its own workspace adds the same patch:
+
+```toml
+[patch.crates-io]
+citationberg = { git = "https://github.com/typst/citationberg", rev = "06a591e2f237d25e1dfdedac3f3d1494c496c52d" }
+```
+
+Drop the patch once citationberg publishes a release with quick-xml 0.41 or later, then check
+`cargo tree -i quick-xml@0.38.4` finds nothing.
 
 Back to the [documentation index](README.md).

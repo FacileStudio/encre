@@ -97,8 +97,7 @@ body in `muse-doc` with the `RenderOptions` title, subtitle, `doc_type`, cover a
 string of the document reaches Typst as a string literal escaped by `escape_string`, a port of
 Ardoise's `escapeTypstString`, so no document can inject Typst markup or code.
 
-`pdf::compile` compiles that source with the `typst` crate at the version muse-typst pins
-(0.14.2), in memory. The compiler sees the vendored muse-typst, the fonts in
+`pdf::compile` compiles that source with the `typst` crate (0.15.1), in memory. The compiler sees the vendored muse-typst, the fonts in
 `crates/encre/typst/fonts`, and the caller's `Assets`; no system fonts, no packages, no
 filesystem. The same source and assets always give the same bytes.
 

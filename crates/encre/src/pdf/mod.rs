@@ -10,7 +10,7 @@ mod world;
 use std::collections::HashMap;
 use typst::diag::SourceDiagnostic;
 use typst::foundations::Smart;
-use typst::layout::PagedDocument;
+use typst_layout::PagedDocument;
 use typst_pdf::PdfOptions;
 
 /// Files the document may read, by the absolute path it names them with (`/images/logo.png`).
@@ -55,6 +55,6 @@ fn messages(diagnostics: &[SourceDiagnostic]) -> Vec<String> {
 pub fn compile(source: &str, assets: &Assets) -> Result<Vec<u8>, PdfError> {
     let world = world::MemoryWorld::new(source, assets);
     let document: PagedDocument = typst::compile(&world).output.map_err(|e| PdfError::Compile(messages(&e)))?;
-    let options = PdfOptions { ident: Smart::Custom("encre"), ..PdfOptions::default() };
+    let options = PdfOptions { ident: Smart::Custom("encre".into()), ..PdfOptions::default() };
     typst_pdf::pdf(&document, &options).map_err(|e| PdfError::Export(messages(&e)))
 }

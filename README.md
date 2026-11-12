@@ -26,7 +26,7 @@ one implementation, in Rust, and the browser runs the same code compiled to WebA
 
 | Layer | Tech |
 |---|---|
-| Runtime | Rust 2024 (1.98), pulldown-cmark 0.13, yrs 0.28, typst 0.14.2, wasm-bindgen 0.2 |
+| Runtime | Rust 2024 (1.98), pulldown-cmark 0.13, yrs 0.28, typst 0.15.1, wasm-bindgen 0.2 |
 | Client | Svelte 5, Tiptap 3.33, `@tiptap/y-tiptap` 3.3.0, muse (`@facile/muse` v0.16.1 or later) |
 | Go | Go 1.24+, standard library only (`go/`) |
 
