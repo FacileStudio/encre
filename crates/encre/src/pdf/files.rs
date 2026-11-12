@@ -3,7 +3,7 @@ use include_dir::{Dir, include_dir};
 use std::sync::OnceLock;
 use typst::diag::{FileError, FileResult};
 use typst::foundations::Bytes;
-use typst::syntax::FileId;
+use typst::syntax::{FileId, VirtualRoot};
 use typst::text::{Font, FontBook};
 use typst::utils::LazyHash;
 use typst::{Library, LibraryExt};
@@ -36,12 +36,11 @@ pub fn shared() -> &'static Shared {
 
 /// The bytes of `id`: muse-typst under `/muse-typst/`, otherwise the caller's assets. Packages never resolve.
 pub fn lookup(assets: &Assets, id: FileId) -> FileResult<&[u8]> {
-    let path = id.vpath().as_rootless_path().to_string_lossy().replace('\\', "/");
-    let absolute = format!("/{path}");
-    let found = match (id.package(), absolute.strip_prefix(MUSE_ROOT)) {
-        (Some(_), _) => None,
-        (None, Some(inner)) => MUSE_TYPST.get_file(inner).map(|file| file.contents()),
-        (None, None) => assets.get(&absolute),
+    let absolute = id.vpath().get_with_slash();
+    let found = match (id.root(), absolute.strip_prefix(MUSE_ROOT)) {
+        (VirtualRoot::Package(_), _) => None,
+        (VirtualRoot::Project, Some(inner)) => MUSE_TYPST.get_file(inner).map(|file| file.contents()),
+        (VirtualRoot::Project, None) => assets.get(absolute),
     };
     found.ok_or_else(|| FileError::NotFound(absolute.into()))
 }

@@ -10,7 +10,7 @@ reads only `NO_COLOR`.
 |---|---|---|
 | none | model, validation, ids, migration, Facile Markdown, `ops::apply`, `typst::render` | pulldown-cmark, serde |
 | `yjs` | `yjs` module and `ops::apply_yjs` | yrs 0.28 |
-| `pdf` | `pdf::compile`, muse-typst and DejaVu embedded | typst, typst-pdf `=0.14.2`, include_dir |
+| `pdf` | `pdf::compile`, muse-typst and DejaVu embedded | typst, typst-layout, typst-pdf `=0.15.1`, include_dir |
 | `openui` | `openui` module | nothing |
 
 `encre-wasm` builds `encre` with `openui` only. `typst::render` needs no feature: rendering the

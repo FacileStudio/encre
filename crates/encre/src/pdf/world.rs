@@ -1,8 +1,8 @@
 use super::Assets;
 use super::files::{lookup, shared};
 use typst::diag::{FileError, FileResult};
-use typst::foundations::{Bytes, Datetime};
-use typst::syntax::{FileId, Source, VirtualPath};
+use typst::foundations::{Bytes, Datetime, Duration};
+use typst::syntax::{FileId, RootedPath, Source, VirtualPath, VirtualRoot};
 use typst::text::{Font, FontBook};
 use typst::utils::LazyHash;
 use typst::{Library, World};
@@ -16,7 +16,8 @@ pub struct MemoryWorld<'a> {
 impl<'a> MemoryWorld<'a> {
     /// A world whose main file is `source`.
     pub fn new(source: &str, assets: &'a Assets) -> Self {
-        let id = FileId::new(None, VirtualPath::new("/main.typ"));
+        let path = VirtualPath::new("/main.typ").expect("a valid virtual path");
+        let id = FileId::new(RootedPath::new(VirtualRoot::Project, path));
         MemoryWorld { main: Source::new(id, source.to_owned()), assets }
     }
 }
@@ -50,7 +51,7 @@ impl World for MemoryWorld<'_> {
         shared().fonts.get(index).cloned()
     }
 
-    fn today(&self, _offset: Option<i64>) -> Option<Datetime> {
+    fn today(&self, _offset: Option<Duration>) -> Option<Datetime> {
         None
     }
 }
