@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import type { RenderDiagram } from '../extensions/settings.js';
+import type { RenderDiagram } from '../extensions/settings.svelte.js';
 import { labelsFor, type Labels } from '../labels.js';
 
 /** Turns code into HTML for a code block. The app must return safe, sanitized HTML. */

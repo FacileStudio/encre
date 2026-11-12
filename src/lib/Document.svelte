@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { RenderDiagram } from './extensions/settings.js';
+  import type { RenderDiagram } from './extensions/settings.svelte.js';
   import { labelsFor, type LabelOverrides, type Locale } from './labels.js';
   import { provideRender, type Highlight } from './render/context.js';
   import type { EncreNode } from './schema.js';

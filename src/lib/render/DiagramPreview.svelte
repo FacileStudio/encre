@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { RenderDiagram } from '../extensions/settings.js';
+  import type { RenderDiagram } from '../extensions/settings.svelte.js';
 
   let { render, language, source }: { render: RenderDiagram; language: string; source: string } = $props();
 

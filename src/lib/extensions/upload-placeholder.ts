@@ -1,7 +1,7 @@
 import { Extension, type Editor } from '@tiptap/core';
 import { Plugin, PluginKey, type EditorState } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import { settingsOf } from './settings.js';
+import { settingsOf } from './settings.svelte.js';
 
 type Meta = { add: { id: string; pos: number } } | { remove: string };
 

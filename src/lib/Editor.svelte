@@ -3,18 +3,19 @@
   import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
   import type { EncreNode } from './schema.js';
   import type { UploadedImage } from './upload.js';
-  import type { RenderDiagram } from './extensions/settings.js';
+  import type { RenderDiagram } from './extensions/settings.svelte.js';
   import type { LabelOverrides, Locale } from './labels.js';
 
   /** Props of the encre editor. */
   export interface EditorProps {
     content?: EncreNode;
     editable?: boolean;
+    /** Text shown in an empty document, read once at mount. */
     placeholder?: string;
     toolbar?: boolean;
     onchange?: (doc: EncreNode) => void;
     class?: string;
-    /** The shared document; when set, it is the source of truth and `content` is ignored. */
+    /** The shared document; when set, it is the source of truth and `content` is ignored. Read once at mount, with `provider` and `user`: wrap the editor in `{#key ydoc}` to switch documents. */
     ydoc?: Y.Doc;
     /** A y-websocket `WebsocketProvider` (or a stand-in with `awareness`, `synced` and the `sync` event) for carets and presence. */
     provider?: AwarenessProvider;
@@ -42,7 +43,7 @@
   import { onMount } from 'svelte';
   import BubbleMenu from './BubbleMenu.svelte';
   import Presence from './Presence.svelte';
-  import { encreExtensions } from './extensions/index.js';
+  import { encreExtensions, settingsOf } from './extensions/index.js';
   import { SlashState, slashExtension } from './slash.svelte.js';
   import SlashMenu from './SlashMenu.svelte';
   import Toolbar from './Toolbar.svelte';
@@ -113,6 +114,13 @@
 
   $effect(() => {
     editor?.setEditable(editable);
+  });
+
+  $effect(() => {
+    if (!editor) return;
+    const settings = settingsOf(editor);
+    settings.labels = copy;
+    settings.renderDiagram = renderDiagram;
   });
 
   /** The Tiptap editor, once mounted. */

@@ -98,7 +98,7 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `compactDocument` | The compact form, as `compact` in Rust |
 | `newBlockId`, `isBlockId` | Block ids from `crypto.getRandomValues` |
 | `linkHref`, `imageSrc` | A link or image source when its scheme is safe to follow, else `undefined` |
-| `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded; after a failed load, the next call tries again |
+| `loadEncre`, `encreReady` | Load encre-wasm once, and whether it is loaded; after a failed load, the next call tries again, and after a trap the next call runs on a fresh instance |
 | `parseMarkdown`, `serializeMarkdown`, `serializeCommonMark`, `validateDocument` | The markdown projection in the browser; the two serializers throw an `EncreDocumentError` on an invalid document |
 | `validateMarkdown(markdown) -> MarkdownValidation` | `{ valid, errors: MarkdownProblem[] }`, each problem `{ path, message, line, column }`; the same verdict as `encre validate --from markdown --json`, except that the wasm has no size limit: the CLI and Go refuse past `--max-bytes` |
 | `EncreMarkdownError` | What `parseMarkdown` throws: an `Error` with the Rust message unchanged, plus `line`, `column` and `path` when the source position is known |
@@ -115,11 +115,11 @@ The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 |---|---|---|---|
 | `content` | `EncreNode` | empty | The initial document, ignored when `ydoc` is set |
 | `editable` | `boolean` | `true` | Read-only when false |
-| `placeholder` | `string` | none | Text shown in an empty document |
+| `placeholder` | `string` | none | Text shown in an empty document, read once at mount |
 | `toolbar` | `boolean` | `true` | Shows the toolbar |
 | `onchange` | `(doc: EncreNode) => void` | none | Called after every change |
 | `class` | `string` | `''` | Classes on the wrapper |
-| `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions` |
+| `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions`; read once at mount, so wrap the editor in `{#key ydoc}` to switch documents |
 | `presence` | `'inline' \| 'none'` | `'inline'` | `inline` shows who is here above the toolbar; `none` leaves it to the app |
 | `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
 | `onerror` | `(error: Error) => void` | none | A refused image, a failed upload, an `EncreMarkdownError` from a markdown paste encre could not read (the text lands literally), or an `EncreDocumentError` from `exportMarkdown` or `exportCommonMark` |

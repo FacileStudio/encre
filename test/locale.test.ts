@@ -6,6 +6,7 @@ import { blockCommands } from '../src/lib/blocks.js';
 import { CATALOGUES, labelsFor, type Labels, type Locale } from '../src/lib/labels.js';
 import type { EncreNode } from '../src/lib/schema.js';
 import { imageRefusal } from '../src/lib/upload.js';
+import { settingsOf } from '../src/lib/extensions/index.js';
 
 const para = (text: string): EncreNode => ({ type: 'paragraph', content: [{ type: 'text', text }] });
 const cell = (type: string): EncreNode => ({ type, content: [para('x')] });
@@ -77,6 +78,19 @@ describe('editor locale', () => {
   it('shows French by default, so the English test can fail', () => {
     const seen = everything('fr');
     expect(seen.has("Titre de l'encadré")).toBe(true);
+  });
+
+  it('updates mounted node views when the labels change', () => {
+    const target = document.createElement('div');
+    document.body.append(target);
+    const editor = mount(Editor, { target, props: { content: doc, locale: 'fr' } });
+    mounted.push(editor);
+    flushSync();
+    expect(shown(target).has("Titre de l'encadré")).toBe(true);
+    settingsOf(editor.instance()!).labels = labelsFor('en');
+    flushSync();
+    expect(shown(target).has('Callout title')).toBe(true);
+    expect(shown(target).has("Titre de l'encadré")).toBe(false);
   });
 
   it('names commands and refusals in the chosen locale, with overrides on top', () => {
