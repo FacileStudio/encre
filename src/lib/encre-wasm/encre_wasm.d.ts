@@ -71,3 +71,6 @@ export function initSync(module: { module: SyncInitInput } | SyncInitInput): Ini
  * @returns {Promise<InitOutput>}
  */
 export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
+
+/** Drops the current instance, so the next `initSync` or `init` builds a fresh one after a trap; returns its compiled module. */
+export function __encre_reset(): WebAssembly.Module | undefined;

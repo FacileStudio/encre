@@ -58,12 +58,20 @@ extension set drops undo and redo, which Yjs owns.
 resolves. Pass bytes, a URL, a `Response` or a compiled module to load it another way, as the
 tests do with `readFileSync`.
 
+A trap inside the module (`memory access out of bounds`, `unreachable`, a stack overflow) leaves
+the instance unusable. The function that hit it throws the `WebAssembly.RuntimeError` or
+`RangeError` as is, never as an invalid-document verdict. The next encre function, or the next
+`loadEncre` call, drops that instance and builds a fresh one from the compiled module, with no
+second download. `scripts/build-wasm.sh` appends the `__encre_reset` export to the wasm-bindgen
+glue for this, because the glue's own `initSync` and `init` return the old instance once one is
+set.
+
 ## Script and test variables
 
 | Variable | Read by | What it does |
 |---|---|---|
 | `ENCRE_REGEN` | Rust tests `typst`, `openui`, `yjs` | Rewrites the golden outputs instead of comparing |
-| `ENCRE_BIN` | the Go module in `go/` and its tests | The `encre` binary to run, default `encre` on `PATH` (tests: `target/*/encre`) |
+| `ENCRE_BIN` | the Go module in `go/` and its tests | The `encre` binary to run, default `encre` on `PATH` (tests: `target/*/encre`; with `CI` set and no binary, the tests fail instead of skipping) |
 | `ENCRE_GEN` | `vite.config.ts` | Runs `scripts/gen-*.ts` instead of the test suites |
 | `PROPTEST_CASES` | `crates/encre/tests/laws.rs` | Cases per round-trip law, default `10000` |
 | `HOSTILE_CASE` | `crates/encre/tests/hostile.rs` | Runs only the named crafted input, such as `fence ladder` |
