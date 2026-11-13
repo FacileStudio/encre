@@ -4,6 +4,27 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.10.1] - 2026-11-13
+
+No change to the library, the CLI or the Go module: consumers need not bump.
+
+### Fixed
+
+- `sh scripts/check.sh` with no mode stopped on nothing in its `check` half: it ran
+  `check && test_suites`, and `sh` ignores `set -e` inside a function called on the left of
+  `&&`, so a failing `cargo fmt`, clippy, `bun run check`, wasm diff or `go vet` was skipped
+  past unless `filet check`, the last step, failed too.
+- A clippy `dead_code` error in the CLI tests that the gate above let through.
+
+### Changed
+
+- `filet.yml` drops six settings no rule reads for `.rs`, `.ts`, `.svelte` or `.sh`
+  (`returns`, `structFields`, `interfaceMethods`, `requireDocComments`, `banGlobalMutable`,
+  `banInit`).
+- The Yjs and OpenUI nesting tests move to `crates/encre/tests/nesting.rs` and the markdown
+  validation tests to `crates/encre-cli/tests/validate_markdown.rs`, under filet's
+  eight-functions-per-file limit.
+
 ## [0.10.0] - 2026-11-12
 
 ### Changed

@@ -65,35 +65,33 @@ type Maker = fn(usize) -> String;
 
 type Input = Box<dyn Fn(usize) -> String>;
 
-fn shaped() -> Vec<(&'static str, Maker)> {
-    vec![
-        ("backslash runs", |n| repeat(&format!("{}[", "\\".repeat(64)), n)),
-        ("deep emphasis", |n| format!("{}a{}", repeat("*", n / 2), repeat("*", n / 2))),
-        ("fence ladder", |n| {
-            let open: String = (0..8).rev().map(|d| format!("{}callout\n", "`".repeat(d + 3))).collect();
-            let close: String = (0..8).map(|d| format!("\n{}", "`".repeat(d + 3))).collect();
-            format!("{open}{}{close}", repeat("x\n", n))
-        }),
-        ("compare", |n| format!("```compare\n{}```", repeat("### pro\nx\n", n))),
-        ("columns", |n| format!("````columns\n{}````", repeat("```column\nx\n```\n", n))),
-        ("digits then dots", |n| format!("{}{}", repeat("1", n / 2), repeat(".", n / 2))),
-        ("table padding", |n| format!("|{}\n|{}\n{}", repeat("a|", 2048), repeat("-|", 2048), repeat("x\n", n))),
-        ("backtick runs", |size| {
-            let runs = (1..).scan(0, |len, n| {
-                *len += n + 1;
-                (*len < size).then(|| "`".repeat(n) + " ")
-            });
-            runs.collect()
-        }),
-    ]
-}
+const SHAPED: &[(&str, Maker)] = &[
+    ("backslash runs", |n| repeat(&format!("{}[", "\\".repeat(64)), n)),
+    ("deep emphasis", |n| format!("{}a{}", repeat("*", n / 2), repeat("*", n / 2))),
+    ("fence ladder", |n| {
+        let open: String = (0..8).rev().map(|d| format!("{}callout\n", "`".repeat(d + 3))).collect();
+        let close: String = (0..8).map(|d| format!("\n{}", "`".repeat(d + 3))).collect();
+        format!("{open}{}{close}", repeat("x\n", n))
+    }),
+    ("compare", |n| format!("```compare\n{}```", repeat("### pro\nx\n", n))),
+    ("columns", |n| format!("````columns\n{}````", repeat("```column\nx\n```\n", n))),
+    ("digits then dots", |n| format!("{}{}", repeat("1", n / 2), repeat(".", n / 2))),
+    ("table padding", |n| format!("|{}\n|{}\n{}", repeat("a|", 2048), repeat("-|", 2048), repeat("x\n", n))),
+    ("backtick runs", |size| {
+        let runs = (1..).scan(0, |len, n| {
+            *len += n + 1;
+            (*len < size).then(|| "`".repeat(n) + " ")
+        });
+        runs.collect()
+    }),
+];
 
 #[test]
 #[ignore = "benchmark"]
 fn every_markdown_path_is_linear() {
     let only = std::env::var("HOSTILE_CASE").unwrap_or_default();
     let units = UNITS.iter().map(|(name, unit)| (*name, Box::new(move |n| repeat(unit, n)) as Input));
-    let shaped = shaped().into_iter().map(|(name, f)| (name, Box::new(f) as Input));
+    let shaped = SHAPED.iter().map(|(name, f)| (*name, Box::new(*f) as Input));
     let steps = ["parse", "validate", "serialize", "plain_text"];
     for (name, input) in units.chain(shaped).filter(|(name, _)| only.is_empty() || *name == only) {
         let (small, large) = (costs(&input(MIB)), costs(&input(8 * MIB)));
@@ -126,52 +124,4 @@ fn patch_every_block(blocks: usize) -> Duration {
 fn patch_matching_is_linear() {
     within("patch matches", "apply", patch(MIB), patch(8 * MIB));
     within("patch blocks", "apply", patch_every_block(500), patch_every_block(4000));
-}
-
-#[cfg(feature = "yjs")]
-fn nested_update(depth: usize) -> Vec<u8> {
-    use yrs::{ReadTxn, StateVector, Transact, XmlElementPrelim, XmlFragment};
-    let doc = encre::yjs::new_doc();
-    let fragment = doc.get_or_insert_xml_fragment(encre::yjs::FRAGMENT);
-    let mut txn = doc.transact_mut();
-    let mut parent = fragment.insert(&mut txn, 0, XmlElementPrelim::empty("blockquote"));
-    for _ in 1..depth {
-        parent = parent.insert(&mut txn, 0, XmlElementPrelim::empty("blockquote"));
-    }
-    txn.encode_state_as_update_v1(&StateVector::default())
-}
-
-#[cfg(feature = "yjs")]
-#[test]
-fn deep_yjs_updates_are_refused_on_a_small_stack() {
-    let run = || {
-        assert!(encre::yjs::from_update(&nested_update(47)).is_ok());
-        for depth in [48, 10_000] {
-            let error = encre::yjs::from_update(&nested_update(depth)).expect_err("too deep").to_string();
-            assert!(error.contains("nests more than 48 levels deep"), "{depth}: {error}");
-        }
-    };
-    let worker = std::thread::Builder::new().stack_size(2 << 20).spawn(run).expect("thread");
-    worker.join().expect("refused without overflowing the stack");
-}
-
-#[cfg(feature = "openui")]
-fn chain(links: usize, wrap: bool) -> String {
-    let link = |n: usize| if wrap { format!("[x{n}]") } else { format!("x{n}") };
-    let defs: String = (0..links).map(|i| format!("x{i} = {}\n", link(i + 1))).collect();
-    format!("root = Card([x0])\n{defs}x{links} = Text(\"a\")\n")
-}
-
-#[cfg(feature = "openui")]
-#[test]
-fn openui_reference_chains_obey_the_nesting_limit() {
-    let run = || {
-        encre::openui::to_document(&chain(8, false)).expect("a short chain resolves");
-        for (links, wrap) in [(40, true), (50_000, true), (70, false), (50_000, false)] {
-            let error = encre::openui::to_document(&chain(links, wrap)).expect_err("too deep").to_string();
-            assert!(error.contains("nest deeper than 64 levels"), "{links}: {error}");
-        }
-    };
-    let worker = std::thread::Builder::new().stack_size(2 << 20).spawn(run).expect("thread");
-    worker.join().expect("refused without overflowing the stack");
 }
