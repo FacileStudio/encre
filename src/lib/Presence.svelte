@@ -23,7 +23,7 @@
 </script>
 
 <script lang="ts">
-  import { Avatar } from '@facile/muse';
+  import { Avatar, Tooltip } from '@facile/muse';
 
   let { provider, class: className = '' }: PresenceProps = $props();
 
@@ -41,8 +41,10 @@
 {#if list.some((peer) => peer.clientId !== provider.awareness.clientID)}
   <ul class="flex items-center -space-x-2 {className}" aria-label="Editing now">
     {#each list as peer (peer.clientId)}
-      <li class="rounded-fc-pill ring-2 ring-fc-bg" title={peer.name} style:--encre-caret={peer.color}>
-        <Avatar name={peer.name} src={peer.avatar} size="sm" class="encre-presence" />
+      <li class="rounded-fc-pill ring-2 ring-fc-bg" style:--encre-caret={peer.color}>
+        <Tooltip text={peer.name} describe={false} class="contents">
+          <Avatar name={peer.name} src={peer.avatar} size="sm" class="encre-presence" />
+        </Tooltip>
       </li>
     {/each}
   </ul>

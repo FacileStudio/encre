@@ -1,6 +1,6 @@
 {
   "name": "@facile/encre",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "license": "Apache-2.0",
   "description": "The Facile document format: schema, Tiptap editor and markdown projection",
   "type": "module",
@@ -46,7 +46,7 @@
     "@tiptap/y-tiptap": "3.3.0"
   },
   "devDependencies": {
-    "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+    "@facile/muse": "github:FacileStudio/muse#v0.21.2",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@types/node": "24.19.2",
     "jsdom": "31.0.0",

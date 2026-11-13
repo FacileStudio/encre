@@ -67,6 +67,11 @@ export const es: Labels = {
   embedInvalid: 'Dirección rechazada: solo https',
   embedOpen: 'Abrir',
   embedResize: 'Altura de la integración',
+  embedToile: 'Pizarra Toile',
+  embedFeuilles: 'Hoja Feuilles',
+  embedVision: 'Panel Vision',
+  embedDocs: 'Página Docs',
+  embedNuage: 'Archivo Nuage',
   file: 'Archivo',
   fileDownload: 'Descargar',
   fileNoSource: 'La subida no devolvió ninguna dirección de archivo'

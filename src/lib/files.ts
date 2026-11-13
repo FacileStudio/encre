@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/core';
-import type { BlockCommand } from './blocks.js';
+import { blockIcon, type BlockCommand } from './blocks.js';
 import { embedKind, httpsUrl } from './embed.js';
 import type { FileAttrs } from './extensions/embed.js';
 import { settingsOf } from './extensions/settings.svelte.js';
@@ -46,6 +46,7 @@ export function fileCommand(upload: () => FileUpload | undefined, labels: Labels
   return {
     id: 'file',
     label: labels.file,
+    icon: blockIcon('file'),
     keywords: 'fichier file pièce jointe attachment pdf',
     run: (editor) => {
       const input = document.createElement('input');
@@ -56,21 +57,6 @@ export function fileCommand(upload: () => FileUpload | undefined, labels: Labels
         if (options) void uploadFiles(editor, [...(input.files ?? [])], options);
       });
       input.click();
-    }
-  };
-}
-
-/** The "Link / embed" block command, named in `labels`: asks for an https address and embeds it. */
-export function embedCommand(onerror?: (error: Error) => void, labels: Labels = french): BlockCommand {
-  return {
-    id: 'embed',
-    label: labels.embed,
-    keywords: 'lien intégration embed link url toile feuilles vision docs',
-    run: (editor) => {
-      const url = window.prompt(labels.embedPrompt, 'https://')?.trim() ?? '';
-      if (url === '' || url === 'https://') return;
-      if (!httpsUrl(url)) return onerror?.(new Error(labels.embedInvalid));
-      editor.chain().focus().insertEmbed(url, embedKind(url)).run();
     }
   };
 }

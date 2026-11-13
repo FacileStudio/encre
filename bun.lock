@@ -23,7 +23,7 @@
         "@tiptap/y-tiptap": "3.3.0",
       },
       "devDependencies": {
-        "@facile/muse": "github:FacileStudio/muse#v0.17.1",
+        "@facile/muse": "github:FacileStudio/muse#v0.21.2",
         "@sveltejs/vite-plugin-svelte": "7.3.1",
         "@types/node": "24.19.2",
         "jsdom": "31.0.0",
@@ -49,7 +49,7 @@
   "packages": {
     "@exodus/bytes": ["@exodus/bytes@1.16.0", "", { "peerDependencies": { "@noble/hashes": "^1.8.0 || ^2.0.0" }, "optionalPeers": ["@noble/hashes"] }, "sha512-IcpW84uEn3N7ETtNZMlxKhfl6Pec8rUNGOTBtWbK1FKhJxIFAptZyVrvVRVBimAJxJCgc3PxepxkdWWG4DVzfA=="],
 
-    "@facile/muse": ["@facile/muse@github:FacileStudio/muse#4c73965", { "dependencies": { "gsap": "^3.13.0", "tailwind-merge": "^3.5.0" }, "peerDependencies": { "svelte": "^5.0.0", "tailwindcss": "^4.0.0" } }, "FacileStudio-muse-4c73965", "sha512-hwnbKsQaS5P3UQtt9B4aK6AdP3mWtObeMHwxPHv02OfZiyb8KT6hBeRNUMQTEnSAorr6CtXo4RbG9Jr96x6Cpg=="],
+    "@facile/muse": ["@facile/muse@github:FacileStudio/muse#3526681", { "dependencies": { "gsap": "^3.13.0", "tailwind-merge": "^3.5.0" }, "peerDependencies": { "svelte": "^5.0.0", "tailwindcss": "^4.0.0" } }, "FacileStudio-muse-3526681", "sha512-+kSfSx/LaVWYoqcLMcXvVuryLUZmQy30QKu952CPs0w7wUV+8IlP34tkUazK4sgOfHDOqtVtE6DdN4BzJAP3Dw=="],
 
     "@floating-ui/core": ["@floating-ui/core@1.8.0", "", { "dependencies": { "@floating-ui/utils": "^0.2.12" } }, "sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ=="],
 

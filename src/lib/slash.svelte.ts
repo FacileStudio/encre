@@ -1,7 +1,8 @@
 import { Extension, type Editor, type Range } from '@tiptap/core';
 import { PluginKey } from '@tiptap/pm/state';
-import Suggestion, { type SuggestionKeyDownProps, type SuggestionProps } from '@tiptap/suggestion';
+import Suggestion, { exitSuggestion, type SuggestionKeyDownProps, type SuggestionProps } from '@tiptap/suggestion';
 import { BLOCK_COMMANDS, findBlocks, type BlockCommand } from './blocks.js';
+import { watchDismiss } from './slash-dismiss.js';
 
 /** What the slash menu shows: open or not, the matches, the highlighted one and where. */
 export class SlashState {
@@ -9,9 +10,15 @@ export class SlashState {
   items = $state<BlockCommand[]>([]);
   index = $state(0);
   rect = $state<DOMRect | null>(null);
+  /** The rendered list, set by `SlashMenu`: presses and scrolls inside it keep the menu open. */
+  list: HTMLElement | null = null;
+  readonly pluginKey = new PluginKey('encreSlash');
   private pick: ((item: BlockCommand) => void) | null = null;
+  private unwatch: (() => void) | null = null;
 
   show(props: SuggestionProps<BlockCommand, BlockCommand>): void {
+    const view = props.editor.view;
+    this.unwatch ??= watchDismiss(() => this.list, view.dom, () => exitSuggestion(view, this.pluginKey));
     this.open = true;
     this.items = props.items;
     this.index = Math.min(this.index, Math.max(0, props.items.length - 1));
@@ -20,6 +27,8 @@ export class SlashState {
   }
 
   hide(): void {
+    this.unwatch?.();
+    this.unwatch = null;
     this.open = false;
     this.index = 0;
     this.pick = null;
@@ -64,7 +73,7 @@ export function slashExtension(slash: SlashState, commands: () => BlockCommand[]
       return [
         Suggestion<BlockCommand, BlockCommand>({
           editor: this.editor,
-          pluginKey: new PluginKey('encreSlash'),
+          pluginKey: slash.pluginKey,
           char: '/',
           startOfLine: false,
           items: ({ query }) => findBlocks(query, commands()),

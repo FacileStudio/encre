@@ -87,7 +87,10 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark`, `revealPath`, `revealBlock`, and the block actions below |
 | `Document` | Read-only renderer: `doc`, `class`, `locale`, `labels`, `renderDiagram`, `highlight`, `resolveEmbed` |
 | `Toolbar`, `BubbleMenu`, `SlashMenu`, `Presence` | The editor's parts, for apps that assemble their own |
-| `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `blockCommands(labels)`, `findBlocks` | The slash menu's state and the block commands, French or in the given labels |
+| `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `blockCommands(labels)`, `findBlocks` | The slash menu's state and the block commands, French or in the given labels. Every `BlockCommand` carries `icon`, a muse `Icon` name |
+| `EMBED_LOGOS`, `embedLogo(kind)` | The app logo of each embed kind (bold duotone brand glyph), the link glyph for `link` |
+| `embedCommand(onerror, labels, kind?)`, `embedCommands(onerror, labels)` | The "Link / embed" command, and that command plus one per Facile app (ids `embed-toile`, `embed-feuilles`, `embed-vision`, `embed-docs`, `embed-nuage`) |
+| `BLOCK_ICONS`, `blockIcon(id)` | The icon of every block command by id (`paragraph`, `heading1`..`heading3`, lists, `image`, `embed`, `file`, ...). Importing encre registers the glyphs with muse, so a host passes these names to any muse `Icon` or menu `icon` |
 | `encreExtensions`, `EncreExtensionOptions` | Every Tiptap extension of the schema, optional collaboration |
 | `Callout`, `Chart`, `Stat`, `Diagram`, `Columns`, `Column`, `Embed`, `FileBlock`, `Badge`, `Table`, `TableRow`, `TableHeader`, `TableCell` | The custom Tiptap nodes |
 | `Settings`, `settingsOf`, `EncreSettings`, `RenderDiagram` | The extension that carries labels and the diagram renderer to node views |

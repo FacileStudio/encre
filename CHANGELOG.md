@@ -4,6 +4,46 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.12.0] - 2026-11-13
+
+Editor only. The document format, schema and Markdown are unchanged.
+
+### Added
+
+- Every `BlockCommand` has an `icon`: a muse `Icon` name (Solar linear glyphs, plus three
+  heading glyphs drawn in the same stroke). The slash menu, the toolbar block menu and the bubble
+  menu "Turn into" menu show it before the label.
+- `BLOCK_ICONS` (command id to icon name) and `blockIcon(id)` are exported. Importing encre
+  registers the glyphs with muse, so a host reuses them in its own menus, such as a right-click
+  "Turn into" submenu: `blockCommands(labels).map((c) => ({ label: c.label, icon: c.icon, ... }))`.
+- The slash menu offers one embed entry per Facile app after "Link / embed": Toile board,
+  Feuilles spreadsheet, Vision dashboard, Docs page and Nuage file (French: "Tableau Toile",
+  "Classeur Feuilles", "Tableau de bord Vision", "Page Docs", "Fichier Nuage"). Each shows the
+  app's bold duotone brand logo, is found by the app name (`/toile`, `/feuilles`, `/vision`,
+  `/docs`, `/nuage`), asks for the address and inserts an embed of that kind. New exports
+  `embedCommands(onerror, labels)` and the optional `kind` argument of `embedCommand`; new labels
+  `embedToile`, `embedFeuilles`, `embedVision`, `embedDocs`, `embedNuage` in the four catalogues.
+- `EMBED_LOGOS` and `embedLogo(kind)`: the app logo of each embed kind (the glyph of muse's brand
+  catalog, bundled, no network fetch), the link glyph for `link`. A framed embed's "Open" link and
+  a Facile app's link card show it in place of the site favicon.
+
+### Changed
+
+- muse v0.21.2. Icon-only controls show a muse tooltip: the mark buttons, the link buttons and
+  the toolbar undo and redo through `IconButton` (the extra `Tooltip` wrappers are gone, so each
+  shows one tooltip), the embed resize handle, and each `Presence` avatar (was a native `title`).
+- `embedCommand` moved from `files.ts` to `embed-commands.ts`; the package export is unchanged.
+- `BlockCommand.icon` is required. A host that builds its own `BlockCommand` adds an `icon`.
+
+### Fixed
+
+- The slash menu scrolls the highlighted entry into view as the arrow keys move it. Before, the
+  highlight left the visible part of the list and only the mouse wheel reached the entries below.
+- The slash menu closes on a press anywhere outside its list (the editor included), when focus
+  leaves the editor or the window, and when the page scrolls. The typed `/query` stays as plain
+  text, Enter then splits the paragraph as usual, and typing `/` again reopens the menu. Escape
+  still closes it. Closing exits the suggestion plugin, so no decoration is left behind.
+
 ## [0.11.0] - 2026-11-13
 
 Schema 3. Strictly additive: every valid schema 1 or 2 document is a valid schema 3 document,
@@ -360,6 +400,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.12.0]: https://github.com/FacileStudio/encre/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/FacileStudio/encre/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/FacileStudio/encre/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/FacileStudio/encre/compare/v0.9.4...v0.10.0

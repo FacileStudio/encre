@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconButton, Tooltip } from '@facile/muse';
+  import { IconButton } from '@facile/muse';
   import type { Editor } from '@tiptap/core';
   import { labels as french, type Labels } from './labels.js';
 
@@ -56,36 +56,30 @@
       onkeydown={(e) => e.key === 'Escape' && (linking = false)}
     />
     {#if active.link}
-      <Tooltip text={labels.linkRemove}>
-        <IconButton variant="ghost" aria-label={labels.linkRemove} onclick={removeLink}>
-          <span class="line-through" aria-hidden="true">a</span>
-        </IconButton>
-      </Tooltip>
+      <IconButton variant="ghost" aria-label={labels.linkRemove} onclick={removeLink}>
+        <span class="line-through" aria-hidden="true">a</span>
+      </IconButton>
     {/if}
   </form>
 {:else}
   {#each marks as mark (mark.name)}
-    <Tooltip text={mark.label}>
-      <IconButton
-        variant="ghost"
-        aria-label={mark.label}
-        aria-pressed={active[mark.name]}
-        class={active[mark.name] ? 'bg-fc-surface text-fc-fg' : ''}
-        onclick={() => toggle(mark.name)}
-      >
-        <span class={mark.glyphClass} aria-hidden="true">{mark.glyph}</span>
-      </IconButton>
-    </Tooltip>
-  {/each}
-  <Tooltip text={labels.link}>
     <IconButton
       variant="ghost"
-      aria-label={labels.link}
-      aria-pressed={active.link}
-      class={active.link ? 'bg-fc-surface text-fc-fg' : ''}
-      onclick={startLink}
+      aria-label={mark.label}
+      aria-pressed={active[mark.name]}
+      class={active[mark.name] ? 'bg-fc-surface text-fc-fg' : ''}
+      onclick={() => toggle(mark.name)}
     >
-      <span class="underline" aria-hidden="true">a</span>
+      <span class={mark.glyphClass} aria-hidden="true">{mark.glyph}</span>
     </IconButton>
-  </Tooltip>
+  {/each}
+  <IconButton
+    variant="ghost"
+    aria-label={labels.link}
+    aria-pressed={active.link}
+    class={active.link ? 'bg-fc-surface text-fc-fg' : ''}
+    onclick={startLink}
+  >
+    <span class="underline" aria-hidden="true">a</span>
+  </IconButton>
 {/if}

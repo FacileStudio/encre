@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Icon, icons } from '@facile/muse';
+  import { Icon, icons, Tooltip } from '@facile/muse';
   import { FRAMED_KINDS, frameSrc, httpsUrl, type EmbedKind, type EmbedPreview, type ResolveEmbed } from '../embed.js';
+  import { embedLogo } from '../block-icons.js';
   import type { Labels } from '../labels.js';
 
   let {
@@ -64,21 +65,23 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      {labels.embedOpen}<Icon icon={icons.external} size={14} />
+      <Icon icon={embedLogo(kind)} size={16} class="text-fc-accent" />{labels.embedOpen}<Icon icon={icons.external} size={14} />
     </a>
-    <div
-      role="slider"
-      tabindex="0"
-      aria-label={labels.embedResize}
-      aria-valuemin={160}
-      aria-valuemax={1200}
-      aria-valuenow={height}
-      class="flex h-4 cursor-ns-resize items-center justify-center focus-visible:outline-2 focus-visible:outline-fc-ring"
-      onpointerdown={resize}
-      onkeydown={nudge}
-    >
-      <span class="h-1 w-10 rounded-fc-pill bg-fc-fg-muted/40"></span>
-    </div>
+    <Tooltip text={labels.embedResize} describe={false} class="contents">
+      <div
+        role="slider"
+        tabindex="0"
+        aria-label={labels.embedResize}
+        aria-valuemin={160}
+        aria-valuemax={1200}
+        aria-valuenow={height}
+        class="flex h-4 cursor-ns-resize items-center justify-center focus-visible:outline-2 focus-visible:outline-fc-ring"
+        onpointerdown={resize}
+        onkeydown={nudge}
+      >
+        <span class="h-1 w-10 rounded-fc-pill bg-fc-fg-muted/40"></span>
+      </div>
+    </Tooltip>
   </figure>
 {:else if parsed}
   <a
@@ -88,7 +91,11 @@
     rel="noopener noreferrer"
     data-id={id}
   >
-    <img class="size-5 shrink-0 rounded-fc-xs" src="https://{parsed.host}/favicon.ico" alt="" loading="lazy" />
+    {#if kind === 'link'}
+      <img class="size-5 shrink-0 rounded-fc-xs" src="https://{parsed.host}/favicon.ico" alt="" loading="lazy" />
+    {:else}
+      <Icon icon={embedLogo(kind)} size={20} class="text-fc-accent" />
+    {/if}
     <span class="flex min-w-0 flex-1 flex-col">
       <span class="truncate text-fc-sm font-medium">{title || preview.title || preview.site || parsed.host}</span>
       {#if preview.description}<span class="truncate text-fc-xs text-fc-fg-muted">{preview.description}</span>{/if}

@@ -67,6 +67,11 @@ export const de: Labels = {
   embedInvalid: 'Adresse abgelehnt: nur https',
   embedOpen: 'Öffnen',
   embedResize: 'Höhe der Einbettung',
+  embedToile: 'Toile-Board',
+  embedFeuilles: 'Feuilles-Tabelle',
+  embedVision: 'Vision-Dashboard',
+  embedDocs: 'Docs-Seite',
+  embedNuage: 'Nuage-Datei',
   file: 'Datei',
   fileDownload: 'Herunterladen',
   fileNoSource: 'Das Hochladen hat keine Dateiadresse zurückgegeben'

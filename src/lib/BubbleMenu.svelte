@@ -25,7 +25,7 @@
 
   let element: HTMLDivElement;
   const key = `encreBubble${Math.random().toString(36).slice(2)}`;
-  const items = $derived((commands ?? blockCommands(labels)).map((command) => ({ label: command.label, onselect: () => command.run(editor) })));
+  const items = $derived((commands ?? blockCommands(labels)).map((command) => ({ label: command.label, icon: command.icon, onselect: () => command.run(editor) })));
 
   onMount(() => {
     editor.registerPlugin(
