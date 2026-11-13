@@ -59,5 +59,15 @@ export const es: Labels = {
   addColumn: 'Añadir una columna',
   deleteRow: 'Eliminar la fila',
   deleteColumn: 'Eliminar la columna',
-  deleteTable: 'Eliminar la tabla'
+  deleteTable: 'Eliminar la tabla',
+  turnInto: 'Convertir en',
+  linkRemove: 'Quitar el enlace',
+  embed: 'Enlace / integración',
+  embedPrompt: 'Dirección para integrar (https)',
+  embedInvalid: 'Dirección rechazada: solo https',
+  embedOpen: 'Abrir',
+  embedResize: 'Altura de la integración',
+  file: 'Archivo',
+  fileDownload: 'Descargar',
+  fileNoSource: 'La subida no devolvió ninguna dirección de archivo'
 };

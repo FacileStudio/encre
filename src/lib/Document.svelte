@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ResolveEmbed } from './embed.js';
   import type { RenderDiagram } from './extensions/settings.svelte.js';
   import { labelsFor, type LabelOverrides, type Locale } from './labels.js';
   import { provideRender, type Highlight } from './render/context.js';
@@ -11,7 +12,8 @@
     locale = 'fr',
     labels,
     renderDiagram,
-    highlight
+    highlight,
+    resolveEmbed
   }: {
     doc: EncreNode;
     class?: string;
@@ -23,10 +25,12 @@
     renderDiagram?: RenderDiagram;
     /** Highlights a code block; it must return safe HTML. Without it, code is escaped text. */
     highlight?: Highlight;
+    /** Enriches link cards with a title, description and picture. */
+    resolveEmbed?: ResolveEmbed;
   } = $props();
 
   const copy = $derived(labelsFor(locale, labels));
-  provideRender(() => ({ labels: copy, renderDiagram, highlight }));
+  provideRender(() => ({ labels: copy, renderDiagram, highlight, resolveEmbed }));
 </script>
 
 <article class="encre-prose text-fc-fg {className}">

@@ -16,7 +16,12 @@ fn v1_to_v2(doc: Node) -> Node {
     doc
 }
 
-const MIGRATIONS: &[Migration] = &[v1_to_v2];
+/// Schema 3 only adds the `embed` and `file` blocks, so a version 2 document is unchanged.
+fn v2_to_v3(doc: Node) -> Node {
+    doc
+}
+
+const MIGRATIONS: &[Migration] = &[v1_to_v2, v2_to_v3];
 
 /// Upgrades `doc`, stored at schema version `from`, to [`SCHEMA_VERSION`].
 pub fn migrate(doc: Node, from: u32) -> Result<Node, MigrationError> {

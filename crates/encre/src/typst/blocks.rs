@@ -42,6 +42,7 @@ impl Writer<'_, '_> {
             "chart" => chart(node),
             "diagram" => diagram(node),
             "columns" => self.columns(node),
+            "embed" | "file" => node.link_paragraph().map(|p| inline(&p.content)).unwrap_or_default(),
             _ => String::new(),
         }
     }

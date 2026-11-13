@@ -59,5 +59,15 @@ export const fr: Labels = {
   addColumn: 'Ajouter une colonne',
   deleteRow: 'Supprimer la ligne',
   deleteColumn: 'Supprimer la colonne',
-  deleteTable: 'Supprimer le tableau'
+  deleteTable: 'Supprimer le tableau',
+  turnInto: 'Transformer en',
+  linkRemove: 'Retirer le lien',
+  embed: 'Lien / intégration',
+  embedPrompt: 'Adresse à intégrer (https)',
+  embedInvalid: 'Adresse refusée : https uniquement',
+  embedOpen: 'Ouvrir',
+  embedResize: "Hauteur de l'intégration",
+  file: 'Fichier',
+  fileDownload: 'Télécharger',
+  fileNoSource: "L'envoi n'a renvoyé aucune adresse de fichier"
 };

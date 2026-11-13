@@ -84,7 +84,8 @@ impl Writer {
             }
             "table" => super::write_table::table(self, node),
             "columns" if self.commonmark => self.flat_columns(node),
-            "callout" | "stat" | "chart" | "diagram" | "columns" => self.custom(node),
+            "embed" | "file" if self.commonmark => node.link_paragraph().map(|p| self.block(&p)).unwrap_or_default(),
+            "callout" | "stat" | "chart" | "diagram" | "columns" | "embed" | "file" => self.custom(node),
             _ => super::write_list::list(self, node, false),
         }
     }

@@ -27,19 +27,21 @@
   }
 
   function startLink() {
-    if (active.link) {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-    href = '';
+    href = active.link ? String(editor.getAttributes('link').href ?? '') : '';
     linking = true;
+  }
+
+  function removeLink() {
+    linking = false;
+    editor.chain().focus().extendMarkRange('link').unsetLink().run();
   }
 
   function applyLink(event: SubmitEvent) {
     event.preventDefault();
     const target = href.trim();
+    if (target === '') return removeLink();
     linking = false;
-    if (target !== '') editor.chain().focus().extendMarkRange('link').setLink({ href: target }).run();
+    editor.chain().focus().extendMarkRange('link').setLink({ href: target }).run();
   }
 </script>
 
@@ -51,7 +53,15 @@
       placeholder="https://"
       aria-label={labels.linkPrompt}
       bind:value={href}
+      onkeydown={(e) => e.key === 'Escape' && (linking = false)}
     />
+    {#if active.link}
+      <Tooltip text={labels.linkRemove}>
+        <IconButton variant="ghost" aria-label={labels.linkRemove} onclick={removeLink}>
+          <span class="line-through" aria-hidden="true">a</span>
+        </IconButton>
+      </Tooltip>
+    {/if}
   </form>
 {:else}
   {#each marks as mark (mark.name)}

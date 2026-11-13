@@ -1,6 +1,6 @@
 //! encre: the Facile document format.
 //!
-//! A document is a ProseMirror JSON tree ([`Node`]) that validates against schema v2
+//! A document is a ProseMirror JSON tree ([`Node`]) that validates against schema v3
 //! (`spec/schema.json`). [`markdown`] projects it to Facile Markdown and back without loss.
 #![deny(unused, dead_code)]
 

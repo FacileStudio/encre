@@ -59,5 +59,15 @@ export const en: Labels = {
   addColumn: 'Add a column',
   deleteRow: 'Delete the row',
   deleteColumn: 'Delete the column',
-  deleteTable: 'Delete the table'
+  deleteTable: 'Delete the table',
+  turnInto: 'Turn into',
+  linkRemove: 'Remove the link',
+  embed: 'Link / embed',
+  embedPrompt: 'Address to embed (https)',
+  embedInvalid: 'Refused address: https only',
+  embedOpen: 'Open',
+  embedResize: 'Embed height',
+  file: 'File',
+  fileDownload: 'Download',
+  fileNoSource: 'The upload returned no file address'
 };

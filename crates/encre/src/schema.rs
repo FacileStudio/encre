@@ -3,7 +3,7 @@ use serde_json::Value;
 use std::sync::OnceLock;
 
 /// The schema version of documents this crate writes.
-pub const SCHEMA_VERSION: u32 = 2;
+pub const SCHEMA_VERSION: u32 = 3;
 
 /// Node types the Rust projections handle, in `spec/schema.json` order.
 pub const NODE_KINDS: &[&str] = &[
@@ -29,6 +29,8 @@ pub const NODE_KINDS: &[&str] = &[
     "diagram",
     "columns",
     "column",
+    "embed",
+    "file",
     "text",
     "hardBreak",
     "badge",
@@ -97,7 +99,7 @@ pub struct MarkType {
 pub struct AttrSpec {
     /// Attribute name.
     pub name: String,
-    /// Value type: `id`, `integer`, `boolean`, `string`, `line`, `info`, `label`, `lines` or `series`.
+    /// Value type: `id`, `integer`, `boolean`, `string`, `line`, `info`, `label`, `lines`, `series` or `url`.
     #[serde(rename = "type")]
     pub kind: String,
     /// Default value.

@@ -1,0 +1,18 @@
+{
+  "name": "file",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "mime": "application/pdf",
+          "name": "Q3 report.pdf",
+          "size": 48213,
+          "src": "https://nuage.facile.studio/f/q3"
+        },
+        "type": "file"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```file\n{\"src\": \"https://nuage.facile.studio/f/q3\", \"name\": \"Q3 report.pdf\", \"size\": 48213, \"mime\": \"application/pdf\"}\n```"
+}

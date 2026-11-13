@@ -1,4 +1,5 @@
 import { Extension, type Editor } from '@tiptap/core';
+import type { ResolveEmbed } from '../embed.js';
 import { labelsFor, type Labels } from '../labels.js';
 
 /** Draws a diagram from its language and source: SVG markup the app trusts, or an element. */
@@ -8,15 +9,18 @@ export type RenderDiagram = (language: string, source: string) => Promise<string
 export interface EncreSettings {
   labels: Labels;
   renderDiagram?: RenderDiagram;
+  resolveEmbed?: ResolveEmbed;
 }
 
 class LiveSettings implements EncreSettings {
   labels = $state.raw<Labels>(labelsFor('fr'));
   renderDiagram = $state.raw<RenderDiagram | undefined>();
+  resolveEmbed = $state.raw<ResolveEmbed | undefined>();
 
   constructor(settings: EncreSettings) {
     this.labels = settings.labels;
     this.renderDiagram = settings.renderDiagram;
+    this.resolveEmbed = settings.resolveEmbed;
   }
 }
 
@@ -31,7 +35,7 @@ declare module '@tiptap/core' {
   }
 }
 
-/** Carries the labels and the diagram renderer to every node view through the editor storage. */
+/** Carries the labels, the diagram renderer and the link resolver to every node view through the editor storage. */
 export const Settings = Extension.create<EncreSettings, SettingsStorage>({
   name: 'encreSettings',
   addOptions: () => ({ labels: labelsFor('fr') }),

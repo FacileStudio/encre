@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "id": {
     "alphabet": "0123456789abcdefghjkmnpqrstvwxyz",
     "length": 10
@@ -181,6 +181,34 @@
           "default": "neutral",
           "values": ["neutral", "success", "danger", "warning", "info"]
         }
+      ]
+    },
+    {
+      "name": "embed",
+      "group": "block",
+      "since": 3,
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "url", "type": "url", "default": null, "required": true },
+        {
+          "name": "kind",
+          "type": "string",
+          "default": "link",
+          "values": ["link", "toile", "feuilles", "vision", "docs", "nuage"]
+        },
+        { "name": "title", "type": "line", "default": "" }
+      ]
+    },
+    {
+      "name": "file",
+      "group": "block",
+      "since": 3,
+      "attrs": [
+        { "name": "id", "type": "id", "default": null },
+        { "name": "src", "type": "line", "default": null, "required": true },
+        { "name": "name", "type": "line", "default": "" },
+        { "name": "size", "type": "integer", "default": 0, "min": 0, "max": 9007199254740991 },
+        { "name": "mime", "type": "line", "default": "" }
       ]
     },
     {

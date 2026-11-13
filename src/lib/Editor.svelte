@@ -1,45 +1,11 @@
 <script module lang="ts">
-  import type * as Y from 'yjs';
-  import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
-  import type { EncreNode } from './schema.js';
-  import type { UploadedImage } from './upload.js';
-  import type { RenderDiagram } from './extensions/settings.svelte.js';
-  import type { LabelOverrides, Locale } from './labels.js';
-
-  /** Props of the encre editor. */
-  export interface EditorProps {
-    content?: EncreNode;
-    editable?: boolean;
-    /** Text shown in an empty document, read once at mount. */
-    placeholder?: string;
-    toolbar?: boolean;
-    onchange?: (doc: EncreNode) => void;
-    class?: string;
-    /** The shared document; when set, it is the source of truth and `content` is ignored. Read once at mount, with `provider` and `user`: wrap the editor in `{#key ydoc}` to switch documents. */
-    ydoc?: Y.Doc;
-    /** A y-websocket `WebsocketProvider` (or a stand-in with `awareness`, `synced` and the `sync` event) for carets and presence. */
-    provider?: AwarenessProvider;
-    /** This user, as other people see them. */
-    user?: CollabUser;
-    /** Where the editor shows who is here: `inline` above the toolbar, or `none` for an app that renders `Presence` itself. */
-    presence?: 'inline' | 'none';
-    /** Uploads a pasted, dropped or picked image and answers its address; without it images are not uploaded. */
-    onimage?: (file: File) => Promise<UploadedImage>;
-    /** Reports a refused image, a failed upload, a paste encre could not read as blocks, or a refused export. */
-    onerror?: (error: Error) => void;
-    /** The largest image, in bytes, handed to `onimage`. */
-    maxImageBytes?: number;
-    /** The language of the editor's copy: menus, node views and placeholders. */
-    locale?: Locale;
-    /** Replaces some of that copy. */
-    labels?: LabelOverrides;
-    /** Draws a diagram from its language and source; without it a diagram shows its source. */
-    renderDiagram?: RenderDiagram;
-  }
+  export type { ContextMenuInfo, EditorProps } from './editor-props.js';
 </script>
 
 <script lang="ts">
   import { Editor } from '@tiptap/core';
+  import type { EditorProps } from './editor-props.js';
+  import type { EncreNode } from './schema.js';
   import { onMount } from 'svelte';
   import BubbleMenu from './BubbleMenu.svelte';
   import Presence from './Presence.svelte';
@@ -55,6 +21,8 @@
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
   import { blockPosition, positionOf, reveal } from './reveal.js';
   import { reported } from './refusal.js';
+  import { embedCommand, fileCommand, pasteEmbed, transferFiles, type FileUpload } from './files.js';
+  import * as select from './selection.js';
 
   let {
     content,
@@ -68,6 +36,11 @@
     user,
     presence = 'inline',
     onimage,
+    onfile,
+    onembed,
+    resolveEmbed,
+    oncontextmenu,
+    extras,
     onerror,
     maxImageBytes,
     locale = 'fr',
@@ -82,7 +55,40 @@
   const slash = new SlashState();
   const upload = (): ImageUpload | undefined => (onimage ? { onimage, onerror, maxImageBytes } : undefined);
   const copy = $derived(labelsFor(locale, overrides));
-  const commands = $derived(onimage ? [...blockCommands(copy), imageCommand(upload, copy)] : blockCommands(copy));
+  const files = (): FileUpload | undefined => (onfile ? { onfile, onerror } : undefined);
+  const turnable = $derived(blockCommands(copy));
+  const commands = $derived([
+    ...turnable,
+    ...(onimage ? [imageCommand(upload, copy)] : []),
+    embedCommand(onerror, copy),
+    ...(onfile ? [fileCommand(files, copy)] : [])
+  ]);
+
+  function paste(event: ClipboardEvent): boolean {
+    if (!editor) return false;
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    return (
+      pasteImages(editor, event, upload()) ||
+      transferFiles(editor, event.clipboardData, files()) ||
+      pasteEmbed(editor, text, onembed) ||
+      pasteMarkdown(editor, event, onerror)
+    );
+  }
+
+  function drop(event: DragEvent, moved: boolean): boolean {
+    if (!editor || moved) return false;
+    if (dropImages(editor, event, upload())) return true;
+    const handled = transferFiles(editor, event.dataTransfer, files());
+    if (handled) event.preventDefault();
+    return handled;
+  }
+
+  function contextmenu(event: MouseEvent): boolean {
+    if (!editor || !oncontextmenu) return false;
+    event.preventDefault();
+    oncontextmenu(select.contextInfo(editor, event));
+    return true;
+  }
 
   onMount(() => {
     const instance = new Editor({
@@ -92,6 +98,7 @@
           placeholder,
           labels: copy,
           renderDiagram,
+          resolveEmbed,
           collaboration: ydoc ? { document: ydoc, provider, user } : undefined
         }),
         slashExtension(slash, () => commands),
@@ -101,8 +108,9 @@
       editable,
       editorProps: {
         attributes: { class: 'encre-prose outline-none min-h-40' },
-        handlePaste: (_view, event) => (editor ? pasteImages(editor, event, upload()) || pasteMarkdown(editor, event, onerror) : false),
-        handleDrop: (_view, event, _slice, moved) => (editor && !moved ? dropImages(editor, event, upload()) : false)
+        handlePaste: (_view, event) => paste(event),
+        handleDrop: (_view, event, _slice, moved) => drop(event, moved),
+        handleDOMEvents: { contextmenu: (_view, event) => contextmenu(event) }
       },
       onTransaction: () => (version += 1),
       onUpdate: ({ editor: changed }) => onchange?.(changed.getJSON() as EncreNode)
@@ -121,6 +129,7 @@
     const settings = settingsOf(editor);
     settings.labels = copy;
     settings.renderDiagram = renderDiagram;
+    settings.resolveEmbed = resolveEmbed;
   });
 
   /** The Tiptap editor, once mounted. */
@@ -163,6 +172,31 @@
     return editor ? reveal(editor, blockPosition(editor.state.doc, blockId), bar?.offsetHeight) : false;
   }
 
+  /** The selection as Facile Markdown: the text range inside one block, or every block it touches. */
+  export const selectionMarkdown = (): string => (editor ? select.selectionMarkdown(editor) : '');
+
+  /** Runs the block command `commandId` (`heading2`, `embed`, `file`, ...); false when there is none. */
+  export const run = (commandId: string): boolean => runFrom(commands, commandId);
+
+  /** Turns the selected blocks into the block of `blockCommands` named `id`; false when there is none. */
+  export const turnInto = (id: string): boolean => runFrom(turnable, id);
+
+  /** Copies the top-level block under the selection right after it. */
+  export const duplicateBlock = (): boolean => (editor ? select.duplicateBlock(editor) : false);
+
+  /** Deletes the selection, or the top-level block under an empty one. */
+  export const deleteSelection = (): boolean => (editor ? select.deleteSelection(editor) : false);
+
+  /** Copies `<base>#<id>` of the top-level block under the selection and answers that block id. */
+  export const copyBlockLink = (base: string): string | null => (editor ? select.copyBlockLink(editor, base) : null);
+
+  const runFrom = (list: typeof commands, id: string): boolean => {
+    const command = list.find((c) => c.id === id);
+    if (!editor || !command) return false;
+    command.run(editor);
+    return true;
+  };
+
   /** Replaces the whole document. */
   export function setDocument(doc: EncreNode): void {
     editor?.commands.setContent(doc, { emitUpdate: true });
@@ -180,7 +214,7 @@
   {/if}
   <div bind:this={element} class="text-fc-fg"></div>
   {#if editor && editable}
-    <BubbleMenu {editor} {version} labels={copy} />
+    <BubbleMenu {editor} {version} labels={copy} commands={turnable} {extras} />
     <SlashMenu {slash} labels={copy} />
   {/if}
 </div>

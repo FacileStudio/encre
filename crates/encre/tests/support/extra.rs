@@ -61,3 +61,23 @@ pub fn chart() -> impl Strategy<Value = Node> {
         },
     )
 }
+
+pub fn embed() -> impl Strategy<Value = Node> {
+    let url =
+        prop::sample::select(vec!["https://toile.facile.studio/b/x", "https://a.example/p?q=\"1\"&r=\\", "https://x"]);
+    let kind = prop::sample::select(vec!["link", "toile", "feuilles", "vision", "docs", "nuage"]);
+    (url, kind, line()).prop_map(|(url, kind, title)| {
+        node("embed", &[("url", url.into()), ("kind", kind.into()), ("title", title.into())], Vec::new())
+    })
+}
+
+pub fn file() -> impl Strategy<Value = Node> {
+    let src = prop::sample::select(vec!["https://nuage.facile.studio/f/1", "a b.pdf", "", "x(1)"]);
+    (src, line(), 0..9_007_199_254_740_991i64, line()).prop_map(|(src, name, size, mime)| {
+        node(
+            "file",
+            &[("src", src.into()), ("name", name.into()), ("size", size.into()), ("mime", mime.into())],
+            vec![],
+        )
+    })
+}

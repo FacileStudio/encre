@@ -1,6 +1,6 @@
 use encre::schema::{MARK_KINDS, NODE_KINDS, schema};
 
-const ATTR_TYPES: &[&str] = &["id", "integer", "boolean", "string", "line", "info", "label", "lines", "series"];
+const ATTR_TYPES: &[&str] = &["id", "integer", "boolean", "string", "line", "info", "label", "lines", "series", "url"];
 
 #[test]
 fn rust_types_match_schema_json() {

@@ -18,7 +18,7 @@ fn docs(dir: &str, key: &str) -> Vec<(String, Node)> {
 }
 
 #[test]
-fn migrating_from_version_1_changes_no_vector_document() {
+fn migrating_from_versions_1_and_2_changes_no_vector_document() {
     let all: Vec<(String, Node)> =
         [("markdown", "doc"), ("typst", "doc"), ("yjs", "doc"), ("openui", "want_doc"), ("ops", "doc")]
             .into_iter()
@@ -28,6 +28,7 @@ fn migrating_from_version_1_changes_no_vector_document() {
     for (name, doc) in all {
         assert_eq!(validate(&doc), Ok(()), "{name}: valid");
         assert_eq!(migrate(doc.clone(), 1), Ok(doc.clone()), "{name}: from 1");
+        assert_eq!(migrate(doc.clone(), 2), Ok(doc.clone()), "{name}: from 2");
         assert_eq!(migrate(doc.clone(), SCHEMA_VERSION), Ok(doc), "{name}: from the current version");
     }
 }

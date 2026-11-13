@@ -1,0 +1,53 @@
+{
+  "name": "schema3",
+  "markdown": "Before the board.\n\n```embed\n{\"url\": \"https://toile.facile.studio/b/abc\", \"kind\": \"toile\", \"title\": \"Roadmap\"}\n```\n\n```embed\n{\"url\": \"https://example.com/a\", \"kind\": \"link\", \"title\": \"\"}\n```\n\n```file\n{\"src\": \"https://nuage.facile.studio/f/q3\", \"name\": \"Q3 report.pdf\", \"size\": 48213, \"mime\": \"application/pdf\"}\n```\n\n\\",
+  "doc": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000001"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Before the board."
+          }
+        ]
+      },
+      {
+        "type": "embed",
+        "attrs": {
+          "id": "y000000002",
+          "url": "https://toile.facile.studio/b/abc",
+          "kind": "toile",
+          "title": "Roadmap"
+        }
+      },
+      {
+        "type": "embed",
+        "attrs": {
+          "id": "y000000003",
+          "url": "https://example.com/a"
+        }
+      },
+      {
+        "type": "file",
+        "attrs": {
+          "id": "y000000004",
+          "src": "https://nuage.facile.studio/f/q3",
+          "name": "Q3 report.pdf",
+          "size": 48213,
+          "mime": "application/pdf"
+        }
+      },
+      {
+        "type": "paragraph",
+        "attrs": {
+          "id": "y000000005"
+        }
+      }
+    ]
+  }
+}

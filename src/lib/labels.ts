@@ -79,6 +79,16 @@ export interface Labels {
   deleteRow: string;
   deleteColumn: string;
   deleteTable: string;
+  turnInto: string;
+  linkRemove: string;
+  embed: string;
+  embedPrompt: string;
+  embedInvalid: string;
+  embedOpen: string;
+  embedResize: string;
+  file: string;
+  fileDownload: string;
+  fileNoSource: string;
 }
 
 /** The shipped catalogues, one per locale. */

@@ -1,0 +1,22 @@
+{
+  "name": "malformed-embed-not-https",
+  "canonical": "~~~embed\n{\"url\": \"http://example.com\"}\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "embed"
+        },
+        "content": [
+          {
+            "text": "{\"url\": \"http://example.com\"}",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```embed\n{\"url\": \"http://example.com\"}\n```"
+}

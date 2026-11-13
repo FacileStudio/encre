@@ -5,7 +5,7 @@ use serde_json::{Map, Value};
 
 /// The fence names that open a custom block: a code block whose language starts with one is written with tildes.
 pub const CUSTOM: &[&str] =
-    &["callout", "stat", "chart", "columns", "compare", "pros-cons", "vs", "mermaid", "d2", "dot"];
+    &["callout", "stat", "chart", "columns", "compare", "pros-cons", "vs", "mermaid", "d2", "dot", "embed", "file"];
 
 /// The diagram languages, each its own fence name.
 pub const DIAGRAMS: &[&str] = &["mermaid", "d2", "dot"];

@@ -10,7 +10,7 @@ rustdoc (`cargo doc -p encre --all-features --open`) has the full signatures.
 |---|---|
 | `Node`, `Mark` | A ProseMirror JSON node and mark; `Node::new`, `Node::text`, `attr_str`, `id`, `without_ids` |
 | `SCHEMA_VERSION` | `2` |
-| `validate(&Node) -> Result<(), ValidationError>` | Schema v2 and the rules of `spec/FORMAT.md` section 1; the error names a path |
+| `validate(&Node) -> Result<(), ValidationError>` | Schema v3 and the rules of `spec/FORMAT.md` section 1; the error names a path |
 | `assign_ids(&mut Node)` | Gives every block without a valid, unique id a fresh one |
 | `is_block_id(&str) -> bool` | Ten characters of lowercase Crockford base32 |
 | `compact(&Node) -> Node` | The canonical stored form: no nulls, no defaults, marks in rank order |
@@ -84,12 +84,12 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 
 | Export | What it does |
 |---|---|
-| `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark`, `revealPath`, `revealBlock` |
-| `Document` | Read-only renderer: `doc`, `class`, `locale`, `labels`, `renderDiagram`, `highlight` |
+| `Editor` (props `EditorProps`) | The editor; methods `instance`, `getDocument`, `setDocument`, `importMarkdown`, `exportMarkdown`, `exportCommonMark`, `revealPath`, `revealBlock`, and the block actions below |
+| `Document` | Read-only renderer: `doc`, `class`, `locale`, `labels`, `renderDiagram`, `highlight`, `resolveEmbed` |
 | `Toolbar`, `BubbleMenu`, `SlashMenu`, `Presence` | The editor's parts, for apps that assemble their own |
 | `SlashState`, `slashExtension`, `BLOCK_COMMANDS`, `blockCommands(labels)`, `findBlocks` | The slash menu's state and the block commands, French or in the given labels |
 | `encreExtensions`, `EncreExtensionOptions` | Every Tiptap extension of the schema, optional collaboration |
-| `Callout`, `Chart`, `Stat`, `Diagram`, `Columns`, `Column`, `Badge`, `Table`, `TableRow`, `TableHeader`, `TableCell` | The custom Tiptap nodes |
+| `Callout`, `Chart`, `Stat`, `Diagram`, `Columns`, `Column`, `Embed`, `FileBlock`, `Badge`, `Table`, `TableRow`, `TableHeader`, `TableCell` | The custom Tiptap nodes |
 | `Settings`, `settingsOf`, `EncreSettings`, `RenderDiagram` | The extension that carries labels and the diagram renderer to node views |
 | `CATALOGUES`, `labelsFor`, `Labels`, `LabelOverrides`, `Locale` | The interface copy in `fr`, `en`, `es` and `de`, and overrides |
 | `Highlight` | The type of `Document`'s `highlight` hook |
@@ -106,6 +106,10 @@ message. `src/lib/wasm.ts` wraps these; call those wrappers rather than the raw 
 | `openuiToDocument` | An OpenUI program as a document without ids; throws with the reason |
 | `looksLikeMarkdown` | The paste heuristic the editor uses |
 | `IMAGE_TYPES`, `imageRefusal(file, max?, labels?)`, `ImageUpload`, `UploadedImage` | The image types the editor uploads, the check it runs before `onimage`, and their types |
+| `embedKind(url, hosts?)`, `FACILE_HOSTS`, `EMBED_KINDS`, `FRAMED_KINDS`, `frameSrc`, `httpsUrl`, `humanSize`, `fileTag` | The embed kind a URL makes (`toile.facile.studio` gives `toile`, anything else `link`; `hosts` adds hosts such as `localhost:5173`), and the helpers the embed and file views use |
+| `EmbedKind`, `EmbedPreview`, `ResolveEmbed`, `FileAttrs`, `FileUpload`, `ContextMenuInfo` | The types of the embed and file hooks |
+| `pasteEmbed`, `transferFiles`, `uploadFiles`, `otherFiles`, `embedCommand`, `fileCommand` | What the editor runs on a paste or drop and behind the "Link / embed" and "File" entries |
+| `selectionMarkdown`, `touchedBlocks`, `duplicateBlock`, `deleteSelection`, `copyBlockLink`, `contextInfo` | The block actions on a Tiptap editor, for apps that build their own editor |
 
 The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 
@@ -116,12 +120,17 @@ The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 | `content` | `EncreNode` | empty | The initial document, ignored when `ydoc` is set |
 | `editable` | `boolean` | `true` | Read-only when false |
 | `placeholder` | `string` | none | Text shown in an empty document, read once at mount |
-| `toolbar` | `boolean` | `true` | Shows the toolbar |
+| `toolbar` | `boolean` | `true` | Shows the sticky toolbar; the bubble and slash menus stay without it |
 | `onchange` | `(doc: EncreNode) => void` | none | Called after every change |
 | `class` | `string` | `''` | Classes on the wrapper |
 | `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions`; read once at mount, so wrap the editor in `{#key ydoc}` to switch documents |
 | `presence` | `'inline' \| 'none'` | `'inline'` | `inline` shows who is here above the toolbar; `none` leaves it to the app |
 | `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
+| `onfile` | `(file: File) => Promise<{ src: string; name: string; size: number; mime: string }>` | none | Uploads a pasted, dropped or picked file that is not an image; the editor inserts a `file` block. Images keep `onimage` |
+| `onembed` | `(url: string) => boolean` | none | A lone https URL pasted on an empty paragraph becomes an `embed` block; answer false to paste it as text |
+| `resolveEmbed` | `(url: string) => Promise<{ title?, description?, image?, site? }>` | none | Enriches link cards |
+| `oncontextmenu` | `(info: { event: MouseEvent; empty: boolean; markdown: string }) => void` | none | When set, the editor keeps the browser menu closed on right click and calls it. A click outside the selection moves the caret there first; `markdown` is `selectionMarkdown()` |
+| `extras` | `Snippet` | none | Rendered at the end of the bubble menu, for example an "Ask the assistant" button |
 | `onerror` | `(error: Error) => void` | none | A refused image, a failed upload, an `EncreMarkdownError` from a markdown paste encre could not read (the text lands literally), or an `EncreDocumentError` from `exportMarkdown` or `exportCommonMark` |
 | `maxImageBytes` | `number` | no limit | The largest file handed to `onimage` |
 | `locale` | `'fr' \| 'en' \| 'es' \| 'de'` | `'fr'` | The language of every string in the toolbar, menus, node views and placeholders |
@@ -158,6 +167,30 @@ Without `onimage` the editor uploads nothing and behaves as before. With it:
 />
 ```
 
+### Embeds and files
+
+An `embed` block whose `kind` is `toile`, `feuilles`, `vision` or `docs` shows the page in a lazy
+frame, with `?embed=1` added (Vision pages as they are), an "Open" link and a drag handle that
+sets the frame's height for this viewer only. `link` and `nuage` show a link card: the site's
+`/favicon.ico`, the title (or `resolveEmbed`'s, or the host) and the URL. A `file` block is a row
+with its type, name and size that downloads `src`.
+
+The slash menu offers "Lien / intégration", which asks for an https address, and, with `onfile`,
+"Fichier", which opens a file picker.
+
+### Block actions
+
+Methods on the `Editor` instance, for context menus and keyboard shortcuts:
+
+| Method | What it does |
+|---|---|
+| `selectionMarkdown(): string` | The selection as Facile Markdown: the text range inside one block, or every top-level block it touches, or the block under an empty selection |
+| `run(commandId: string): boolean` | Runs a block command by id: `paragraph`, `heading1` to `heading3`, `bulletList`, ..., `image` (with `onimage`), `embed`, `file` (with `onfile`) |
+| `turnInto(id: string): boolean` | Runs a `blockCommands` entry on the selection |
+| `duplicateBlock(): boolean` | Copies the top-level block under the selection after it, with a fresh id |
+| `deleteSelection(): boolean` | Deletes the selection, or the top-level block under an empty one |
+| `copyBlockLink(base: string): string \| null` | Copies `<base>#<id>` for the top-level block under the selection and answers the id |
+
 ### Export refusals
 
 A document can hold a node the schema refuses, for example a control character in a text node.
@@ -183,7 +216,7 @@ sticky toolbar; each returns false when the node is not in the document.
 
 ### Presence in the page header
 
-`presence="none"` stops the editor from drawing avatars. The app renders the exported
+`Presence` renders nothing while this client is the only one connected. `presence="none"` stops the editor from drawing avatars. The app renders the exported
 `Presence` with the same provider wherever it wants, for example in its page header:
 
 ```svelte

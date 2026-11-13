@@ -1,7 +1,7 @@
 <script module lang="ts">
   import type { AwarenessProvider, CollabUser } from './extensions/collaboration.js';
 
-  /** Props of the presence row. */
+  /** Props of the presence row, which renders nothing while this client is alone. */
   export interface PresenceProps {
     provider: AwarenessProvider;
     class?: string;
@@ -38,10 +38,12 @@
   });
 </script>
 
-<ul class="flex items-center -space-x-2 {className}" aria-label="Editing now">
-  {#each list as peer (peer.clientId)}
-    <li class="rounded-fc-pill ring-2 ring-fc-bg" title={peer.name} style:--encre-caret={peer.color}>
-      <Avatar name={peer.name} src={peer.avatar} size="sm" class="encre-presence" />
-    </li>
-  {/each}
-</ul>
+{#if list.some((peer) => peer.clientId !== provider.awareness.clientID)}
+  <ul class="flex items-center -space-x-2 {className}" aria-label="Editing now">
+    {#each list as peer (peer.clientId)}
+      <li class="rounded-fc-pill ring-2 ring-fc-bg" title={peer.name} style:--encre-caret={peer.color}>
+        <Avatar name={peer.name} src={peer.avatar} size="sm" class="encre-presence" />
+      </li>
+    {/each}
+  </ul>
+{/if}

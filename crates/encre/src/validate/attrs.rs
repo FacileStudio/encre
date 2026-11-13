@@ -16,6 +16,11 @@ fn is_info(value: &Value) -> bool {
     is_line(value) && s.split_ascii_whitespace().collect::<Vec<_>>().join(" ") == s
 }
 
+fn is_url(value: &Value) -> bool {
+    let host = value.as_str().and_then(|s| s.strip_prefix("https://")).unwrap_or("");
+    is_line(value) && host.starts_with(|c: char| !"/?#".contains(c)) && !host.contains(char::is_whitespace)
+}
+
 fn is_series(value: &Value) -> bool {
     let Some(items) = value.as_array() else {
         return false;
@@ -47,6 +52,7 @@ fn value_ok(spec: &AttrSpec, value: &Value) -> bool {
         "label" => is_line(value) && !value.as_str().unwrap_or("").contains('`'),
         "lines" => value.as_array().is_some_and(|items| items.iter().all(is_line)),
         "series" => is_series(value),
+        "url" => is_url(value),
         _ => false,
     };
     typed && spec.values.as_ref().is_none_or(|values| values.contains(value))

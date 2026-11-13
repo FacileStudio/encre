@@ -1,0 +1,22 @@
+{
+  "name": "malformed-file-negative-size",
+  "canonical": "~~~file\n{\"src\": \"a.pdf\", \"size\": -1}\n~~~",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "language": "file"
+        },
+        "content": [
+          {
+            "text": "{\"src\": \"a.pdf\", \"size\": -1}",
+            "type": "text"
+          }
+        ],
+        "type": "codeBlock"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```file\n{\"src\": \"a.pdf\", \"size\": -1}\n```"
+}
