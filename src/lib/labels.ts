@@ -86,6 +86,11 @@ export interface Labels {
   embedInvalid: string;
   embedOpen: string;
   embedResize: string;
+  embedToile: string;
+  embedFeuilles: string;
+  embedVision: string;
+  embedDocs: string;
+  embedNuage: string;
   file: string;
   fileDownload: string;
   fileNoSource: string;

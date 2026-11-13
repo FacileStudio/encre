@@ -67,6 +67,11 @@ export const en: Labels = {
   embedInvalid: 'Refused address: https only',
   embedOpen: 'Open',
   embedResize: 'Embed height',
+  embedToile: 'Toile board',
+  embedFeuilles: 'Feuilles spreadsheet',
+  embedVision: 'Vision dashboard',
+  embedDocs: 'Docs page',
+  embedNuage: 'Nuage file',
   file: 'File',
   fileDownload: 'Download',
   fileNoSource: 'The upload returned no file address'

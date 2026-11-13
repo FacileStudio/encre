@@ -21,7 +21,8 @@
   import { loadEncre, parseMarkdown, serializeCommonMark, serializeMarkdown } from './wasm.js';
   import { blockPosition, positionOf, reveal } from './reveal.js';
   import { reported } from './refusal.js';
-  import { embedCommand, fileCommand, pasteEmbed, transferFiles, type FileUpload } from './files.js';
+  import { embedCommands } from './embed-commands.js';
+  import { fileCommand, pasteEmbed, transferFiles, type FileUpload } from './files.js';
   import * as select from './selection.js';
 
   let {
@@ -60,7 +61,7 @@
   const commands = $derived([
     ...turnable,
     ...(onimage ? [imageCommand(upload, copy)] : []),
-    embedCommand(onerror, copy),
+    ...embedCommands(onerror, copy),
     ...(onfile ? [fileCommand(files, copy)] : [])
   ]);
 

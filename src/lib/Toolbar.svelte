@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconButton, Menu, Tooltip } from '@facile/muse';
+  import { IconButton, Menu } from '@facile/muse';
   import type { Editor } from '@tiptap/core';
   import { blockCommands, type BlockCommand } from './blocks.js';
   import { BADGE_TONES, labels as french, type Labels } from './labels.js';
@@ -13,7 +13,7 @@
     class: className = ''
   }: { editor: Editor; version: number; labels?: Labels; commands?: BlockCommand[]; class?: string } = $props();
 
-  const blockItems = $derived((commands ?? blockCommands(labels)).map((block) => ({ label: block.label, onselect: () => block.run(editor) })));
+  const blockItems = $derived((commands ?? blockCommands(labels)).map((block) => ({ label: block.label, icon: block.icon, onselect: () => block.run(editor) })));
   const run = (go: (c: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>) => () => go(editor.chain().focus()).run();
   const tableItems = $derived([
     { label: labels.addRow, onselect: run((c) => c.addRowAfter()) },
@@ -50,16 +50,12 @@
 </script>
 
 <div role="toolbar" aria-label={labels.toolbar} class="flex flex-wrap items-center gap-1 rounded-fc-md bg-fc-component p-1 {className}">
-  <Tooltip text={labels.undo}>
-    <IconButton variant="ghost" aria-label={labels.undo} disabled={!state.canUndo} onclick={() => editor.chain().focus().undo().run()}>
-      <span aria-hidden="true">↶</span>
-    </IconButton>
-  </Tooltip>
-  <Tooltip text={labels.redo}>
-    <IconButton variant="ghost" aria-label={labels.redo} disabled={!state.canRedo} onclick={() => editor.chain().focus().redo().run()}>
-      <span aria-hidden="true">↷</span>
-    </IconButton>
-  </Tooltip>
+  <IconButton variant="ghost" aria-label={labels.undo} disabled={!state.canUndo} onclick={() => editor.chain().focus().undo().run()}>
+    <span aria-hidden="true">↶</span>
+  </IconButton>
+  <IconButton variant="ghost" aria-label={labels.redo} disabled={!state.canRedo} onclick={() => editor.chain().focus().redo().run()}>
+    <span aria-hidden="true">↷</span>
+  </IconButton>
   <Menu label={state.current} items={blockItems} />
   <MarkButtons {editor} {version} {labels} />
   {#if state.inTable}

@@ -56,7 +56,7 @@ describe('two collaborating editors', () => {
     expect(JSON.stringify(one)).toContain('Bo says hi.');
     expect(peers(provider(wa)).map((p) => p.name)).toEqual(['Ana', 'Bo']);
     flushSync();
-    expect(left.target.querySelectorAll('li[title]')).toHaveLength(2);
+    expect(left.target.querySelectorAll('ul[aria-label="Editing now"] > li')).toHaveLength(2);
     expect(one.content?.every((block) => typeof block.attrs?.id === 'string')).toBe(true);
     const colors = [...wb.getStates().values()].map((state) => (state.user as { color?: string }).color);
     expect(colors).toHaveLength(2);
@@ -107,7 +107,7 @@ describe('presence placement', () => {
 
   it('renders avatars above the editor by default', () => {
     const { editor, target } = mountWith();
-    expect(target.querySelectorAll('li[title]')).toHaveLength(2);
+    expect(target.querySelectorAll('ul[aria-label="Editing now"] > li')).toHaveLength(2);
     void unmount(editor);
   });
 
@@ -120,7 +120,7 @@ describe('presence placement', () => {
   it('renders no avatars with presence none', () => {
     const { editor, target } = mountWith('none');
     expect(target.querySelector('[aria-label="Editing now"]')).toBeNull();
-    expect(target.querySelectorAll('li[title]')).toHaveLength(0);
+    expect(target.querySelectorAll('ul[aria-label="Editing now"] > li')).toHaveLength(0);
     void unmount(editor);
   });
 });

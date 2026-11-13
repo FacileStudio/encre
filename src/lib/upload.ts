@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/core';
-import type { BlockCommand } from './blocks.js';
+import { blockIcon, type BlockCommand } from './blocks.js';
 import { addPlaceholder, placeholderPos, removePlaceholder } from './extensions/upload-placeholder.js';
 import { newBlockId } from './ids.js';
 import { settingsOf } from './extensions/settings.svelte.js';
@@ -87,6 +87,7 @@ export function imageCommand(upload: () => ImageUpload | undefined, labels: Labe
   return {
     id: 'image',
     label: labels.image,
+    icon: blockIcon('image'),
     keywords: 'image photo illustration',
     run: (editor) => {
       const input = document.createElement('input');

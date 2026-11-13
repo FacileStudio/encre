@@ -67,6 +67,11 @@ export const fr: Labels = {
   embedInvalid: 'Adresse refusée : https uniquement',
   embedOpen: 'Ouvrir',
   embedResize: "Hauteur de l'intégration",
+  embedToile: 'Tableau Toile',
+  embedFeuilles: 'Classeur Feuilles',
+  embedVision: 'Tableau de bord Vision',
+  embedDocs: 'Page Docs',
+  embedNuage: 'Fichier Nuage',
   file: 'Fichier',
   fileDownload: 'Télécharger',
   fileNoSource: "L'envoi n'a renvoyé aucune adresse de fichier"
