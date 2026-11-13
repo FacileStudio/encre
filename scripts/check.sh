@@ -36,6 +36,9 @@ test_suites() {
 case "$mode" in
   check) check ;;
   test) test_suites ;;
-  all) check && test_suites ;;
+  all)
+    check
+    test_suites
+    ;;
   *) echo "usage: scripts/check.sh [check|test|all]" >&2; exit 2 ;;
 esac
