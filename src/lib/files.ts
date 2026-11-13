@@ -81,12 +81,13 @@ export function embedCommand(onerror?: (error: Error) => void, labels: Labels = 
  */
 export function pasteEmbed(editor: Editor, text: string, onembed?: (url: string) => boolean): boolean {
   const url = text.trim();
+  if (editor.isDestroyed || !httpsUrl(url)) return false;
   const { selection } = editor.state;
   const { $from } = selection;
   const parent = $from.parent;
   const fits = $from.depth > 0 && $from.node(-1).canReplaceWith($from.index(-1), $from.indexAfter(-1), editor.schema.nodes.embed!);
   const emptyParagraph = selection.empty && parent.type.name === 'paragraph' && parent.content.size === 0 && fits;
-  if (!emptyParagraph || !httpsUrl(url) || onembed?.(url) === false) return false;
+  if (!emptyParagraph || onembed?.(url) === false) return false;
   const from = selection.$from.before();
   const embed = { type: 'embed', attrs: { url, kind: embedKind(url) } };
   return editor.chain().focus().insertContentAt({ from, to: from + parent.nodeSize }, embed).run();
