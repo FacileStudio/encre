@@ -1,0 +1,25 @@
+{
+  "name": "embed",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "kind": "toile",
+          "title": "Roadmap board",
+          "url": "https://toile.facile.studio/b/abc"
+        },
+        "type": "embed"
+      },
+      {
+        "attrs": {
+          "kind": "link",
+          "title": "",
+          "url": "https://example.com/a?b=1"
+        },
+        "type": "embed"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```embed\n{\"url\": \"https://toile.facile.studio/b/abc\", \"kind\": \"toile\", \"title\": \"Roadmap board\"}\n```\n\n```embed\n{\"url\": \"https://example.com/a?b=1\", \"kind\": \"link\", \"title\": \"\"}\n```"
+}

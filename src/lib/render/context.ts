@@ -1,5 +1,6 @@
 import { getContext, setContext } from 'svelte';
 import type { RenderDiagram } from '../extensions/settings.svelte.js';
+import type { ResolveEmbed } from '../embed.js';
 import { labelsFor, type Labels } from '../labels.js';
 
 /** Turns code into HTML for a code block. The app must return safe, sanitized HTML. */
@@ -10,6 +11,7 @@ export interface RenderOptions {
   labels: Labels;
   renderDiagram?: RenderDiagram;
   highlight?: Highlight;
+  resolveEmbed?: ResolveEmbed;
 }
 
 const KEY = Symbol('encre-render');

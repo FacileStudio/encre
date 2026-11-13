@@ -53,6 +53,19 @@ impl Node {
         self.attrs.get("id").and_then(Value::as_str)
     }
 
+    /// For an `embed` or `file` block, a paragraph holding one link to its target, labelled by its title or name,
+    /// else by the target; None for any other node or an empty target.
+    pub fn link_paragraph(&self) -> Option<Node> {
+        let (href, label) = match self.kind.as_str() {
+            "embed" => (self.attr_str("url"), self.attr_str("title")),
+            "file" => (self.attr_str("src"), self.attr_str("name")),
+            _ => return None,
+        };
+        let label = if label.is_empty() { href } else { label };
+        let link = Mark::new("link", Map::from_iter([("href".to_owned(), Value::from(href))]));
+        (!href.is_empty()).then(|| Node::new("paragraph", Map::new(), vec![Node::text(label, vec![link])]))
+    }
+
     /// A copy of this tree with every `id` attribute removed.
     pub fn without_ids(&self) -> Node {
         let mut copy = self.clone();

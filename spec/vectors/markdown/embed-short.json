@@ -1,0 +1,18 @@
+{
+  "name": "embed-short",
+  "canonical": "```embed\n{\"url\": \"https://example.com\", \"kind\": \"link\", \"title\": \"\"}\n```",
+  "doc": {
+    "content": [
+      {
+        "attrs": {
+          "kind": "link",
+          "title": "",
+          "url": "https://example.com"
+        },
+        "type": "embed"
+      }
+    ],
+    "type": "doc"
+  },
+  "markdown": "```embed\n{\"url\": \"https://example.com\"}\n```"
+}

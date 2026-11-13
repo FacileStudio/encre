@@ -6,7 +6,7 @@ which code owns each conversion.
 ## The model
 
 ```
-                        encre schema v2 (spec/schema.json)
+                        encre schema v3 (spec/schema.json)
                                      │
    ┌───────────────┬─────────────────┼─────────────────┬──────────────┬──────────────┐
  Tiptap          Yjs XmlFragment   Facile Markdown    Typst / PDF    Agent ops      OpenUI

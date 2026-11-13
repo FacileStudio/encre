@@ -30,6 +30,7 @@ fn block(node: &Node) -> String {
         "tableRow" => node.content.iter().map(|cell| blocks(&cell.content)).collect::<Vec<_>>().join("\t"),
         "image" => node.attr_str("alt").to_owned(),
         "stat" | "chart" => data(node),
+        "embed" | "file" => node.link_paragraph().map(|p| inline(&p.content)).unwrap_or_default(),
         "callout" | "column" => [node.attr_str("title").to_owned(), blocks(&node.content)]
             .into_iter()
             .filter(|s| !s.is_empty())

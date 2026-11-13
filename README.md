@@ -10,8 +10,8 @@ one implementation, in Rust, and the browser runs the same code compiled to WebA
 
 ## What it does
 
-- Defines schema v2 (`spec/schema.json`) and validates documents against it in Rust and TypeScript;
-  every schema 1 document is a valid schema 2 document
+- Defines schema v3 (`spec/schema.json`) and validates documents against it in Rust and TypeScript;
+  every schema 1 or 2 document is a valid schema 3 document
 - Projects documents to Facile Markdown and back without loss, plus a lossy CommonMark export
 - Reads and writes the Yjs layout Tiptap's Collaboration extension uses, so Rust edits live documents
 - Gives agents guarded operations (`append`, `insert_after`, `patch`, ...) that refuse ambiguous edits
@@ -37,13 +37,13 @@ Rust, from a git tag. Features: `yjs` (Yjs layout and live operations), `pdf` (T
 
 ```toml
 [dependencies]
-encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.10.1", features = ["yjs", "pdf"] }
+encre = { git = "https://github.com/FacileStudio/encre", tag = "v0.11.0", features = ["yjs", "pdf"] }
 ```
 
 Svelte, from the same tag:
 
 ```sh
-bun add "github:FacileStudio/encre#v0.10.1"
+bun add "github:FacileStudio/encre#v0.11.0"
 ```
 
 ### CLI
@@ -64,7 +64,7 @@ command and what markdown validation refuses.
 ### Go
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.10.1
+go get github.com/FacileStudio/encre/go@v0.11.0
 ```
 
 The Go module has its own tag, `go/vX.Y.Z`, on the same commit as `vX.Y.Z`.
@@ -89,7 +89,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut doc = encre::markdown::parse("# Plan\n\nShip the **gate** first.")?;
     encre::assign_ids(&mut doc);
     encre::validate(&doc)?;
-    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.10.1".to_owned() })?;
+    apply(&mut doc, 1, &Op::Append { markdown: "- [ ] tag v0.11.0".to_owned() })?;
     println!("{}", encre::markdown::serialize(&doc));
     Ok(())
 }

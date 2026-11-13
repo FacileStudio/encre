@@ -30,7 +30,17 @@ fn source_strings(node: &Node, images: &Value, out: &mut Vec<String>) {
     for (key, value) in &node.attrs {
         let shown = !matches!(
             key.as_str(),
-            "id" | "level" | "start" | "checked" | "align" | "language" | "src" | "tone" | "kind"
+            "id" | "level"
+                | "start"
+                | "checked"
+                | "align"
+                | "language"
+                | "src"
+                | "tone"
+                | "kind"
+                | "url"
+                | "mime"
+                | "size"
         );
         if shown && !(embedded && key == "alt") {
             strings(value, out);

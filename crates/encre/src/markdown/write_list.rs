@@ -10,10 +10,11 @@ fn family(kind: &str) -> Option<&'static str> {
     }
 }
 
-fn interrupts(node: &Node) -> bool {
+fn interrupts(node: &Node, commonmark: bool) -> bool {
     let start = node.attrs.get("start").and_then(Value::as_u64).unwrap_or(1);
     match node.kind.as_str() {
         "bulletList" | "taskList" | "codeBlock" | "heading" | "callout" | "stat" | "chart" | "diagram" => true,
+        "embed" | "file" => !commonmark,
         "orderedList" => start == 1,
         _ => false,
     }
@@ -32,7 +33,7 @@ impl Writer {
             if self.commonmark && written.is_empty() {
                 continue;
             }
-            let tight = previous.map(|prev| item && prev.kind == "paragraph" && interrupts(node));
+            let tight = previous.map(|prev| item && prev.kind == "paragraph" && interrupts(node, self.commonmark));
             loose |= tight == Some(false);
             out.push_str(match tight {
                 None => "",

@@ -59,5 +59,15 @@ export const de: Labels = {
   addColumn: 'Spalte hinzufügen',
   deleteRow: 'Zeile löschen',
   deleteColumn: 'Spalte löschen',
-  deleteTable: 'Tabelle löschen'
+  deleteTable: 'Tabelle löschen',
+  turnInto: 'Umwandeln in',
+  linkRemove: 'Verweis entfernen',
+  embed: 'Verweis / Einbettung',
+  embedPrompt: 'Adresse zum Einbetten (https)',
+  embedInvalid: 'Adresse abgelehnt: nur https',
+  embedOpen: 'Öffnen',
+  embedResize: 'Höhe der Einbettung',
+  file: 'Datei',
+  fileDownload: 'Herunterladen',
+  fileNoSource: 'Das Hochladen hat keine Dateiadresse zurückgegeben'
 };

@@ -47,6 +47,12 @@ const SOURCES: Record<string, string> = {
     '```mermaid\nflowchart LR\n  A --> B\n```',
     '````columns\n```column title="Pros" tone="success"\n- fast\n```\n\n```column\nplain [badge:accent x]\n```\n````',
     '```stat\n{"label": "Active", "value": "16", "delta": "", "sub": "In production"}\n```'
+  ].join('\n\n'),
+  schema3: [
+    'Before the board.',
+    '```embed\n{"url": "https://toile.facile.studio/b/abc", "kind": "toile", "title": "Roadmap"}\n```',
+    '```embed\n{"url": "https://example.com/a", "kind": "link", "title": ""}\n```',
+    '```file\n{"src": "https://nuage.facile.studio/f/q3", "name": "Q3 report.pdf", "size": 48213, "mime": "application/pdf"}\n```'
   ].join('\n\n')
 };
 

@@ -56,6 +56,8 @@ fn leaf() -> impl Strategy<Value = Node> {
         1 => super::extra::stat(),
         1 => super::extra::chart(),
         1 => super::extra::diagram(),
+        1 => super::extra::embed(),
+        1 => super::extra::file(),
     ]
 }
 

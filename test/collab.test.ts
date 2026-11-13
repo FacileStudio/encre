@@ -93,10 +93,11 @@ describe('a provider that syncs after the editor opens', () => {
 });
 
 describe('presence placement', () => {
-  const mountWith = (presence?: 'inline' | 'none') => {
+  const mountWith = (presence?: 'inline' | 'none', alone = false) => {
     const ydoc = new Y.Doc();
     const awareness = new Awareness(ydoc);
     awareness.setLocalStateField('user', { name: 'Ana' });
+    if (!alone) awareness.getStates().set(awareness.clientID + 1, { user: { name: 'Bo' } });
     const target = document.createElement('div');
     const props = { ydoc, provider: provider(awareness), user: { name: 'Ana' }, toolbar: false, presence };
     const editor = mount(Editor, { target, props });
@@ -106,7 +107,13 @@ describe('presence placement', () => {
 
   it('renders avatars above the editor by default', () => {
     const { editor, target } = mountWith();
-    expect(target.querySelectorAll('li[title]')).toHaveLength(1);
+    expect(target.querySelectorAll('li[title]')).toHaveLength(2);
+    void unmount(editor);
+  });
+
+  it('renders nothing while this client is alone', () => {
+    const { editor, target } = mountWith(undefined, true);
+    expect(target.querySelector('[aria-label="Editing now"]')).toBeNull();
     void unmount(editor);
   });
 

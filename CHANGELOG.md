@@ -4,6 +4,44 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.11.0] - 2026-11-13
+
+Schema 3. Strictly additive: every valid schema 1 or 2 document is a valid schema 3 document,
+unchanged, and `migrate(doc, 2)` is the identity. Stores that record the schema version should
+write 3 from now on.
+
+### Added
+
+- Schema 3 adds two atom blocks, marked `"since": 3`: `embed {id, url, kind, title}` and
+  `file {id, src, name, size, mime}`. `url` is a new attribute type: an https address with a
+  host. `kind` is `link`, `toile`, `feuilles`, `vision`, `docs` or `nuage`.
+- Facile Markdown reads and writes them as data-only fences, like `stat`:
+  ```` ```embed ```` holding `{"url": "…", "kind": "…", "title": "…"}` and ```` ```file ````
+  holding `{"src": "…", "name": "…", "size": 0, "mime": "…"}`. The CommonMark export, plain text
+  and Typst show each as one link, labelled by its title or name.
+- Editor: `embed` and `file` node views. Toile, Feuilles, Vision and Docs embeds show the page in
+  a lazy frame (`?embed=1` added, Vision as is) with an "Open" link and a drag handle for the
+  height; other links show a card that `resolveEmbed` can enrich. A file is a row that downloads
+  `src`. `Document` renders both.
+- Editor props `onfile`, `onembed`, `resolveEmbed`, `oncontextmenu` and `extras`, and the methods
+  `selectionMarkdown()`, `run(id)`, `turnInto(id)`, `duplicateBlock()`, `deleteSelection()` and
+  `copyBlockLink(base)`. A lone https URL pasted on an empty paragraph becomes an embed unless
+  `onembed` answers false; non-image files pasted, dropped or picked go through `onfile`.
+- The bubble menu shows for block and node selections too, with a "Turn into" menu, the mark
+  buttons, the link button and the host's `extras`.
+- The slash menu gains "Lien / intégration" and, with `onfile`, "Fichier".
+- `embedKind(url, hosts?)` and the embed and file helpers, exported; copy for every new string in
+  `fr`, `en`, `es` and `de`.
+
+### Changed
+
+- The link button edits an existing link instead of removing it; an empty address or the new
+  remove button removes it.
+- `Presence` renders nothing while this client is the only one connected.
+- A fence named `embed` or `file` holding a valid JSON object now reads as that block. A code
+  block whose language starts with `embed` or `file` is written with a tilde fence, as other
+  custom block names are.
+
 ## [0.10.1] - 2026-11-13
 
 No change to the library, the CLI or the Go module: consumers need not bump.
@@ -322,6 +360,8 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.11.0]: https://github.com/FacileStudio/encre/compare/v0.10.1...v0.11.0
+[0.10.1]: https://github.com/FacileStudio/encre/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/FacileStudio/encre/compare/v0.9.4...v0.10.0
 [0.9.4]: https://github.com/FacileStudio/encre/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/FacileStudio/encre/compare/v0.9.2...v0.9.3

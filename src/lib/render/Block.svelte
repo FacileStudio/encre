@@ -9,6 +9,9 @@
   import Columns from './Columns.svelte';
   import { renderOptions } from './context.js';
   import Diagram from './Diagram.svelte';
+  import EmbedCard from './EmbedCard.svelte';
+  import FileRow from './FileRow.svelte';
+  import { EMBED_KINDS, type EmbedKind } from '../embed.js';
   import { imageSrc } from './href.js';
   import Inline from './Inline.svelte';
   import Table from './Table.svelte';
@@ -59,6 +62,17 @@
   <hr data-id={id} />
 {:else if node.type === 'image'}
   {#if imageSrc(attrs.src)}<img data-id={id} src={imageSrc(attrs.src)} alt={text('alt')} title={text('title') || undefined} />{/if}
+{:else if node.type === 'embed'}
+  <EmbedCard
+    url={text('url')}
+    kind={(EMBED_KINDS.includes(attrs.kind as EmbedKind) ? attrs.kind : 'link') as EmbedKind}
+    title={text('title')}
+    labels={options.labels}
+    resolveEmbed={options.resolveEmbed}
+    {id}
+  />
+{:else if node.type === 'file'}
+  <FileRow src={text('src')} name={text('name')} size={Number(attrs.size ?? 0)} mime={text('mime')} labels={options.labels} {id} />
 {:else if node.type === 'table'}
   <Table {node} />
 {:else if node.type === 'callout'}

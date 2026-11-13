@@ -45,7 +45,7 @@ crate version, builds both targets with `scripts/build-cli.sh` on `ubuntu-latest
 A Dockerfile downloads the archive, checks it against `checksums.txt`, then extracts it:
 
 ```dockerfile
-ARG ENCRE_VERSION=0.10.1
+ARG ENCRE_VERSION=0.11.0
 ARG TARGETARCH
 RUN set -eu; base="https://github.com/FacileStudio/encre/releases/download/v${ENCRE_VERSION}"; \
     archive="encre_${ENCRE_VERSION}_linux_${TARGETARCH}.tar.gz"; cd /tmp; \
@@ -75,7 +75,7 @@ Every command reads stdin, or `--input <file>`, and writes stdout, or `--output 
 
 Text output is written exactly as encre produces it, with no trailing newline added, so
 `encre parse | encre serialize` gives back the canonical markdown byte for byte. JSON output is
-one line ending in a newline. JSON input is validated against schema v2 before any command uses
+one line ending in a newline. JSON input is validated against schema v3 before any command uses
 it.
 
 ### Global flags
@@ -126,7 +126,7 @@ nothing to stderr.
 | Code | Meaning | Examples |
 |---|---|---|
 | 0 | Done | |
-| 1 | Invalid input or document | Not schema v2, malformed JSON, too large, a refused operation, OpenUI syntax, a Typst compile failure |
+| 1 | Invalid input or document | Not schema v3, malformed JSON, too large, a refused operation, OpenUI syntax, a Typst compile failure |
 | 2 | Usage | Unknown flag or command, unreadable `--input`, `--doc` or `--image-dir`, ambiguous input, `pdf --json` without `--output` |
 | 3 | Internal | Output not writable, PDF export failure, a panic |
 
@@ -188,7 +188,7 @@ wraps the binary. It runs `ENCRE_BIN` when set, else `encre` on `PATH`, always w
 with `--max-bytes` when the package variable `MaxBytes` is above zero.
 
 ```sh
-go get github.com/FacileStudio/encre/go@v0.10.1
+go get github.com/FacileStudio/encre/go@v0.11.0
 ```
 
 | Function | What it does |
