@@ -4,6 +4,16 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.12.1] - 2026-11-14
+
+Renderer only. The document format, schema and Markdown are unchanged.
+
+### Fixed
+
+- A rendered table no longer squeezes its columns to the page width and wraps cell text. It takes
+  its natural width (at least the full width), cells stay on one line, and a wide table scrolls
+  sideways inside its wrapper. The editor's tables are unchanged.
+
 ## [0.12.0] - 2026-11-13
 
 Editor only. The document format, schema and Markdown are unchanged.
@@ -400,6 +410,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.12.1]: https://github.com/FacileStudio/encre/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/FacileStudio/encre/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/FacileStudio/encre/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/FacileStudio/encre/compare/v0.10.0...v0.10.1

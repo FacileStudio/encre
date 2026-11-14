@@ -12,7 +12,7 @@
 </script>
 
 <div class="my-3 overflow-x-auto">
-  <table data-id={typeof node.attrs?.id === 'string' ? node.attrs.id : undefined}>
+  <table class="encre-table" data-id={typeof node.attrs?.id === 'string' ? node.attrs.id : undefined}>
     <tbody>
       {#each rows as row, r (r)}
         <tr>
