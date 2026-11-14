@@ -84,6 +84,8 @@
 .encre-prose td { padding: 0.5em 0.75em; }
 .encre-prose tr:nth-child(even) { background: var(--color-fc-surface); }
 .encre-prose th > p, .encre-prose td > p { margin: 0; }
+.encre-prose .encre-table { width: max-content; min-width: 100%; }
+.encre-prose .encre-table th, .encre-prose .encre-table td { white-space: nowrap; }
 
 .encre-prose .ProseMirror-selectednode { outline: 2px solid var(--color-fc-ring); outline-offset: 2px; border-radius: var(--radius-fc-md); }
 .encre-prose p.is-editor-empty:first-child::before {
