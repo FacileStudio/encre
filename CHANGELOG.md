@@ -4,6 +4,18 @@ All notable changes to `encre` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While on `v0`, a breaking change bumps
 the minor version.
 
+## [0.13.0] - 2026-11-17
+
+Editor only. The document format, schema and Markdown are unchanged.
+
+### Added
+
+- `Editor` takes a `fragment` prop: a `Y.XmlFragment` of a shared `Y.Doc`, such as one text box
+  nested in a `Y.Map`. When set, it is the source of truth instead of the root `default` fragment,
+  `ydoc` may be left out (the editor uses `fragment.doc`), and carets still work with a
+  `provider`. Undo covers that fragment only. `CollabOptions` takes the same `fragment`, and its
+  `document` is now optional when `fragment` is set.
+
 ## [0.12.1] - 2026-11-14
 
 Renderer only. The document format, schema and Markdown are unchanged.
@@ -410,6 +422,7 @@ is 2. What schema 2 adds carries `"since": 2` in `spec/schema.json`.
   `Document.svelte`.
 - The Svelte package scaffold and its gates.
 
+[0.13.0]: https://github.com/FacileStudio/encre/compare/v0.12.1...v0.13.0
 [0.12.1]: https://github.com/FacileStudio/encre/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/FacileStudio/encre/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/FacileStudio/encre/compare/v0.10.1...v0.11.0
