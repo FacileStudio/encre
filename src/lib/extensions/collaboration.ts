@@ -48,7 +48,10 @@ function tiptapProvider(provider: AwarenessProvider) {
 
 /** Collaboration settings of the encre editor. */
 export interface CollabOptions {
-  document: Y.Doc;
+  /** The shared document; its root `default` fragment holds the text unless `fragment` is set. */
+  document?: Y.Doc;
+  /** The fragment holding the text, such as one nested in a `Y.Map`; it must belong to a `Y.Doc` and wins over `document`. */
+  fragment?: Y.XmlFragment;
   provider?: AwarenessProvider;
   user?: CollabUser;
 }
@@ -71,11 +74,14 @@ function renderCaret(user: Record<string, unknown>): HTMLElement {
   return caret;
 }
 
-/** Collaboration on the `default` fragment, plus carets when a provider carries awareness. */
+/** Collaboration on `fragment`, else on the `default` fragment of `document`, plus carets when a provider carries awareness. */
 export function collaborationExtensions(options: CollabOptions): Extensions {
-  const extensions: Extensions = [Collaboration.configure({ document: options.document, field: FRAGMENT })];
+  const doc = options.fragment ? options.fragment.doc : options.document;
+  if (!doc) throw new Error('encre collaboration needs a Y.Doc, or a fragment that belongs to one');
+  const shared = options.fragment ? { fragment: options.fragment } : { document: doc, field: FRAGMENT };
+  const extensions: Extensions = [Collaboration.configure(shared)];
   if (!options.provider) return extensions;
-  const color = options.user?.color ?? caretColor(options.document.clientID);
+  const color = options.user?.color ?? caretColor(doc.clientID);
   const user = { name: options.user?.name ?? '', avatar: options.user?.avatar, color };
   extensions.push(
     CollaborationCaret.configure({

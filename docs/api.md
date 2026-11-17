@@ -120,13 +120,14 @@ The package also exports `@facile/encre/schema.json` and `@facile/encre/styles`.
 
 | Prop | Type | Default | What it does |
 |---|---|---|---|
-| `content` | `EncreNode` | empty | The initial document, ignored when `ydoc` is set |
+| `content` | `EncreNode` | empty | The initial document, ignored when `ydoc` or `fragment` is set |
 | `editable` | `boolean` | `true` | Read-only when false |
 | `placeholder` | `string` | none | Text shown in an empty document, read once at mount |
 | `toolbar` | `boolean` | `true` | Shows the sticky toolbar; the bubble and slash menus stay without it |
 | `onchange` | `(doc: EncreNode) => void` | none | Called after every change |
 | `class` | `string` | `''` | Classes on the wrapper |
 | `ydoc`, `provider`, `user` | | none | Collaboration, see `CollabOptions`; read once at mount, so wrap the editor in `{#key ydoc}` to switch documents |
+| `fragment` | `Y.XmlFragment` | none | Binds the editor to this fragment instead of the root `default` fragment of `ydoc`, such as one text box nested in a `Y.Map`; `ydoc` may be left out, the fragment must belong to a `Y.Doc`, and undo covers this fragment only. Read once at mount: wrap the editor in `{#key fragment}` to switch |
 | `presence` | `'inline' \| 'none'` | `'inline'` | `inline` shows who is here above the toolbar; `none` leaves it to the app |
 | `onimage` | `(file: File) => Promise<{ src: string; alt?: string }>` | none | Uploads an image and answers its address |
 | `onfile` | `(file: File) => Promise<{ src: string; name: string; size: number; mime: string }>` | none | Uploads a pasted, dropped or picked file that is not an image; the editor inserts a `file` block. Images keep `onimage` |

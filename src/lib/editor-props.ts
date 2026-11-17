@@ -27,6 +27,8 @@ export interface EditorProps {
   class?: string;
   /** The shared document; when set, it is the source of truth and `content` is ignored. Read once at mount, with `provider` and `user`: wrap the editor in `{#key ydoc}` to switch documents. */
   ydoc?: Y.Doc;
+  /** The fragment holding the text, such as one nested in a `Y.Map` of a shared `Y.Doc`; when set, it is the source of truth instead of the root `default` fragment, `ydoc` may be left out, and `content` is ignored. It must belong to a `Y.Doc`. Read once at mount: wrap the editor in `{#key fragment}` to switch fragments. */
+  fragment?: Y.XmlFragment;
   /** A y-websocket `WebsocketProvider` (or a stand-in with `awareness`, `synced` and the `sync` event) for carets and presence. */
   provider?: AwarenessProvider;
   /** This user, as other people see them. */

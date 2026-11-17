@@ -34,13 +34,14 @@ image resolver answers paths inside it.
 
 | Prop | Default | What it does |
 |---|---|---|
-| `content` | empty | The initial document; ignored when `ydoc` is set |
+| `content` | empty | The initial document; ignored when `ydoc` or `fragment` is set |
 | `editable` | `true` | Whether the user can edit |
 | `placeholder` | none | Text shown in an empty document |
 | `toolbar` | `true` | Shows the toolbar |
 | `onchange` | none | Called with the document after each change |
 | `class` | `""` | Classes on the wrapper |
-| `ydoc` | none | The shared `Y.Doc`; when set it is the source of truth |
+| `ydoc` | none | The shared `Y.Doc`; when set its root `default` fragment is the source of truth |
+| `fragment` | none | A `Y.XmlFragment` of a shared `Y.Doc`, such as one nested in a `Y.Map`; when set it is the source of truth and `ydoc` may be left out |
 | `provider` | none | A y-websocket `WebsocketProvider`, or any object with `awareness`, `synced` and the `sync` event |
 | `user` | none | `{ name, color?, avatar? }`, how other people see this user |
 | `locale` | `fr` | `fr`, `en`, `es` or `de`: the language of every interface string |

@@ -124,3 +124,25 @@ describe('presence placement', () => {
     void unmount(editor);
   });
 });
+
+describe('an editor bound to a nested fragment', () => {
+  it('writes into that fragment and leaves the root and its siblings alone', async () => {
+    const ydoc = new Y.Doc();
+    const boxes = ydoc.getMap<Y.XmlFragment>('boxes');
+    boxes.set('title', new Y.XmlFragment());
+    boxes.set('notes', new Y.XmlFragment());
+    const fragment = boxes.get('title')!;
+    const target = document.createElement('div');
+    const props = { fragment, provider: provider(new Awareness(ydoc)), user: { name: 'Ana' }, toolbar: false };
+    const editor = mount(Editor, { target, props });
+    flushSync();
+    editor.instance()?.chain().focus().insertContent('Slide title').run();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(fragment.toString()).toContain('Slide title');
+    expect(ydoc.getXmlFragment('default').length).toBe(0);
+    expect(boxes.get('notes')!.length).toBe(0);
+    const doc = compactDocument(editor.getDocument() as EncreNode);
+    expect(doc.content?.map((block) => typeof block.attrs?.id)).toEqual(['string']);
+    void unmount(editor);
+  });
+});

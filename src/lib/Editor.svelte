@@ -33,6 +33,7 @@
     onchange,
     class: className = '',
     ydoc,
+    fragment,
     provider,
     user,
     presence = 'inline',
@@ -92,6 +93,7 @@
   }
 
   onMount(() => {
+    const shared = Boolean(ydoc || fragment);
     const instance = new Editor({
       element,
       extensions: [
@@ -100,12 +102,12 @@
           labels: copy,
           renderDiagram,
           resolveEmbed,
-          collaboration: ydoc ? { document: ydoc, provider, user } : undefined
+          collaboration: shared ? { document: ydoc, fragment, provider, user } : undefined
         }),
         slashExtension(slash, () => commands),
         UploadPlaceholder
       ],
-      content: ydoc ? null : (content ?? null),
+      content: shared ? null : (content ?? null),
       editable,
       editorProps: {
         attributes: { class: 'encre-prose outline-none min-h-40' },
